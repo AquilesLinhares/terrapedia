@@ -73,3 +73,35 @@ end $$;
 -- Acesso pela API: só quem está logado; visitantes (anon) não acessam nada.
 revoke all on public.favorites, public.read_later, public.groups, public.group_items from anon;
 grant select, insert, update, delete on public.favorites, public.read_later, public.groups, public.group_items to authenticated;
+
+-- ===== Fase 4: ligações feitas à mão dentro de um grupo ("uso X para craftar Y") =====
+-- Para aplicar num projeto que já tem as tabelas acima, rode só este bloco no SQL Editor do Supabase.
+
+create table public.group_links (
+  group_id uuid not null,
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  from_page text not null,
+  to_page text not null,
+  created_at timestamptz not null default now(),
+  primary key (group_id, from_page, to_page),
+  check (from_page <> to_page),
+  -- o grupo é do mesmo dono; apagar o grupo apaga as ligações
+  foreign key (group_id, user_id) references public.groups (id, user_id) on delete cascade,
+  -- as duas pontas são itens do grupo; tirar o item do grupo apaga as ligações dele
+  foreign key (group_id, from_page) references public.group_items (group_id, page) on delete cascade,
+  foreign key (group_id, to_page) references public.group_items (group_id, page) on delete cascade
+);
+
+create index group_links_user_id_idx on public.group_links (user_id);
+create index group_links_group_user_idx on public.group_links (group_id, user_id);
+create index group_links_to_idx on public.group_links (group_id, to_page);
+
+alter table public.group_links enable row level security;
+
+create policy "ver os próprios" on public.group_links for select to authenticated using ((select auth.uid()) = user_id);
+create policy "criar os próprios" on public.group_links for insert to authenticated with check ((select auth.uid()) = user_id);
+create policy "mudar os próprios" on public.group_links for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "apagar os próprios" on public.group_links for delete to authenticated using ((select auth.uid()) = user_id);
+
+revoke all on public.group_links from anon;
+grant select, insert, update, delete on public.group_links to authenticated;

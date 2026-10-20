@@ -32,11 +32,18 @@ export interface ReadLaterItem extends SavedArticle {
   seen: boolean
 }
 
+/** Ligação feita à mão num grupo: "uso `from` para craftar `to`" (páginas de itens do grupo). */
+export interface GroupLink {
+  from: string
+  to: string
+}
+
 export interface Group {
   id: string
   name: string
   createdAt: string
   items: SavedArticle[]
+  links: GroupLink[]
 }
 
 export interface LibraryData {
@@ -82,7 +89,12 @@ function write(key: string, value: unknown) {
   }
 }
 
-const loadLocal = (): LibraryData => ({ ...EMPTY, ...read<Partial<LibraryData>>(LOCAL_KEY), version: 1 })
+/** Dados salvos antes das ligações não têm `links`: completa para o formato atual. */
+function upgrade(lib: LibraryData): LibraryData {
+  return lib.groups.every((g) => g.links) ? lib : { ...lib, groups: lib.groups.map((g) => ({ ...g, links: g.links ?? [] })) }
+}
+
+const loadLocal = (): LibraryData => upgrade({ ...EMPTY, ...read<Partial<LibraryData>>(LOCAL_KEY), version: 1 })
 
 let userId: string | null = null
 let data = loadLocal()
@@ -178,8 +190,8 @@ onUserChange((user) => {
   fetchPending = false
   if (userId) {
     const cache = read<CloudCache>(cloudKey(userId))
-    data = cache?.data ?? EMPTY
-    synced = cache?.synced ?? EMPTY
+    data = cache ? upgrade(cache.data) : EMPTY
+    synced = cache ? upgrade(cache.synced) : EMPTY
     status = { state: 'loading', importOffer: null }
     refetch()
   } else {
@@ -200,8 +212,8 @@ window.addEventListener('storage', (e) => {
   } else if (userId && e.key === cloudKey(userId)) {
     const cache = read<CloudCache>(e.key)
     if (cache) {
-      data = cache.data
-      synced = cache.synced
+      data = upgrade(cache.data)
+      synced = upgrade(cache.synced)
       emit()
     }
   }
@@ -228,6 +240,7 @@ export function useSyncStatus() {
 
 const now = () => new Date().toISOString()
 const samePage = (a: string, b: string) => a.toLowerCase() === b.toLowerCase()
+const sameLink = (a: GroupLink, b: GroupLink) => samePage(a.from, b.from) && samePage(a.to, b.to)
 
 /** Id no formato UUID (o banco exige). `randomUUID` só existe em https/localhost. */
 function newId() {
@@ -251,7 +264,12 @@ function merge(base: LibraryData, extra: LibraryData): LibraryData {
     const i = groups.findIndex((b) => sameName(b, g))
     // Grupo novo ganha id novo: o mesmo aparelho pode ser importado por duas contas
     if (i === -1) groups.push({ ...g, id: newId() })
-    else groups[i] = { ...groups[i], items: addMissing(groups[i].items, g.items) }
+    else
+      groups[i] = {
+        ...groups[i],
+        items: addMissing(groups[i].items, g.items),
+        links: [...groups[i].links, ...g.links.filter((l) => !groups[i].links.some((m) => sameLink(l, m)))],
+      }
   }
   return {
     ...base,
@@ -276,6 +294,10 @@ export function readLaterItem(lib: LibraryData, page: string) {
 
 export function groupHas(group: Group, page: string) {
   return group.items.some((i) => samePage(i.page, page))
+}
+
+export function hasLink(group: Group, from: string, to: string) {
+  return group.links.some((l) => sameLink(l, { from, to }))
 }
 
 // Todas as ações que mudam a biblioteca.
@@ -309,7 +331,7 @@ export const library = {
   /** Cria um grupo e devolve o id dele. */
   createGroup(name: string) {
     const id = newId()
-    commit({ ...data, groups: [...data.groups, { id, name: name.trim(), createdAt: now(), items: [] }] })
+    commit({ ...data, groups: [...data.groups, { id, name: name.trim(), createdAt: now(), items: [], links: [] }] })
     return id
   },
 
@@ -326,11 +348,41 @@ export const library = {
       ...data,
       groups: data.groups.map((g) => {
         if (g.id !== id) return g
+        // Ao tirar um item do grupo, as ligações dele saem junto
         return groupHas(g, ref.page)
-          ? { ...g, items: g.items.filter((i) => !samePage(i.page, ref.page)) }
+          ? {
+              ...g,
+              items: g.items.filter((i) => !samePage(i.page, ref.page)),
+              links: g.links.filter((l) => !samePage(l.from, ref.page) && !samePage(l.to, ref.page)),
+            }
           : { ...g, items: [...g.items, { ...ref, addedAt: now() }] }
       }),
     })
+  },
+
+  /** Liga ou desliga "uso `from` para craftar `to`" dentro de um grupo. */
+  toggleLink(id: string, from: string, to: string) {
+    if (samePage(from, to)) return
+    commit({
+      ...data,
+      groups: data.groups.map((g) => {
+        if (g.id !== id) return g
+        return hasLink(g, from, to)
+          ? { ...g, links: g.links.filter((l) => !sameLink(l, { from, to })) }
+          : { ...g, links: [...g.links, { from, to }] }
+      }),
+    })
+  },
+
+  /** Adiciona várias ligações de uma vez (as que já existem são ignoradas). */
+  addLinks(id: string, links: GroupLink[]) {
+    const group = data.groups.find((g) => g.id === id)
+    if (!group) return
+    const fresh = links.filter(
+      (l, i) => !samePage(l.from, l.to) && !hasLink(group, l.from, l.to) && links.findIndex((m) => sameLink(l, m)) === i,
+    )
+    if (!fresh.length) return
+    commit({ ...data, groups: data.groups.map((g) => (g.id === id ? { ...g, links: [...g.links, ...fresh] } : g)) })
   },
 
   /** Chamado ao abrir um artigo: atualiza nome PT e sprite onde ele estiver salvo. */

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { cleanArticle } from '../lib/cleanArticle'
 import { fetchArticle, fetchSearch, PageNotFoundError, wikiPageUrl } from '../lib/wikiApi'
@@ -7,6 +8,8 @@ import { articlePath } from '../components/SearchBar'
 import ArticleActions from '../components/ArticleActions'
 import { fetchArticleRef } from '../lib/articleRef'
 import { library, type ArticleRef } from '../lib/library'
+import { useRecipeBook } from '../lib/recipes'
+import CraftingSection, { craftingFor } from '../components/CraftingSection'
 
 type State =
   | { status: 'loading' }
@@ -22,6 +25,23 @@ export default function ArticlePage() {
   const [state, setState] = useState<State>({ status: 'loading' })
   // Nome PT e sprite do artigo, usados ao salvar em favoritos/grupos/"buscar depois"
   const [articleRef, setArticleRef] = useState<ArticleRef | null>(null)
+  // Receitas: desenhadas no lugar da seção "Crafting" da wiki (o "slot" marcado pelo cleanArticle)
+  const book = useRecipeBook()
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [craftingSlot, setCraftingSlot] = useState<HTMLElement | null>(null)
+  const crafting = useMemo(
+    () => (book && state.status === 'ok' ? craftingFor(book, state.title) : null),
+    [book, state],
+  )
+
+  useLayoutEffect(() => {
+    setCraftingSlot(contentRef.current?.querySelector<HTMLElement>('[data-crafting-slot]') ?? null)
+  }, [state])
+
+  // Com receitas do app, a versão original da wiki fica escondida (volta se não tivermos dados)
+  useLayoutEffect(() => {
+    craftingSlot?.classList.toggle('has-app', !!crafting)
+  }, [craftingSlot, crafting])
 
   // Carrega o artigo sempre que o título da URL muda.
   useEffect(() => {
@@ -153,7 +173,15 @@ export default function ArticlePage() {
         )}
       </header>
 
-      <div className="wiki-content" onClick={onContentClick} dangerouslySetInnerHTML={{ __html: state.html }} />
+      <div ref={contentRef} className="wiki-content" onClick={onContentClick} dangerouslySetInnerHTML={{ __html: state.html }} />
+
+      {book && crafting && craftingSlot && createPortal(<CraftingSection book={book} crafting={crafting} />, craftingSlot)}
+      {book && crafting && !craftingSlot && (
+        <section className="wiki-content">
+          <h2>Crafting</h2>
+          <CraftingSection book={book} crafting={crafting} />
+        </section>
+      )}
 
       <p className="mt-10 rounded-lg border border-line bg-panel/60 px-4 py-3 text-sm text-muted">
         Fonte: artigo “

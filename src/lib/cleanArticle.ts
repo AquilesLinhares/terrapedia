@@ -67,6 +67,8 @@ export function cleanArticle(rawHtml: string): string {
     wrapper.appendChild(table)
   })
 
+  markCraftingSection(doc)
+
   root.querySelectorAll('a').forEach((a) => {
     const href = a.getAttribute('href')
     if (!href) return
@@ -89,6 +91,38 @@ export function cleanArticle(rawHtml: string): string {
   })
 
   return DOMPurify.sanitize(root.innerHTML, { ADD_ATTR: ['target'] })
+}
+
+/** Nível de um título (h2 → 2), ou 0 se não é título. Entende o formato novo do MediaWiki (div.mw-heading). */
+function headingLevel(el: Element) {
+  const h = el.matches('h1, h2, h3, h4, h5, h6') ? el : el.classList.contains('mw-heading') ? el.querySelector('h1, h2, h3, h4, h5, h6') : null
+  return h ? Number(h.tagName[1]) : 0
+}
+
+/**
+ * Seção "Crafting" da wiki: o conteúdo dela vai para dentro de
+ * `<div data-crafting-slot><div data-crafting-original>…</div></div>`.
+ * O app desenha as receitas dele no slot e esconde o original (que volta se o app não tiver dados).
+ */
+function markCraftingSection(doc: Document) {
+  const anchor = doc.getElementById('Crafting')
+  const heading = anchor?.closest('.mw-heading') ?? anchor?.closest('h2, h3')
+  if (!heading) return
+  const level = headingLevel(heading)
+  const original = doc.createElement('div')
+  original.setAttribute('data-crafting-original', '')
+  let next = heading.nextElementSibling
+  while (next) {
+    const level2 = headingLevel(next)
+    if (level2 && level2 <= level) break
+    const current = next
+    next = next.nextElementSibling
+    original.appendChild(current)
+  }
+  const slot = doc.createElement('div')
+  slot.setAttribute('data-crafting-slot', '')
+  slot.appendChild(original)
+  heading.after(slot)
 }
 
 /** Primeira imagem da ficha (infobox) de um artigo já limpo: normalmente o sprite do item/NPC. */

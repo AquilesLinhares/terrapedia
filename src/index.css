@@ -214,6 +214,21 @@ input[type='search']::-webkit-search-cancel-button {
   @apply text-xs text-muted;
 }
 
+/* Seção de crafting do app (receitas, "Usado em") dentro do artigo: sem os estilos de lista da wiki */
+.wiki-content .crafting-app ul,
+.wiki-content .crafting-app li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wiki-content .crafting-app a:hover {
+  text-decoration: none;
+}
+/* Enquanto a seção do app aparece, a versão original da wiki fica escondida */
+.wiki-content [data-crafting-slot].has-app > [data-crafting-original] {
+  display: none;
+}
+
 /* Imagens com legenda */
 .wiki-content .thumb {
   @apply my-3;

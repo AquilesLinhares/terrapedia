@@ -9,6 +9,7 @@ import ReadLaterPage from './pages/ReadLaterPage'
 import GroupsPage from './pages/GroupsPage'
 import GroupPage from './pages/GroupPage'
 import AccountPage from './pages/AccountPage'
+import CraftingTreePage from './pages/CraftingTreePage'
 import './index.css'
 
 createRoot(document.getElementById('root')!).render(
@@ -23,6 +24,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="grupos" element={<GroupsPage />} />
           <Route path="grupos/:id" element={<GroupPage />} />
           <Route path="conta" element={<AccountPage />} />
+          <Route path="arvore/*" element={<CraftingTreePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

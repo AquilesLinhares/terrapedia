@@ -29,8 +29,12 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Fase 3B (feita)**: login com e-mail e senha (Supabase, plano grátis) e biblioteca sincronizada
   entre aparelhos. Sem login tudo continua funcionando só no aparelho. No primeiro login o app
   oferece importar o que já estava salvo no aparelho. Tela de conta em `/conta`.
+- **Fase 4 (feita)**: crafting. Receitas baixadas da wiki (`src/data/recipes.json`), tabela de
+  receitas e "Usado em" no lugar da seção "Crafting" dos artigos (nomes PT, sprites, links), árvore
+  automática em `/arvore/<Item>` (expandir/recolher, quantidade, escolha de receita e de item de grupo,
+  materiais totais, bancadas e ordem de crafting) e árvore montada à mão nos grupos (ligações
+  "uso X para craftar Y", salvas no Supabase em `group_links`).
 - **Futuro**:
-  - Árvores de crafting interativas
   - Páginas reorganizadas por IA (sem custo — ex.: processadas offline / modelos gratuitos)
 
 ## Stack
@@ -38,7 +42,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - Vite + React + TypeScript
 - Tailwind CSS v4 (plugin `@tailwindcss/vite`)
 - `vite-plugin-pwa` (manifest + service worker)
-- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`)
+- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`)
 
 ## Estrutura
 
@@ -46,7 +50,13 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/lib/cleanArticle.ts` — limpa o HTML do artigo e reescreve links/imagens
 - `src/lib/ptSearch.ts` — busca local no dicionário PT ↔ EN (normalização + distância de edição)
 - `src/data/dictionary.json` — dicionário gerado (formato compacto `[pt, en, tipo, página?]`). Não editar à mão.
-- `scripts/` — geração do dicionário (veja abaixo)
+- `scripts/` — geração do dicionário e das receitas (veja abaixo)
+- `src/data/recipes.json` — receitas geradas por `scripts/build-recipes.mjs`. Não editar à mão.
+- `src/lib/recipes.ts` — lê as receitas: `useRecipeBook()`, nomes PT (`ptName`), sprites, "Usado em" (`usesOf`)
+- `src/lib/craftTree.ts` — árvore automática (`buildTree`), materiais totais (`computeTotals`) e escolhas salvas
+- `src/components/CraftingSection.tsx`, `RecipeList.tsx`, `ItemChip.tsx` — receitas e "Usado em" no artigo
+- `src/components/GroupLinkPicker.tsx` — ligar itens dentro de um grupo ("uso X para craftar Y")
+- `src/pages/CraftingTreePage.tsx` — página da árvore (`/arvore/<Item>`)
 - `src/lib/library.ts` — favoritos, grupos e "buscar depois" (veja "Biblioteca" abaixo)
 - `src/lib/supabase.ts` — cliente do Supabase (lê o `.env`; sem `.env` vira `null` e o app fica só local)
 - `src/lib/auth.ts` — login: `useAuth()`, `auth.signIn/signUp/signOut`, `onUserChange`
@@ -81,13 +91,31 @@ Para regenerar (ex.: depois de uma atualização do Terraria):
 
 Para adicionar um apelido ou evento, edite `scripts/manual-names.json` e regenere.
 
+## Receitas (crafting)
+
+`node scripts/build-recipes.mjs` baixa da wiki (com pausas, tenta de novo em caso de 429) a tabela
+Cargo `Recipes`, a tabela `Items` (sprites) e os grupos "Any ..." da página
+"Alternative crafting ingredients", e grava `src/data/recipes.json` (formato compacto: cada nome
+uma vez em `names`, receitas como `[resultado, qtd, bancada, ingrediente, qtd, ...]`). Ficam só as
+receitas atuais de PC/console/celular (sem old-gen, 3DS e páginas "Legacy:"). Rode de novo depois de
+uma atualização do Terraria.
+
+- **No artigo**: `cleanArticle` move a seção "Crafting" da wiki para `[data-crafting-slot]`; o
+  `ArticlePage` desenha `CraftingSection` ali (portal) e esconde o original. Se o app não tiver
+  receitas para a página, o original da wiki aparece. Artigos de conjunto ("Copper armor") usam os
+  itens que redirecionam para eles (pelo dicionário).
+- **Árvore**: não usa receitas de Shimmer, do Extrator de Clorofita nem as que "desfazem" itens
+  (parede/plataforma/cerca/prateleira → bloco), para não andar em círculos. Item sem receita = material
+  básico. Escolhas (receita, item do grupo, "não craftar") valem para a árvore toda e ficam em
+  `terrapedia:craft-choices` no aparelho. Os totais somam itens repetidos antes de arredondar.
+
 ## Biblioteca (favoritos, grupos, buscar depois)
 
 Tudo passa por `src/lib/library.ts`. As telas só usam `useLibrary()` (ler), `useSyncStatus()`
 (situação da conta) e `library.*` (mudar). Toda mudança passa por `commit()`.
 
 - **Sem login**: salvo no localStorage na chave `terrapedia:library` (como na Fase 3A).
-- **Com login**: dados nas tabelas `favorites`, `read_later`, `groups`, `group_items` do Supabase,
+- **Com login**: dados nas tabelas `favorites`, `read_later`, `groups`, `group_items`, `group_links` do Supabase,
   com RLS (cada pessoa só vê as próprias linhas). Uma cópia fica em `terrapedia:cloud:<id>`
   junto com `synced` (último estado confirmado pelo servidor). `commit()` chama `work()`, que
   envia a diferença entre `synced` e os dados atuais (`pushChanges`); sem internet, tenta de novo
@@ -96,7 +124,8 @@ Tudo passa por `src/lib/library.ts`. As telas só usam `useLibrary()` (ler), `us
   se há algo salvo no aparelho, `ImportPrompt` oferece juntar (sem repetir; grupos com o mesmo nome
   se juntam). Os dados do aparelho não são apagados.
 
-Cada artigo salvo guarda `page` (título EN da wiki, é o id), `en`, `pt` e `sprite`.
+Cada artigo salvo guarda `page` (título EN da wiki, é o id), `en`, `pt` e `sprite`. Cada grupo também
+guarda `links` (`{ from, to }` = "uso `from` para craftar `to`"); tirar um item do grupo apaga as ligações dele.
 
 ## Supabase
 
