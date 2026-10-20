@@ -119,11 +119,18 @@ input[type='search']::-webkit-search-cancel-button {
   @apply mb-4 overflow-hidden rounded-xl border border-line bg-panel text-sm shadow-lg shadow-black/30;
 }
 @media (min-width: 768px) {
-  .wiki-content .infobox {
+  .wiki-content .infobox,
+  .wiki-content .infobox-wrapper {
     float: right;
     clear: right;
     width: 300px;
     margin-left: 1.25rem;
+  }
+  /* Algumas páginas agrupam vários infoboxes numa "caixa": a caixa flutua, os de dentro não */
+  .wiki-content .infobox-wrapper .infobox {
+    float: none;
+    width: auto;
+    margin-left: 0;
   }
 }
 .wiki-content .infobox .title {

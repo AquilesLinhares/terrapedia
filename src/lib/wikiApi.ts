@@ -41,7 +41,7 @@ export async function fetchSuggestions(query: string, signal?: AbortSignal): Pro
   const data = await res.json()
   const pages: { title: string; index: number; thumbnail?: { source: string } }[] = data.query?.pages ?? []
   return pages
-    .filter((p) => !LANGUAGE_SUBPAGE.test(p.title))
+    .filter((p) => !LANGUAGE_SUBPAGE.test(p.title) && !p.title.startsWith('Terraria Wiki:'))
     .sort((a, b) => a.index - b.index)
     .slice(0, 8)
     .map((p) => ({ title: p.title, thumbnail: p.thumbnail?.source }))

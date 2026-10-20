@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { cleanArticle } from '../lib/cleanArticle'
-import { fetchArticle, fetchSearch, PageNotFoundError, wikiPageUrl, type SearchResult } from '../lib/wikiApi'
+import { fetchArticle, fetchSearch, PageNotFoundError, wikiPageUrl } from '../lib/wikiApi'
+import { displayName, searchDictionary } from '../lib/ptSearch'
 import { articlePath } from '../components/SearchBar'
 
 type State =
   | { status: 'loading' }
   | { status: 'ok'; title: string; html: string }
-  | { status: 'notfound'; results: SearchResult[] }
+  | { status: 'notfound'; results: { page: string; label: string; snippet?: string }[] }
   | { status: 'error'; message: string }
 
 export default function ArticlePage() {
@@ -32,8 +33,16 @@ export default function ArticlePage() {
       .catch(async (err) => {
         if (controller.signal.aborted) return
         if (err instanceof PageNotFoundError) {
-          const results = await fetchSearch(title, controller.signal).catch(() => [])
-          setState({ status: 'notfound', results })
+          // Primeiro o dicionário PT ↔ EN (ex.: "Lua de Sangue"), depois a busca no texto da wiki
+          const [dict, search] = await Promise.all([
+            searchDictionary(title, 5),
+            fetchSearch(title, controller.signal).catch(() => []),
+          ])
+          if (controller.signal.aborted) return
+          const fromDict = dict.map((m) => ({ page: m.page, label: displayName(m) }))
+          const seen = new Set(fromDict.map((r) => r.page))
+          const fromWiki = search.filter((r) => !seen.has(r.title)).map((r) => ({ page: r.title, label: r.title, snippet: r.snippet }))
+          setState({ status: 'notfound', results: [...fromDict, ...fromWiki] })
         } else {
           setState({ status: 'error', message: 'Não foi possível carregar a página. Verifique sua internet.' })
         }
@@ -90,13 +99,15 @@ export default function ArticlePage() {
         </p>
         <ul className="space-y-2">
           {state.results.map((r) => (
-            <li key={r.title}>
+            <li key={r.page}>
               <Link
-                to={articlePath(r.title)}
+                to={articlePath(r.page)}
                 className="block rounded-lg border border-line bg-panel px-4 py-3 transition hover:border-accent"
               >
-                <span className="font-semibold text-accent">{r.title}</span>
-                <span className="search-snippet mt-1 block text-sm text-muted" dangerouslySetInnerHTML={{ __html: r.snippet }} />
+                <span className="font-semibold text-accent">{r.label}</span>
+                {r.snippet && (
+                  <span className="search-snippet mt-1 block text-sm text-muted" dangerouslySetInnerHTML={{ __html: r.snippet }} />
+                )}
               </Link>
             </li>
           ))}
