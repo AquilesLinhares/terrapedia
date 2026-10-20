@@ -1,0 +1,253 @@
+@import 'tailwindcss';
+
+/* Cores do tema: escuro, com dourado e azul inspirados na Terraria Wiki */
+@theme {
+  --color-bg: #0f1420;
+  --color-panel: #182033;
+  --color-panel-2: #1f2a42;
+  --color-line: #2c3a58;
+  --color-ink: #e6ebf5;
+  --color-muted: #8f9bb6;
+  --color-accent: #6fb8ff;
+  --color-gold: #f2c94c;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Andika', 'Inter', sans-serif;
+}
+
+html {
+  color-scheme: dark;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  @apply bg-bg font-sans text-ink antialiased;
+  background-image: radial-gradient(ellipse at top, #1b2742 0%, transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Sprites do Terraria são pixel art: não podem ficar borrados ao ampliar */
+.pixelated,
+.wiki-content img {
+  image-rendering: pixelated;
+}
+
+input[type='search']::-webkit-search-cancel-button {
+  filter: invert(0.7);
+}
+
+.search-snippet .searchmatch {
+  @apply font-semibold text-ink;
+}
+
+/* ===== Conteúdo dos artigos (HTML que vem da wiki) ===== */
+
+.wiki-content {
+  @apply leading-relaxed text-ink/90;
+  overflow-wrap: break-word;
+}
+.wiki-content::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.wiki-content a {
+  @apply text-accent;
+  text-decoration: none;
+}
+.wiki-content a:hover {
+  text-decoration: underline;
+}
+.wiki-content a.selflink {
+  @apply font-semibold text-ink;
+}
+
+.wiki-content p {
+  @apply my-3;
+}
+.wiki-content h2 {
+  @apply mt-8 mb-3 border-b border-line pb-1 font-display text-2xl font-bold text-gold;
+  scroll-margin-top: 4.5rem;
+}
+.wiki-content h3 {
+  @apply mt-6 mb-2 font-display text-xl font-bold text-ink;
+  scroll-margin-top: 4.5rem;
+}
+.wiki-content h4,
+.wiki-content h5 {
+  @apply mt-4 mb-2 font-semibold text-ink;
+  scroll-margin-top: 4.5rem;
+}
+.wiki-content ul {
+  @apply my-2 list-disc pl-6;
+}
+.wiki-content ol {
+  @apply my-2 list-decimal pl-6;
+}
+.wiki-content li {
+  @apply my-1;
+}
+.wiki-content dl dt {
+  @apply font-semibold;
+}
+.wiki-content dl dd {
+  @apply ml-4;
+}
+.wiki-content blockquote {
+  @apply my-3 border-l-4 border-gold/60 pl-4 text-muted italic;
+}
+.wiki-content code {
+  @apply rounded bg-panel px-1 text-sm;
+}
+.wiki-content sup {
+  @apply text-xs;
+}
+.wiki-content img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+/* Caixas de aviso no topo ("Este artigo é sobre...") */
+.wiki-content .message-box {
+  @apply my-3 rounded-lg border border-line bg-panel/70 px-4 py-2 text-sm;
+}
+
+/* ----- Infobox: ficha do item, à direita no PC e no topo no celular ----- */
+.wiki-content .infobox {
+  @apply mb-4 overflow-hidden rounded-xl border border-line bg-panel text-sm shadow-lg shadow-black/30;
+}
+@media (min-width: 768px) {
+  .wiki-content .infobox {
+    float: right;
+    clear: right;
+    width: 300px;
+    margin-left: 1.25rem;
+  }
+}
+.wiki-content .infobox .title {
+  @apply bg-panel-2 px-3 py-2 text-center font-display text-lg font-bold text-gold;
+}
+.wiki-content .infobox .section .title {
+  @apply border-t border-line bg-panel-2/60 py-1 font-sans text-xs font-semibold tracking-wider text-muted uppercase;
+}
+.wiki-content .infobox .section.images {
+  @apply flex flex-col items-center gap-2 p-4;
+}
+.wiki-content .infobox ul.infobox-inline {
+  @apply m-0 flex list-none flex-wrap items-center justify-center gap-3 p-0;
+}
+/* Sprite do item um pouco ampliado (pixel art continua nítida) */
+.wiki-content .infobox ul.infobox-inline img {
+  zoom: 1.5;
+}
+.wiki-content .infobox .stack {
+  @apply text-xs;
+}
+.wiki-content .infobox table {
+  @apply w-full border-collapse;
+}
+.wiki-content .infobox th {
+  @apply w-2/5 px-3 py-1.5 text-left align-top font-medium text-muted;
+}
+.wiki-content .infobox td {
+  @apply px-3 py-1.5;
+}
+.wiki-content .infobox tr + tr {
+  @apply border-t border-line/50;
+}
+.wiki-content .infobox .tags {
+  @apply flex flex-wrap gap-1;
+}
+.wiki-content .infobox .tag {
+  @apply rounded bg-bg/60 px-1.5 py-0.5 text-xs;
+}
+.wiki-content .infobox .small-bold,
+.wiki-content .infobox small {
+  @apply text-xs text-muted;
+}
+
+/* ----- Tabelas (crafting, drops, estatísticas) ----- */
+.wiki-content .table-scroll {
+  @apply my-4 max-w-full overflow-x-auto rounded-lg border border-line;
+}
+.wiki-content .table-scroll table {
+  @apply w-full border-collapse text-sm;
+}
+.wiki-content table th {
+  @apply bg-panel-2 px-3 py-2 text-left font-semibold text-ink;
+}
+.wiki-content table td {
+  @apply border-t border-line/60 bg-panel/50 px-3 py-2 align-middle;
+}
+.wiki-content table tr:hover td {
+  @apply bg-panel;
+}
+.wiki-content table.recipes ul {
+  @apply m-0 list-none p-0;
+}
+.wiki-content table.recipes li {
+  @apply my-0.5;
+}
+.wiki-content table.recipes .am {
+  @apply ml-1 rounded bg-bg/70 px-1.5 text-xs font-semibold text-gold;
+}
+
+/* Ícone + nome de item ("span.i"), usado em tabelas e no texto */
+.wiki-content .i {
+  @apply inline-flex items-center gap-1.5;
+}
+.wiki-content .i img {
+  max-height: 32px;
+  width: auto;
+}
+.wiki-content .version-note,
+.wiki-content .note-text {
+  @apply text-xs text-muted;
+}
+
+/* Imagens com legenda */
+.wiki-content .thumb {
+  @apply my-3;
+}
+.wiki-content .thumbinner {
+  @apply inline-block max-w-full rounded-lg border border-line bg-panel p-2;
+  width: auto !important;
+}
+.wiki-content .thumbcaption {
+  @apply pt-1 text-xs text-muted;
+}
+@media (min-width: 640px) {
+  .wiki-content .tright {
+    float: right;
+    clear: right;
+    margin-left: 1rem;
+  }
+  .wiki-content .tleft {
+    float: left;
+    clear: left;
+    margin-right: 1rem;
+  }
+}
+.wiki-content .magnify {
+  display: none;
+}
+
+/* Galerias */
+.wiki-content .gallery {
+  @apply my-3 flex list-none flex-wrap gap-3 p-0;
+}
+.wiki-content .gallerybox {
+  @apply rounded-lg border border-line bg-panel p-2 text-center text-xs;
+  width: auto !important;
+}
+
+/* Histórico de versões e referências */
+.wiki-content .history-header {
+  @apply text-sm;
+}
+.wiki-content .references,
+.wiki-content .reflist {
+  @apply text-sm text-muted;
+}
