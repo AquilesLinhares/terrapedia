@@ -3,7 +3,7 @@
 Wiki 2.0 do Terraria: o conteúdo da [Terraria Wiki](https://terraria.wiki.gg) com uma interface
 moderna, escura e feita para celular e PC (PWA).
 
-Futuro: busca em português, favoritos e árvores de crafting. Veja [CLAUDE.md](CLAUDE.md).
+Busca em português, favoritos, grupos e lista "buscar depois". Futuro: login e árvores de crafting. Veja [CLAUDE.md](CLAUDE.md).
 
 ## Rodar localmente
 

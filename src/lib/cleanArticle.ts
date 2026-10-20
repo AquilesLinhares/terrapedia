@@ -90,3 +90,9 @@ export function cleanArticle(rawHtml: string): string {
 
   return DOMPurify.sanitize(root.innerHTML, { ADD_ATTR: ['target'] })
 }
+
+/** Primeira imagem da ficha (infobox) de um artigo já limpo: normalmente o sprite do item/NPC. */
+export function infoboxImage(cleanHtml: string): string | undefined {
+  const doc = new DOMParser().parseFromString(cleanHtml, 'text/html')
+  return doc.querySelector('.infobox img')?.getAttribute('src') ?? undefined
+}

@@ -23,10 +23,11 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
   tabelas de crafting), links internos abrindo dentro do app, visual escuro, PWA.
 - **Fase 2 (feita)**: busca em português com dicionário PT-BR ↔ EN local (sem acento, sem
   maiúsculas, tolera erro de digitação), mostrando "Lua de Sangue (Blood Moon)".
+- **Fase 3A (feita)**: organização salva no aparelho (localStorage): favoritos, grupos com nome
+  (ex.: "Preparar Moon Lord") e lista "Buscar depois" com checkbox "já vi". Acesso pela barra
+  de navegação (rodapé no celular, topo no PC). Cada item mostra sprite + nome PT e EN.
 - **Futuro**:
-  - Login (provedor gratuito)
-  - Favoritos e grupos de favoritos
-  - Lista de "buscar depois"
+  - Fase 3B: login (provedor gratuito, ex.: Supabase) e sincronizar a biblioteca entre aparelhos
   - Árvores de crafting interativas
   - Páginas reorganizadas por IA (sem custo — ex.: processadas offline / modelos gratuitos)
 
@@ -35,7 +36,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - Vite + React + TypeScript
 - Tailwind CSS v4 (plugin `@tailwindcss/vite`)
 - `vite-plugin-pwa` (manifest + service worker)
-- React Router (rotas `/` e `/wiki/*`)
+- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`)
 
 ## Estrutura
 
@@ -44,8 +45,14 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/lib/ptSearch.ts` — busca local no dicionário PT ↔ EN (normalização + distância de edição)
 - `src/data/dictionary.json` — dicionário gerado (formato compacto `[pt, en, tipo, página?]`). Não editar à mão.
 - `scripts/` — geração do dicionário (veja abaixo)
+- `src/lib/library.ts` — favoritos, grupos e "buscar depois" (veja "Biblioteca" abaixo)
+- `src/lib/articleRef.ts` — monta o item salvo de um artigo (nome PT do dicionário + sprite da infobox)
 - `src/components/SearchBar.tsx` — busca com sugestões
+- `src/components/NavBar.tsx` — navegação (`TopNav` no PC, `BottomNav` fixa no rodapé do celular)
+- `src/components/ArticleActions.tsx`, `GroupPicker.tsx` — botões Favoritar / Ver depois / Grupo do artigo
+- `src/components/SavedArticleRow.tsx` — linha de lista com sprite + nome PT + nome EN
 - `src/pages/HomePage.tsx`, `src/pages/ArticlePage.tsx`
+- `src/pages/FavoritesPage.tsx`, `ReadLaterPage.tsx`, `GroupsPage.tsx`, `GroupPage.tsx`
 - `src/index.css` — tema escuro e estilos do conteúdo da wiki (`.wiki-content`)
 
 ## Comandos
@@ -66,3 +73,12 @@ Para regenerar (ex.: depois de uma atualização do Terraria):
 2. `node scripts/build-dictionary.mjs C:\temp\terraria-loc` (demora alguns minutos: faz pausas pra não sobrecarregar a wiki)
 
 Para adicionar um apelido ou evento, edite `scripts/manual-names.json` e regenere.
+
+## Biblioteca (favoritos, grupos, buscar depois)
+
+Tudo fica em `src/lib/library.ts`, salvo no localStorage na chave `terrapedia:library`.
+As telas só usam `useLibrary()` (ler) e `library.*` (mudar). Toda mudança passa por `commit()`,
+que grava pelo `LibraryBackend`. Para sincronizar com o Supabase (Fase 3B), troque o backend
+ou envie a mudança dentro de `commit()` — as telas não precisam mudar. O formato já mapeia para
+tabelas: `favorites`, `read_later`, `groups`, `group_items` (comentário no topo do arquivo).
+Cada artigo salvo guarda `page` (título EN da wiki, é o id), `en`, `pt` e `sprite`.

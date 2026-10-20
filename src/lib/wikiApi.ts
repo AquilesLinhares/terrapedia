@@ -63,6 +63,17 @@ export async function fetchSearch(query: string, signal?: AbortSignal): Promise<
   return results.filter((r) => !LANGUAGE_SUBPAGE.test(r.title))
 }
 
+/** Imagem principal de um artigo (normalmente o sprite do item/NPC). */
+export async function fetchPageImage(title: string, signal?: AbortSignal): Promise<string | undefined> {
+  const res = await fetch(
+    apiUrl({ action: 'query', titles: title, prop: 'pageimages', piprop: 'thumbnail', pithumbsize: '64', redirects: '1' }),
+    { signal },
+  )
+  const data = await res.json()
+  const page: { thumbnail?: { source: string } } | undefined = data.query?.pages?.[0]
+  return page?.thumbnail?.source
+}
+
 export interface ParsedArticle {
   title: string
   html: string

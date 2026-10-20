@@ -4,6 +4,9 @@ import { cleanArticle } from '../lib/cleanArticle'
 import { fetchArticle, fetchSearch, PageNotFoundError, wikiPageUrl } from '../lib/wikiApi'
 import { displayName, searchDictionary } from '../lib/ptSearch'
 import { articlePath } from '../components/SearchBar'
+import ArticleActions from '../components/ArticleActions'
+import { fetchArticleRef } from '../lib/articleRef'
+import { library, type ArticleRef } from '../lib/library'
 
 type State =
   | { status: 'loading' }
@@ -17,18 +20,28 @@ export default function ArticlePage() {
   const navigate = useNavigate()
   const title = useMemo(() => rawTitle.replace(/_/g, ' '), [rawTitle])
   const [state, setState] = useState<State>({ status: 'loading' })
+  // Nome PT e sprite do artigo, usados ao salvar em favoritos/grupos/"buscar depois"
+  const [articleRef, setArticleRef] = useState<ArticleRef | null>(null)
 
   // Carrega o artigo sempre que o título da URL muda.
   useEffect(() => {
     const controller = new AbortController()
     setState({ status: 'loading' })
+    setArticleRef(null)
     window.scrollTo(0, 0)
     document.title = 'Terrapedia'
 
     fetchArticle(title, controller.signal)
       .then((article) => {
-        setState({ status: 'ok', title: article.title, html: cleanArticle(article.html) })
+        const html = cleanArticle(article.html)
+        setState({ status: 'ok', title: article.title, html })
         document.title = `${article.title} · Terrapedia`
+        setArticleRef({ page: article.title, en: article.title })
+        fetchArticleRef(article.title, html, controller.signal).then((ref) => {
+          if (controller.signal.aborted) return
+          setArticleRef(ref)
+          library.refreshArticle(ref) // atualiza itens já salvos (ex.: sprite que faltava)
+        })
       })
       .catch(async (err) => {
         if (controller.signal.aborted) return
@@ -118,16 +131,26 @@ export default function ArticlePage() {
 
   return (
     <article className="mx-auto max-w-6xl px-4 py-6">
-      <header className="mb-4 flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
-        <h1 className="font-display text-3xl font-bold text-gold sm:text-4xl">{state.title}</h1>
-        <a
-          href={wikiPageUrl(state.title)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-muted transition hover:text-accent"
-        >
-          Ver na wiki original ↗
-        </a>
+      <header className="mb-4 border-b border-line pb-3">
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div className="min-w-0">
+            <h1 className="font-display text-3xl font-bold text-gold sm:text-4xl">{state.title}</h1>
+            {articleRef?.pt && <p className="mt-0.5 text-muted">{articleRef.pt}</p>}
+          </div>
+          <a
+            href={wikiPageUrl(state.title)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-muted transition hover:text-accent"
+          >
+            Ver na wiki original ↗
+          </a>
+        </div>
+        {articleRef && (
+          <div className="mt-3">
+            <ArticleActions article={articleRef} />
+          </div>
+        )}
       </header>
 
       <div className="wiki-content" onClick={onContentClick} dangerouslySetInnerHTML={{ __html: state.html }} />

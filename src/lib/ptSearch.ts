@@ -165,6 +165,15 @@ export async function searchDictionary(query: string, limit = 8): Promise<DictMa
     .map(({ fuzzy: _, ...match }) => match)
 }
 
+/** Nome em português de uma página da wiki ("Moon Lord" → "Senhor da Lua"), se existir. */
+export async function ptNameForPage(page: string): Promise<string | undefined> {
+  const key = page.toLowerCase()
+  const entries = (await loadDictionary()).filter((e) => e.page.toLowerCase() === key)
+  // Prefere o nome oficial (inglês igual ao título) em vez de apelidos
+  const best = entries.find((e) => e.en.toLowerCase() === key) ?? entries[0]
+  return best && normalize(best.pt) !== normalize(best.en) ? best.pt : undefined
+}
+
 /** "Lua de Sangue (Blood Moon)" — ou só um nome, quando os dois são iguais. */
 export function displayName(match: { pt: string; en: string }) {
   const en = match.en.replace(/ \(disambiguation\)$/, ', desambiguação')
