@@ -26,8 +26,10 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Fase 3A (feita)**: organização salva no aparelho (localStorage): favoritos, grupos com nome
   (ex.: "Preparar Moon Lord") e lista "Buscar depois" com checkbox "já vi". Acesso pela barra
   de navegação (rodapé no celular, topo no PC). Cada item mostra sprite + nome PT e EN.
+- **Fase 3B (feita)**: login com e-mail e senha (Supabase, plano grátis) e biblioteca sincronizada
+  entre aparelhos. Sem login tudo continua funcionando só no aparelho. No primeiro login o app
+  oferece importar o que já estava salvo no aparelho. Tela de conta em `/conta`.
 - **Futuro**:
-  - Fase 3B: login (provedor gratuito, ex.: Supabase) e sincronizar a biblioteca entre aparelhos
   - Árvores de crafting interativas
   - Páginas reorganizadas por IA (sem custo — ex.: processadas offline / modelos gratuitos)
 
@@ -36,7 +38,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - Vite + React + TypeScript
 - Tailwind CSS v4 (plugin `@tailwindcss/vite`)
 - `vite-plugin-pwa` (manifest + service worker)
-- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`)
+- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`)
 
 ## Estrutura
 
@@ -46,13 +48,18 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/data/dictionary.json` — dicionário gerado (formato compacto `[pt, en, tipo, página?]`). Não editar à mão.
 - `scripts/` — geração do dicionário (veja abaixo)
 - `src/lib/library.ts` — favoritos, grupos e "buscar depois" (veja "Biblioteca" abaixo)
+- `src/lib/supabase.ts` — cliente do Supabase (lê o `.env`; sem `.env` vira `null` e o app fica só local)
+- `src/lib/auth.ts` — login: `useAuth()`, `auth.signIn/signUp/signOut`, `onUserChange`
+- `src/lib/librarySync.ts` — lê a biblioteca das tabelas e envia só as diferenças
+- `supabase/schema.sql` — tabelas e regras de RLS (registro do que foi aplicado no projeto)
 - `src/lib/articleRef.ts` — monta o item salvo de um artigo (nome PT do dicionário + sprite da infobox)
 - `src/components/SearchBar.tsx` — busca com sugestões
 - `src/components/NavBar.tsx` — navegação (`TopNav` no PC, `BottomNav` fixa no rodapé do celular)
 - `src/components/ArticleActions.tsx`, `GroupPicker.tsx` — botões Favoritar / Ver depois / Grupo do artigo
 - `src/components/SavedArticleRow.tsx` — linha de lista com sprite + nome PT + nome EN
 - `src/pages/HomePage.tsx`, `src/pages/ArticlePage.tsx`
-- `src/pages/FavoritesPage.tsx`, `ReadLaterPage.tsx`, `GroupsPage.tsx`, `GroupPage.tsx`
+- `src/pages/FavoritesPage.tsx`, `ReadLaterPage.tsx`, `GroupsPage.tsx`, `GroupPage.tsx`, `AccountPage.tsx`
+- `src/components/ImportPrompt.tsx` — aviso de importar no primeiro login
 - `src/index.css` — tema escuro e estilos do conteúdo da wiki (`.wiki-content`)
 
 ## Comandos
@@ -76,9 +83,24 @@ Para adicionar um apelido ou evento, edite `scripts/manual-names.json` e regener
 
 ## Biblioteca (favoritos, grupos, buscar depois)
 
-Tudo fica em `src/lib/library.ts`, salvo no localStorage na chave `terrapedia:library`.
-As telas só usam `useLibrary()` (ler) e `library.*` (mudar). Toda mudança passa por `commit()`,
-que grava pelo `LibraryBackend`. Para sincronizar com o Supabase (Fase 3B), troque o backend
-ou envie a mudança dentro de `commit()` — as telas não precisam mudar. O formato já mapeia para
-tabelas: `favorites`, `read_later`, `groups`, `group_items` (comentário no topo do arquivo).
+Tudo passa por `src/lib/library.ts`. As telas só usam `useLibrary()` (ler), `useSyncStatus()`
+(situação da conta) e `library.*` (mudar). Toda mudança passa por `commit()`.
+
+- **Sem login**: salvo no localStorage na chave `terrapedia:library` (como na Fase 3A).
+- **Com login**: dados nas tabelas `favorites`, `read_later`, `groups`, `group_items` do Supabase,
+  com RLS (cada pessoa só vê as próprias linhas). Uma cópia fica em `terrapedia:cloud:<id>`
+  junto com `synced` (último estado confirmado pelo servidor). `commit()` chama `work()`, que
+  envia a diferença entre `synced` e os dados atuais (`pushChanges`); sem internet, tenta de novo
+  quando a conexão volta ou o app volta pra tela. Ao voltar pra tela também relê do servidor.
+- **Importar**: no primeiro login de cada conta em cada aparelho (`terrapedia:import-asked:<id>`),
+  se há algo salvo no aparelho, `ImportPrompt` oferece juntar (sem repetir; grupos com o mesmo nome
+  se juntam). Os dados do aparelho não são apagados.
+
 Cada artigo salvo guarda `page` (título EN da wiki, é o id), `en`, `pt` e `sprite`.
+
+## Supabase
+
+Projeto "terrapedia" (região São Paulo). Login por e-mail e senha, sem confirmação de e-mail.
+O `.env` (fora do GitHub) tem `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` — veja
+`.env.example`. A chave pública pode ir pro navegador; quem protege os dados é o RLS. Nunca use a
+chave secreta/service_role no app. Ao publicar o site, cadastre essas duas variáveis na hospedagem.

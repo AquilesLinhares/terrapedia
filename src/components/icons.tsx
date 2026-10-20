@@ -74,3 +74,16 @@ export const ChevronLeftIcon = (props: IconProps) => (
     <path d="m15 5-7 7 7 7" />
   </Icon>
 )
+
+export const UserIcon = ({ filled, ...props }: IconProps & { filled?: boolean }) => (
+  <Icon {...props} filled={filled}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 21a8 8 0 0 1 16 0z" />
+  </Icon>
+)
+
+export const CloudIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="M7 18a4 4 0 0 1-.6-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z" />
+  </Icon>
+)

@@ -1,15 +1,17 @@
 // "Biblioteca" do usuário: favoritos, grupos e a lista "buscar depois".
 //
-// Por enquanto tudo fica salvo só neste aparelho (localStorage). O formato foi pensado para
-// virar tabelas no Supabase depois, sem mudar as telas:
-//   favorites   (page, en, pt, sprite, added_at)
-//   read_later  (page, en, pt, sprite, added_at, seen)
-//   groups      (id, name, created_at)
-//   group_items (group_id, page, en, pt, sprite, added_at)
-// Todas as mudanças passam por `library.*` → `commit()`. Para sincronizar, basta trocar o
-// `LibraryBackend` (ou mandar cada mudança para o Supabase dentro de `commit`).
+// Dois modos, e as telas não sabem a diferença (leem com `useLibrary()`, mudam com `library.*`):
+//   - sem login: tudo fica só neste aparelho (localStorage, chave `terrapedia:library`);
+//   - com login: os dados são da conta no Supabase (tabelas favorites, read_later, groups e
+//     group_items — veja supabase/schema.sql). Uma cópia fica no aparelho para abrir rápido e
+//     funcionar sem internet.
+// Toda mudança passa por `commit()`. Logado, ele chama `work()`, que envia ao Supabase só o que
+// mudou desde o último estado que o servidor confirmou (`synced`). Se falhar (sem internet), as
+// mudanças ficam guardadas e vão quando a conexão voltar ou o app for reaberto.
 
 import { useSyncExternalStore } from 'react'
+import { onUserChange } from './auth'
+import { fetchLibrary, pushChanges } from './librarySync'
 
 /** O mínimo que precisamos saber de um artigo para mostrá-lo numa lista. */
 export interface ArticleRef {
@@ -46,53 +48,167 @@ export interface LibraryData {
 
 const EMPTY: LibraryData = { version: 1, favorites: [], readLater: [], groups: [] }
 
-/** Onde os dados ficam guardados. Hoje: localStorage. Amanhã: Supabase. */
-export interface LibraryBackend {
-  load(): LibraryData
-  save(data: LibraryData): void
-  /** Avisa quando os dados mudaram por fora (ex.: outra aba aberta) */
-  onExternalChange?(callback: () => void): void
+export interface SyncStatus {
+  /** local = sem login · loading = lendo a conta · syncing = enviando · synced = tudo salvo · offline = falhou, tenta depois */
+  state: 'local' | 'loading' | 'syncing' | 'synced' | 'offline'
+  /** O que há neste aparelho para importar na conta (aparece só no primeiro login) */
+  importOffer: { favorites: number; readLater: number; groups: number } | null
 }
 
-const STORAGE_KEY = 'terrapedia:library'
-
-const localBackend: LibraryBackend = {
-  load() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (!raw) return EMPTY
-      return { ...EMPTY, ...(JSON.parse(raw) as Partial<LibraryData>), version: 1 }
-    } catch {
-      return EMPTY // navegador sem localStorage (modo privado) ou dado corrompido
-    }
-  },
-  save(data) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-    } catch {
-      // sem espaço ou bloqueado: a mudança vale até fechar a página
-    }
-  },
-  onExternalChange(callback) {
-    window.addEventListener('storage', (e) => {
-      if (e.key === STORAGE_KEY) callback()
-    })
-  },
+/** Cópia da conta guardada no aparelho: os dados atuais e o último estado confirmado pelo servidor. */
+interface CloudCache {
+  data: LibraryData
+  synced: LibraryData
 }
 
-const backend: LibraryBackend = localBackend
-let data = backend.load()
+const LOCAL_KEY = 'terrapedia:library'
+const cloudKey = (userId: string) => `terrapedia:cloud:${userId}`
+const importAskedKey = (userId: string) => `terrapedia:import-asked:${userId}`
+
+function read<T>(key: string): T | null {
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? (JSON.parse(raw) as T) : null
+  } catch {
+    return null // navegador sem localStorage (modo privado) ou dado corrompido
+  }
+}
+
+function write(key: string, value: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    // sem espaço ou bloqueado: a mudança vale até fechar a página
+  }
+}
+
+const loadLocal = (): LibraryData => ({ ...EMPTY, ...read<Partial<LibraryData>>(LOCAL_KEY), version: 1 })
+
+let userId: string | null = null
+let data = loadLocal()
+/** Logado: o último estado que o servidor confirmou. A diferença para `data` é o que falta enviar. */
+let synced = EMPTY
+let status: SyncStatus = { state: 'local', importOffer: null }
+/** Muda a cada login/logout, para ignorar respostas que chegaram atrasadas da conta anterior. */
+let generation = 0
 const listeners = new Set<() => void>()
+
+const emit = () => listeners.forEach((listener) => listener())
+const saveCloudCache = () => userId && write(cloudKey(userId), { data, synced } satisfies CloudCache)
+
+function setStatus(patch: Partial<SyncStatus>) {
+  status = { ...status, ...patch }
+  emit()
+}
 
 function commit(next: LibraryData) {
   data = next
-  backend.save(data)
-  listeners.forEach((listener) => listener())
+  if (userId) {
+    saveCloudCache()
+    void work()
+  } else {
+    write(LOCAL_KEY, data)
+  }
+  emit()
 }
 
-backend.onExternalChange?.(() => {
-  data = backend.load()
-  listeners.forEach((listener) => listener())
+let running: number | null = null
+let fetchPending = false
+
+/**
+ * Envia as mudanças pendentes e, se `fetchPending`, lê a versão do servidor.
+ * Só roda uma vez por vez: chamadas no meio do caminho são percebidas pelo laço.
+ */
+async function work() {
+  const gen = generation
+  const uid = userId
+  if (!uid || running === gen) return
+  running = gen
+  try {
+    while (gen === generation) {
+      if (data !== synced) {
+        const target = data
+        if (status.state !== 'loading') setStatus({ state: 'syncing' })
+        await pushChanges(uid, synced, target)
+        if (gen !== generation) return
+        synced = target
+        saveCloudCache()
+      } else if (fetchPending) {
+        fetchPending = false
+        const server = await fetchLibrary()
+        if (gen !== generation) return
+        if (data === synced) {
+          data = synced = server
+          saveCloudCache()
+          emit()
+          checkImportOffer()
+        } else {
+          fetchPending = true // mudou algo enquanto lia: envia primeiro e lê de novo
+        }
+      } else {
+        break
+      }
+    }
+    setStatus({ state: 'synced' })
+  } catch (error) {
+    if (gen === generation) setStatus({ state: 'offline' })
+    console.warn('Terrapedia: falha ao sincronizar a biblioteca', error)
+  } finally {
+    if (running === gen) running = null
+  }
+}
+
+/** Busca de novo no servidor (ex.: mudanças feitas em outro aparelho). */
+function refetch() {
+  if (!userId) return
+  fetchPending = true
+  void work()
+}
+
+function checkImportOffer() {
+  if (!userId || read(importAskedKey(userId))) return
+  const local = loadLocal()
+  const offer = { favorites: local.favorites.length, readLater: local.readLater.length, groups: local.groups.length }
+  if (offer.favorites + offer.readLater + offer.groups > 0) setStatus({ importOffer: offer })
+}
+
+onUserChange((user) => {
+  generation++
+  userId = user?.id ?? null
+  fetchPending = false
+  if (userId) {
+    const cache = read<CloudCache>(cloudKey(userId))
+    data = cache?.data ?? EMPTY
+    synced = cache?.synced ?? EMPTY
+    status = { state: 'loading', importOffer: null }
+    refetch()
+  } else {
+    // Ao sair, volta a mostrar o que está salvo só no aparelho. A cópia da conta fica guardada
+    // (com mudanças que ainda não foram enviadas) para o próximo login.
+    data = loadLocal()
+    synced = EMPTY
+    status = { state: 'local', importOffer: null }
+  }
+  emit()
+})
+
+window.addEventListener('storage', (e) => {
+  // Outra aba do app mudou os dados
+  if (!userId && e.key === LOCAL_KEY) {
+    data = loadLocal()
+    emit()
+  } else if (userId && e.key === cloudKey(userId)) {
+    const cache = read<CloudCache>(e.key)
+    if (cache) {
+      data = cache.data
+      synced = cache.synced
+      emit()
+    }
+  }
+})
+window.addEventListener('online', refetch)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') refetch()
 })
 
 function subscribe(listener: () => void) {
@@ -105,11 +221,44 @@ export function useLibrary() {
   return useSyncExternalStore(subscribe, () => data)
 }
 
+/** Situação da sincronização com a conta (para a tela de conta e o aviso de importar). */
+export function useSyncStatus() {
+  return useSyncExternalStore(subscribe, () => status)
+}
+
 const now = () => new Date().toISOString()
 const samePage = (a: string, b: string) => a.toLowerCase() === b.toLowerCase()
 
+/** Id no formato UUID (o banco exige). `randomUUID` só existe em https/localhost. */
 function newId() {
-  return crypto.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
+  if (crypto.randomUUID) return crypto.randomUUID()
+  const b = crypto.getRandomValues(new Uint8Array(16))
+  b[6] = (b[6] & 0x0f) | 0x40
+  b[8] = (b[8] & 0x3f) | 0x80
+  const hex = [...b].map((x) => x.toString(16).padStart(2, '0')).join('')
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
+}
+
+/** Junta a biblioteca do aparelho na da conta, sem repetir artigos (grupos com o mesmo nome se juntam). */
+function merge(base: LibraryData, extra: LibraryData): LibraryData {
+  const addMissing = <T extends ArticleRef>(list: T[], more: T[]) => [
+    ...list,
+    ...more.filter((m) => !list.some((i) => samePage(i.page, m.page))),
+  ]
+  const sameName = (a: Group, b: Group) => a.name.trim().toLowerCase() === b.name.trim().toLowerCase()
+  const groups = [...base.groups]
+  for (const g of extra.groups) {
+    const i = groups.findIndex((b) => sameName(b, g))
+    // Grupo novo ganha id novo: o mesmo aparelho pode ser importado por duas contas
+    if (i === -1) groups.push({ ...g, id: newId() })
+    else groups[i] = { ...groups[i], items: addMissing(groups[i].items, g.items) }
+  }
+  return {
+    ...base,
+    favorites: addMissing(base.favorites, extra.favorites),
+    readLater: addMissing(base.readLater, extra.readLater),
+    groups,
+  }
 }
 
 /** Atualiza nome PT / sprite de um item salvo, se agora sabemos mais sobre ele. */
@@ -193,5 +342,20 @@ export const library = {
       groups: data.groups.map((g) => ({ ...g, items: g.items.map((i) => refresh(i, ref)) })),
     }
     if (JSON.stringify(next) !== JSON.stringify(data)) commit(next)
+  },
+
+  /** Primeiro login: copia para a conta o que estava salvo só neste aparelho. */
+  importLocal() {
+    if (!userId) return
+    write(importAskedKey(userId), true)
+    setStatus({ importOffer: null })
+    commit(merge(data, loadLocal()))
+  },
+
+  /** Primeiro login: não importar (e não perguntar de novo nesta conta, neste aparelho). */
+  dismissImport() {
+    if (!userId) return
+    write(importAskedKey(userId), true)
+    setStatus({ importOffer: null })
   },
 }

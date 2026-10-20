@@ -1,6 +1,7 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import SearchBar from './SearchBar'
 import { BottomNav, TopNav } from './NavBar'
+import ImportPrompt from './ImportPrompt'
 
 export default function Layout() {
   const isHome = useLocation().pathname === '/'
@@ -50,6 +51,7 @@ export default function Layout() {
       </footer>
 
       <BottomNav />
+      <ImportPrompt />
     </div>
   )
 }

@@ -1,19 +1,22 @@
 import { NavLink } from 'react-router-dom'
-import { useLibrary } from '../lib/library'
-import { ClockIcon, FolderIcon, HomeIcon, StarIcon } from './icons'
+import { useLibrary, useSyncStatus } from '../lib/library'
+import { ClockIcon, FolderIcon, HomeIcon, StarIcon, UserIcon } from './icons'
 
 function useNavItems() {
   const lib = useLibrary()
   const unseen = lib.readLater.filter((r) => !r.seen).length
+  const { state, importOffer } = useSyncStatus()
   return [
     { to: '/favoritos', label: 'Favoritos', short: 'Favoritos', icon: StarIcon, badge: 0 },
     { to: '/depois', label: 'Buscar depois', short: 'Depois', icon: ClockIcon, badge: unseen },
     { to: '/grupos', label: 'Grupos', short: 'Grupos', icon: FolderIcon, badge: 0 },
+    // Ponto no ícone: há algo para importar ou mudanças que ainda não foram enviadas
+    { to: '/conta', label: 'Conta', short: 'Conta', icon: UserIcon, badge: 0, dot: importOffer !== null || state === 'offline' },
   ]
 }
 
-function Badge({ count }: { count: number }) {
-  if (count === 0) return null
+function Badge({ count, dot }: { count: number; dot?: boolean }) {
+  if (count === 0) return dot ? <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-bg bg-gold" /> : null
   return (
     <span className="absolute -top-1 -right-2 min-w-4 rounded-full bg-gold px-1 text-center text-[10px] leading-4 font-bold text-bg">
       {count > 99 ? '99+' : count}
@@ -26,7 +29,7 @@ export function TopNav() {
   const items = useNavItems()
   return (
     <nav className="hidden shrink-0 items-center gap-1 sm:flex" aria-label="Minha biblioteca">
-      {items.map(({ to, label, icon: Icon, badge }) => (
+      {items.map(({ to, label, icon: Icon, badge, dot }) => (
         <NavLink
           key={to}
           to={to}
@@ -41,7 +44,7 @@ export function TopNav() {
             <>
               <span className="relative">
                 <Icon className="h-5 w-5" filled={isActive} />
-                <Badge count={badge} />
+                <Badge count={badge} dot={dot} />
               </span>
               <span className="hidden lg:inline">{label}</span>
             </>
@@ -60,8 +63,8 @@ export function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur sm:hidden"
       aria-label="Navegação"
     >
-      <div className="grid grid-cols-4">
-        {[{ to: '/', label: 'Início', short: 'Início', icon: HomeIcon, badge: 0 }, ...items].map(({ to, short, icon: Icon, badge }) => (
+      <div className="grid grid-cols-5">
+        {[{ to: '/', label: 'Início', short: 'Início', icon: HomeIcon, badge: 0 }, ...items].map(({ to, short, icon: Icon, badge, dot }) => (
           <NavLink
             key={to}
             to={to}
@@ -76,7 +79,7 @@ export function BottomNav() {
               <>
                 <span className="relative">
                   <Icon className="h-6 w-6" filled={isActive} />
-                  <Badge count={badge} />
+                  <Badge count={badge} dot={dot} />
                 </span>
                 {short}
               </>
