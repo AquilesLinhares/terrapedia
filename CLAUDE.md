@@ -218,8 +218,7 @@ Projeto "terrapedia" (região São Paulo). Login por e-mail e senha, sem confirm
 O `.env` (fora do GitHub) tem `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` — veja
 `.env.example`. A chave pública pode ir pro navegador; quem protege os dados é o RLS. Nunca use a
 chave secreta/service_role no app. As duas variáveis também estão cadastradas na Vercel (veja "Publicação").
-A tabela `page_translations` (cache das traduções automáticas) não é mais usada pelo app; o SQL para apagá-la
-está no fim de `supabase/schema.sql`. Tudo o que foi aplicado no banco está registrado nesse arquivo.
+A tabela `page_translations` (cache das traduções automáticas) foi apagada do Supabase em 2026-10-21. Tudo o que foi aplicado no banco está registrado nesse arquivo.
 Em Authentication → URL Configuration, a Site URL é o endereço publicado.
 
 ## Publicação

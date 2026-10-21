@@ -107,54 +107,5 @@ create policy "apagar os próprios" on public.group_links for delete to authenti
 revoke all on public.group_links from anon;
 grant select, insert, update, delete on public.group_links to authenticated;
 
--- ===== Cache compartilhado das traduções (aplicado em 2026-10-21, migração "page_translations") =====
--- Cada linha = um artigo; `segments` = { hash do trecho em inglês: tradução em português }.
--- Todo mundo lê (inclusive sem login); só quem tem conta grava; ninguém apaga.
-
-create table public.page_translations (
-  page text not null check (char_length(page) between 1 and 255),
-  lang text not null default 'pt' check (lang = 'pt'),
-  segments jsonb not null default '{}'::jsonb
-    check (jsonb_typeof(segments) = 'object' and pg_column_size(segments) < 2000000),
-  updated_at timestamptz not null default now(),
-  updated_by uuid default auth.uid() references auth.users (id) on delete set null,
-  primary key (page, lang)
-);
-
-create index page_translations_updated_by_idx on public.page_translations (updated_by);
-
-alter table public.page_translations enable row level security;
-
-create policy "page_translations: todos leem" on public.page_translations
-  for select to anon, authenticated using (true);
-create policy "page_translations: logados criam" on public.page_translations
-  for insert to authenticated with check (updated_by = (select auth.uid()));
-create policy "page_translations: logados atualizam" on public.page_translations
-  for update to authenticated using (true) with check (updated_by = (select auth.uid()));
-
-grant select on public.page_translations to anon, authenticated;
-grant insert, update on public.page_translations to authenticated;
-
--- Junta trechos novos aos existentes. security invoker: as regras acima continuam valendo.
-create function public.merge_page_translation(p_page text, p_segments jsonb)
-returns void
-language sql
-security invoker
-set search_path = ''
-as $$
-  insert into public.page_translations (page, lang, segments, updated_at, updated_by)
-  values (p_page, 'pt', p_segments, now(), (select auth.uid()))
-  on conflict (page, lang) do update
-    set segments = public.page_translations.segments || excluded.segments,
-        updated_at = now(),
-        updated_by = (select auth.uid());
-$$;
-
-revoke execute on function public.merge_page_translation(text, jsonb) from public, anon;
-grant execute on function public.merge_page_translation(text, jsonb) to authenticated;
-
--- ===== Remoção do cache das traduções (2026-10-21): o app não usa mais a tabela acima =====
--- AINDA NÃO APLICADO. Rodar no SQL Editor do Supabase; depois disso, apagar a seção "Cache compartilhado" acima.
---
--- drop function if exists public.merge_page_translation(text, jsonb);
--- drop table if exists public.page_translations;
+-- ===== Cache das traduções automáticas: a tabela page_translations e a função merge_page_translation
+-- existiram de 2026-10-21 até serem apagadas no mesmo dia (o app não usa mais tradução automática). =====
