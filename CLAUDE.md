@@ -12,10 +12,14 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 
 - **Custo zero**: nada de APIs pagas. Hospedagem gratuita (ex.: GitHub Pages, Netlify, Vercel, Cloudflare Pages).
 - **Conteúdo vem da wiki**: usamos a API pública do MediaWiki em `https://terraria.wiki.gg/api.php`
-  (sempre com `origin=*` para liberar CORS no navegador). Não copiamos o conteúdo para o repositório.
+  (sempre com `origin=*` para liberar CORS no navegador). Não copiamos o conteúdo para o repositório
+  — a exceção são os resumos da Fase 5 (`src/data/guides/`), escritos com nossas palavras em português,
+  que são uma adaptação sob a mesma licença.
 - **Licença CC BY-NC-SA**: o conteúdo da wiki é CC BY-NC-SA 3.0. Toda página de artigo **sempre**
   mostra crédito à Terraria Wiki e um link para a página original. Projeto sem fins comerciais.
 - **Mobile primeiro**: tudo precisa ficar bom numa tela de celular.
+- **Tudo em português**: interface, nomes do jogo (nome oficial PT do dicionário) e, quando possível,
+  o texto dos artigos (tradução automática). O original em inglês fica sempre a um clique (botão PT / EN).
 
 ## Roadmap
 
@@ -34,8 +38,13 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
   automática em `/arvore/<Item>` (expandir/recolher, quantidade, escolha de receita e de item de grupo,
   materiais totais, bancadas e ordem de crafting) e árvore montada à mão nos grupos (ligações
   "uso X para craftar Y", salvas no Supabase em `group_links`).
-- **Futuro**:
-  - Páginas reorganizadas por IA (sem custo — ex.: processadas offline / modelos gratuitos)
+- **Fase 5 (piloto aprovado, próximas páginas a seguir)**: páginas reorganizadas por IA (escritas pelo
+  Claude Code, sem API paga) num formato fixo por tipo, com etiquetas de busca por descrição. Piloto:
+  Blood Moon, Eye of Cthulhu e Extractinator.
+- **Artigos em português (feito, entre a Fase 5 e as próximas páginas)**: nomes do jogo e rótulos da wiki
+  trocados pelo PT, texto corrido traduzido pela Translator API do Chrome (no aparelho, grátis) com
+  cache compartilhado no Supabase, botão PT / EN e aviso quando a tradução não está disponível.
+  Veja "Artigos em português" abaixo.
 
 ## Stack
 
@@ -58,6 +67,12 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/components/GroupLinkPicker.tsx` — ligar itens dentro de um grupo ("uso X para craftar Y")
 - `src/pages/CraftingTreePage.tsx` — página da árvore (`/arvore/<Item>`)
 - `src/lib/library.ts` — favoritos, grupos e "buscar depois" (veja "Biblioteca" abaixo)
+- `src/lib/localize.ts` — põe o artigo em português: rótulos, nomes do jogo e trechos para traduzir (`localizeArticle`, `loadGameNames`)
+- `src/lib/wikiLabels.ts` — dicionário fixo dos rótulos da wiki (Damage → Dano, Notes → Notas...)
+- `src/lib/translator.ts` — Translator API do Chrome (disponibilidade, download do modelo, tradução com marcadores)
+- `src/lib/translationCache.ts` — cache compartilhado das traduções (tabela `page_translations`)
+- `src/lib/useArticleTranslation.ts` — junta tudo no artigo: cache, tradução aos poucos, andamento
+- `src/lib/articleLang.ts` — preferência PT / EN dos artigos (salva no aparelho)
 - `src/lib/supabase.ts` — cliente do Supabase (lê o `.env`; sem `.env` vira `null` e o app fica só local)
 - `src/lib/auth.ts` — login: `useAuth()`, `auth.signIn/signUp/signOut`, `onUserChange`
 - `src/lib/librarySync.ts` — lê a biblioteca das tabelas e envia só as diferenças
@@ -70,6 +85,10 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/pages/HomePage.tsx`, `src/pages/ArticlePage.tsx`
 - `src/pages/FavoritesPage.tsx`, `ReadLaterPage.tsx`, `GroupsPage.tsx`, `GroupPage.tsx`, `AccountPage.tsx`
 - `src/components/ImportPrompt.tsx` — aviso de importar no primeiro login
+- `src/data/guides/*.json` — páginas reorganizadas (uma por artigo; veja "Páginas reorganizadas" abaixo)
+- `src/data/guide-index.json` — etiquetas de busca, gerado por `scripts/build-guides.mjs`. Não editar à mão.
+- `src/lib/guides.ts` — formato das páginas reorganizadas, `hasGuide`/`loadGuide` e busca por etiquetas (`searchGuides`)
+- `src/components/GuideView.tsx` — desenha a página reorganizada (texto com `[[Item]]`, listas de itens, receitas)
 - `src/index.css` — tema escuro e estilos do conteúdo da wiki (`.wiki-content`)
 
 ## Comandos
@@ -77,6 +96,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `npm run dev` — servidor de desenvolvimento
 - `npm run build` — build de produção (checa tipos)
 - `npm run preview` — testa o build
+- `node scripts/build-guides.mjs` — confere as páginas reorganizadas e gera o índice de etiquetas
 
 ## Dicionário PT-BR ↔ EN
 
@@ -109,6 +129,62 @@ uma atualização do Terraria.
   básico. Escolhas (receita, item do grupo, "não craftar") valem para a árvore toda e ficam em
   `terrapedia:craft-choices` no aparelho. Os totais somam itens repetidos antes de arredondar.
 
+## Páginas reorganizadas (Fase 5)
+
+Resumos em português escritos a partir do artigo da wiki (lido pela API: `action=parse&prop=wikitext`),
+com nossas palavras — nunca copiar trechos longos nem textos do jogo além de mensagens curtas como
+"The Blood Moon is rising...". Um arquivo por artigo em `src/data/guides/`, com o nome do título
+(`Eye_of_Cthulhu.json`). O formato fixo está em `src/lib/guides.ts`:
+
+- **Todos**: `page` (título EN), `type`, `tags`, `summary`, `facts` (ficha rápida), `tips`, `source` (`revid` e data da revisão lida)
+- **evento**: `natural` (quando acontece sozinho), `summon`, `effects`, `enemies`, `drops`
+- **chefe**: `summon`, `where`, `prep`, `phases` (`{ name, text[] }`), `drops`
+- **item**: `what`, `obtain`, `crafting`, `usedIn` — as receitas e o "Usado em" vêm sozinhos do `recipes.json`;
+  essas seções só levam observações extras
+
+Cada seção é `{ text?, groups?, recipesOf? }`. Textos aceitam `[[Iron Bar]]` (item clicável com nome PT + EN e sprite),
+`[[Iron Bar|texto]]` e `**negrito**`. Itens sempre pelo nome **em inglês** (o PT vem do dicionário).
+`groups` são listas de itens (`"Nome"` ou `{ name, qty?, note? }`) com um título opcional; `recipesOf` mostra a
+receita de um item (ex.: o item que invoca o chefe).
+
+**Etiquetas** (`tags`): 15–25 palavras/expressões que alguém usaria sem saber o nome (Extractinator → limo, lodo,
+peneira, minério, transformar). A busca soma um ponto por palavra digitada que bate com uma etiqueta (tolerando erro
+de digitação) e mais um por etiqueta de várias palavras escrita inteira; resultados com menos da metade dos pontos do
+melhor somem. Aparecem nas sugestões com "pela descrição: ..." e na página "não encontrada".
+
+**Na tela**: se o artigo tem resumo, ele aparece no lugar da página da wiki, com o botão "Ver página completa da wiki"
+(`?completa=1`). Links com `#Seção` da wiki também abrem a página completa. O crédito no rodapé aponta a revisão usada.
+
+Depois de criar ou editar uma página, rode `node scripts/build-guides.mjs`: ele confere o formato, avisa sobre nomes
+de itens que não existem no dicionário/receitas e regenera o `guide-index.json`.
+
+## Artigos em português
+
+Os artigos completos da wiki aparecem em português por padrão (botão **PT / EN** no topo; a escolha fica em
+`terrapedia:article-lang`). `useArticleTranslation` chama `localizeArticle` sobre o HTML já limpo:
+
+1. **Rótulos** (fichas, cabeçalhos de tabela, títulos de seção, "(Forte)", moedas): `WIKI_LABELS` em
+   `src/lib/wikiLabels.ts`. Funcionam sempre. Rótulo novo = uma linha nesse arquivo.
+2. **Nomes do jogo**: texto dos links, itens das tabelas e título da ficha viram o nome PT (`loadGameNames`).
+   Ordem de preferência: `NAME_OVERRIDES` (em `localize.ts`, ex.: "Shimmer" fica em inglês) →
+   `scripts/manual-names.json` → tipo do dicionário (item, npc, chefe, evento, bioma, guia, página, buff).
+   Apelidos e nomes iguais ao inglês não contam. Nas tabelas e na ficha o nome EN aparece pequeno
+   (`.en-name`); no texto, ao passar o mouse (`title`). Nomes no meio do texto (com maiúscula, como a wiki
+   escreve) também viram PT (`.game-name`).
+3. **Texto corrido**: cada parágrafo/item/célula vira um "trecho" em texto simples, com marcadores `[0]`, `[1]`...
+   no lugar de links, imagens e nomes do jogo (assim o tradutor não mexe neles). A chave do trecho é um
+   hash do texto em inglês. A tradução só é usada se devolver todos os marcadores; ela entra como **texto
+   puro** (nunca como HTML), então um valor estranho no cache não consegue injetar nada.
+
+Fluxo da tradução: lê o cache (`page_translations`, todo mundo lê, inclusive sem login) → se faltar algo e o
+navegador tiver a Translator API (Chrome para computador), traduz de cima para baixo, atualizando a tela a
+cada ~1 s → salva no cache (só com login, pela função `merge_page_translation`). Se o Chrome precisar baixar
+o modelo, aparece o botão "Baixar tradutor" (o Chrome exige um clique). Sem API e sem cache, o texto fica
+em inglês com um aviso discreto — os nomes e rótulos continuam em PT. A API às vezes existe mas não
+responde (ex.: navegador embutido de outros apps): depois de 4 s ela é tratada como indisponível.
+
+Páginas reorganizadas (Fase 5) não passam por isso: já são escritas em português; a "página completa" delas sim.
+
 ## Biblioteca (favoritos, grupos, buscar depois)
 
 Tudo passa por `src/lib/library.ts`. As telas só usam `useLibrary()` (ler), `useSyncStatus()`
@@ -133,3 +209,5 @@ Projeto "terrapedia" (região São Paulo). Login por e-mail e senha, sem confirm
 O `.env` (fora do GitHub) tem `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` — veja
 `.env.example`. A chave pública pode ir pro navegador; quem protege os dados é o RLS. Nunca use a
 chave secreta/service_role no app. Ao publicar o site, cadastre essas duas variáveis na hospedagem.
+Além da biblioteca, a tabela `page_translations` guarda o cache compartilhado das traduções (leitura pública,
+gravação só com login, sem apagar). Tudo o que foi aplicado no banco está registrado em `supabase/schema.sql`.

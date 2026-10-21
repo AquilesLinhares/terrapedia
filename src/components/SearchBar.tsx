@@ -1,7 +1,9 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { fetchSuggestions, WIKI_BASE } from '../lib/wikiApi'
-import { displayName, loadDictionary, searchDictionary } from '../lib/ptSearch'
+import { displayName, loadDictionary, normalize, searchDictionary, STOPWORDS } from '../lib/ptSearch'
+import { searchGuides } from '../lib/guides'
+import { loadGameNames } from '../lib/localize'
 
 /** Caminho no app para uma página da wiki. Aceita "Título#Seção". */
 export function articlePath(page: string) {
@@ -19,7 +21,12 @@ interface Suggestion {
   label: string
   type?: string
   thumbnail?: string
+  /** Por que apareceu (busca por descrição: as etiquetas que bateram) */
+  hint?: string
 }
+
+const thumbnailFor = (type: string, en: string) =>
+  SPRITE_TYPES.has(type) ? `${WIKI_BASE}/images/${encodeURIComponent(en.replace(/ /g, '_'))}.png` : undefined
 
 interface Props {
   autoFocus?: boolean
@@ -31,6 +38,7 @@ export default function SearchBar({ autoFocus, large }: Props) {
   const listId = useId()
   const [query, setQuery] = useState('')
   const [local, setLocal] = useState<Suggestion[]>([])
+  const [byTags, setByTags] = useState<{ list: Suggestion[]; complete: boolean }>({ list: [], complete: false })
   const [remote, setRemote] = useState<Suggestion[]>([])
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(-1)
@@ -47,12 +55,24 @@ export default function SearchBar({ autoFocus, large }: Props) {
           page: m.page,
           label: displayName(m),
           type: m.type,
-          thumbnail: SPRITE_TYPES.has(m.type)
-            ? `${WIKI_BASE}/images/${encodeURIComponent(m.en.replace(/ /g, '_'))}.png`
-            : undefined,
+          thumbnail: thumbnailFor(m.type, m.en),
         })),
       )
       setActive(-1)
+    })
+    // Busca por descrição nas etiquetas das páginas reorganizadas ("peneira de limo" → Extrator)
+    searchGuides(query, 3).then((matches) => {
+      if (cancelled) return
+      setByTags({
+        list: matches.map((g) => ({
+          page: g.page,
+          label: displayName({ pt: g.pt ?? g.page, en: g.page }),
+          type: g.type,
+          thumbnail: thumbnailFor(g.type, g.page),
+          hint: `pela descrição: ${g.matched.slice(0, 3).join(', ')}`,
+        })),
+        complete: matches[0]?.complete === true,
+      })
     })
     return () => {
       cancelled = true
@@ -68,8 +88,15 @@ export default function SearchBar({ autoFocus, large }: Props) {
     const timer = setTimeout(async () => {
       setLoading(true)
       try {
-        const results = await fetchSuggestions(q, controller.signal)
-        setRemote(results.map((s) => ({ page: s.title, label: s.title, thumbnail: s.thumbnail })))
+        const [results, names] = await Promise.all([fetchSuggestions(q, controller.signal), loadGameNames()])
+        // Títulos da wiki com o nome oficial em português, quando existe
+        setRemote(
+          results.map((s) => ({
+            page: s.title,
+            label: displayName({ pt: names.lower.get(s.title.toLowerCase()) ?? s.title, en: s.title }),
+            thumbnail: s.thumbnail,
+          })),
+        )
       } catch {
         // pedido cancelado ou sem internet: o dicionário local continua funcionando
       } finally {
@@ -82,9 +109,19 @@ export default function SearchBar({ autoFocus, large }: Props) {
     }
   }, [query])
 
-  // Junta os dois, sem repetir páginas: dicionário primeiro, wiki depois.
+  // Junta tudo, sem repetir páginas: dicionário e descrição primeiro, wiki depois.
   const localPages = new Set(local.map((s) => s.page.split('#')[0].toLowerCase()))
-  const suggestions = [...local, ...remote.filter((s) => !localPages.has(s.page.toLowerCase()))].slice(0, 8)
+  const tagged = byTags.list.filter((s) => !localPages.has(s.page.toLowerCase()))
+  const ownPages = new Set([...localPages, ...tagged.map((s) => s.page.toLowerCase())])
+  // A descrição vem antes dos nomes quando bateu inteira e a busca tem várias palavras,
+  // ou quando nenhum nome começa com a palavra digitada ("peneira" não é nome de nada)
+  const words = normalize(query).split(' ').filter((w) => w && !STOPWORDS.has(w))
+  const nameStartsWith = local.some((s) => normalize(s.label).split(' ').some((t) => t.startsWith(words[0] ?? '')))
+  const tagsFirst = byTags.complete && (words.length > 1 || !nameStartsWith)
+  const suggestions = [
+    ...(tagsFirst ? [...tagged, ...local] : [...local.slice(0, 8 - tagged.length), ...tagged]),
+    ...remote.filter((s) => !ownPages.has(s.page.toLowerCase())),
+  ].slice(0, 8)
 
   function go(page: string) {
     setOpen(false)
@@ -183,7 +220,10 @@ export default function SearchBar({ autoFocus, large }: Props) {
                     <span className="h-2 w-2 rounded-full bg-line" />
                   )}
                 </span>
-                <span className="min-w-0 flex-1 truncate">{s.label}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate">{s.label}</span>
+                  {s.hint && <span className="block truncate text-xs text-muted">{s.hint}</span>}
+                </span>
                 {s.type && s.type !== 'página' && (
                   <span className="shrink-0 rounded bg-bg/70 px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-muted uppercase">
                     {s.type}

@@ -1,6 +1,7 @@
 import { infoboxImage } from './cleanArticle'
 import type { ArticleRef } from './library'
 import { ptNameForPage } from './ptSearch'
+import { loadGameNames } from './localize'
 import { fetchPageImage } from './wikiApi'
 
 /**
@@ -9,7 +10,10 @@ import { fetchPageImage } from './wikiApi'
  */
 export async function fetchArticleRef(title: string, cleanHtml: string, signal?: AbortSignal): Promise<ArticleRef> {
   const [pt, sprite] = await Promise.all([
-    ptNameForPage(title).catch(() => undefined),
+    // Mesmo nome PT usado dentro do artigo (com os nomes principais escolhidos à mão)
+    loadGameNames()
+      .then((names) => names.lower.get(title.toLowerCase()) ?? ptNameForPage(title))
+      .catch(() => undefined),
     infoboxImage(cleanHtml) ?? fetchPageImage(title, signal).catch(() => undefined),
   ])
   return { page: title, en: title, pt, sprite }

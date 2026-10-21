@@ -273,3 +273,26 @@ input[type='search']::-webkit-search-cancel-button {
 .wiki-content .reflist {
   @apply text-sm text-muted;
 }
+
+/* ===== Artigo em português ===== */
+
+/* Nome em inglês pequeno ao lado do nome PT (tabelas e ficha) */
+.wiki-content .en-name {
+  @apply ml-1.5 font-sans text-xs font-normal text-muted;
+}
+.wiki-content .infobox .title .en-name {
+  @apply mt-0.5 ml-0 block;
+}
+/* Nome do jogo no meio do texto: o nome em inglês aparece ao passar o mouse */
+.wiki-content .game-name {
+  text-decoration: underline dotted;
+  text-decoration-color: color-mix(in srgb, var(--color-muted) 50%, transparent);
+  text-underline-offset: 3px;
+}
+/* Dentro de tabelas: nome EN e "Internal Item ID" em linhas próprias, pequenos */
+.wiki-content .i .en-name {
+  @apply ml-0 block;
+}
+.wiki-content .i .id {
+  @apply block text-xs text-muted;
+}
