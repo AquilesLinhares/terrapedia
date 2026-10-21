@@ -1,17 +1,22 @@
-import { StrictMode } from 'react'
+import { lazy, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import HomePage from './pages/HomePage'
 import ArticlePage from './pages/ArticlePage'
-import FavoritesPage from './pages/FavoritesPage'
-import ReadLaterPage from './pages/ReadLaterPage'
-import GroupsPage from './pages/GroupsPage'
-import GroupPage from './pages/GroupPage'
-import AccountPage from './pages/AccountPage'
-import CraftingTreePage from './pages/CraftingTreePage'
-import WorldPage from './pages/WorldPage'
+import { installLinkPrefetch } from './lib/articleLoader'
 import './index.css'
+
+// Telas menos usadas ficam em arquivos separados, baixados só quando abrem (a primeira tela carrega menos)
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'))
+const ReadLaterPage = lazy(() => import('./pages/ReadLaterPage'))
+const GroupsPage = lazy(() => import('./pages/GroupsPage'))
+const GroupPage = lazy(() => import('./pages/GroupPage'))
+const AccountPage = lazy(() => import('./pages/AccountPage'))
+const CraftingTreePage = lazy(() => import('./pages/CraftingTreePage'))
+const WorldPage = lazy(() => import('./pages/WorldPage'))
+
+installLinkPrefetch()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

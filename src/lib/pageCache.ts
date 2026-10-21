@@ -24,7 +24,7 @@ function openDb() {
 }
 
 // "Eye_of_cthulhu", "eye of Cthulhu"... viram a mesma chave
-const keyOf = (title: string) => title.replace(/_/g, ' ').trim().toLowerCase()
+export const pageKey = (title: string) => title.replace(/_/g, ' ').trim().toLowerCase()
 
 /** Salva o artigo com o título pedido e com o título real (quando foi um redirecionamento). */
 export async function savePage(requested: string, page: Omit<SavedPage, 'savedAt'>) {
@@ -32,7 +32,7 @@ export async function savePage(requested: string, page: Omit<SavedPage, 'savedAt
     const db = await openDb()
     const tx = db.transaction(STORE, 'readwrite')
     const value: SavedPage = { ...page, savedAt: Date.now() }
-    for (const key of new Set([keyOf(requested), keyOf(page.title)])) tx.objectStore(STORE).put(value, key)
+    for (const key of new Set([pageKey(requested), pageKey(page.title)])) tx.objectStore(STORE).put(value, key)
   } catch {
     // Sem IndexedDB (ex.: janela anônima de alguns navegadores): só não salva
   }
@@ -42,7 +42,7 @@ export async function loadPage(title: string): Promise<SavedPage | null> {
   try {
     const db = await openDb()
     return await new Promise((resolve) => {
-      const req = db.transaction(STORE).objectStore(STORE).get(keyOf(title))
+      const req = db.transaction(STORE).objectStore(STORE).get(pageKey(title))
       req.onsuccess = () => resolve(req.result ?? null)
       req.onerror = () => resolve(null)
     })

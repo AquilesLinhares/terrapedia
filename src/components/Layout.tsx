@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import SearchBar from './SearchBar'
 import { BottomNav, TopNav } from './NavBar'
@@ -33,7 +34,9 @@ export default function Layout() {
       <WorldBar />
 
       <main className="flex-1">
-        <Outlet />
+        <Suspense fallback={null}>
+          <Outlet />
+        </Suspense>
       </main>
 
       <footer className="border-t border-line px-4 py-6 text-center text-xs text-muted">

@@ -55,8 +55,14 @@ export function cleanArticle(rawHtml: string): string {
           .join(', '),
       )
     }
+    // Só baixa quando chega perto da tela; a largura/altura que a wiki manda reservam o espaço
     img.setAttribute('loading', 'lazy')
+    img.setAttribute('decoding', 'async')
   })
+  // A imagem da ficha aparece logo no topo: essa vem primeiro
+  const infoboxImg = root.querySelector('.infobox img')
+  infoboxImg?.setAttribute('loading', 'eager')
+  infoboxImg?.setAttribute('fetchpriority', 'high')
 
   // Tabelas largas ganham uma "moldura" que rola para o lado no celular.
   root.querySelectorAll('table').forEach((table) => {
@@ -90,7 +96,7 @@ export function cleanArticle(rawHtml: string): string {
     a.setAttribute('rel', 'noopener noreferrer')
   })
 
-  return DOMPurify.sanitize(root.innerHTML, { ADD_ATTR: ['target'] })
+  return DOMPurify.sanitize(root.innerHTML, { ADD_ATTR: ['target', 'loading', 'decoding', 'fetchpriority'] })
 }
 
 /** Nível de um título (h2 → 2), ou 0 se não é título. Entende o formato novo do MediaWiki (div.mw-heading). */

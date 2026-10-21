@@ -2,8 +2,9 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { cleanArticle } from '../lib/cleanArticle'
-import { fetchArticle, fetchSearch, PageNotFoundError, WikiUnavailableError, wikiPageUrl } from '../lib/wikiApi'
-import { loadPage, savePage } from '../lib/pageCache'
+import { fetchSearch, PageNotFoundError, WikiUnavailableError, wikiPageUrl } from '../lib/wikiApi'
+import { loadPage } from '../lib/pageCache'
+import { getArticle } from '../lib/articleLoader'
 import { displayName, searchDictionary } from '../lib/ptSearch'
 import { articlePath } from '../components/SearchBar'
 import ArticleActions from '../components/ArticleActions'
@@ -86,7 +87,8 @@ export default function ArticlePage() {
     if (!hash) window.scrollTo(0, 0)
   }, [showGuide])
 
-  // Carrega o artigo sempre que o título da URL muda.
+  // Carrega o artigo sempre que o título da URL muda. Se já existe uma cópia no aparelho, ela aparece
+  // na hora e a wiki é consultada em segundo plano; a versão nova só redesenha a página se mudou algo.
   useEffect(() => {
     const controller = new AbortController()
     setState({ status: 'loading' })
@@ -94,32 +96,40 @@ export default function ArticlePage() {
     window.scrollTo(0, 0)
     document.title = 'Terrapedia'
 
-    fetchArticle(title, controller.signal)
-      .then((article) => {
-        savePage(title, article)
-        return article
+    let shown: string | null = null // HTML cru que está na tela
+    let fresh = false // a resposta da wiki já chegou (a cópia do aparelho não vale mais)
+    function show(article: { title: string; html: string }, savedAt?: number) {
+      if (controller.signal.aborted) return
+      if (article.html === shown) {
+        if (savedAt) setState((s) => (s.status === 'ok' ? { ...s, savedAt } : s))
+        return
+      }
+      shown = article.html
+      const html = cleanArticle(article.html)
+      setState({ status: 'ok', title: article.title, html, savedAt })
+      document.title = `${article.title} · Terrapedia`
+      setArticleRef((ref) => (ref?.page === article.title ? ref : { page: article.title, en: article.title }))
+      fetchArticleRef(article.title, html, controller.signal).then((ref) => {
+        if (controller.signal.aborted) return
+        setArticleRef(ref)
+        library.refreshArticle(ref) // atualiza itens já salvos (ex.: sprite que faltava)
       })
-      .catch(async (err) => {
-        // Wiki fora do ar ou sem internet: usa a cópia salva no aparelho, se houver
-        if (!(err instanceof WikiUnavailableError)) throw err
-        const saved = await loadPage(title)
-        if (!saved) throw err
-        return saved
-      })
+    }
+
+    loadPage(title).then((saved) => saved && !fresh && show(saved))
+    getArticle(title)
       .then((article) => {
-        const html = cleanArticle(article.html)
-        const savedAt = 'savedAt' in article ? article.savedAt : undefined
-        setState({ status: 'ok', title: article.title, html, savedAt })
-        document.title = `${article.title} · Terrapedia`
-        setArticleRef({ page: article.title, en: article.title })
-        fetchArticleRef(article.title, html, controller.signal).then((ref) => {
-          if (controller.signal.aborted) return
-          setArticleRef(ref)
-          library.refreshArticle(ref) // atualiza itens já salvos (ex.: sprite que faltava)
-        })
+        fresh = true
+        show(article)
       })
       .catch(async (err) => {
         if (controller.signal.aborted) return
+        // Wiki fora do ar ou sem internet: usa a cópia salva no aparelho, avisando a data
+        if (err instanceof WikiUnavailableError) {
+          const saved = await loadPage(title)
+          if (saved) return show(saved, saved.savedAt)
+        }
+        if (shown !== null) return // a cópia do aparelho já está na tela
         if (err instanceof PageNotFoundError) {
           // Primeiro as páginas reorganizadas cujas etiquetas batem com a descrição ("peneira de limo"),
           // depois o dicionário PT ↔ EN (ex.: "Lua de Sangue") e por fim a busca no texto da wiki

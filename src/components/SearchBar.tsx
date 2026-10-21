@@ -4,6 +4,7 @@ import { fetchSuggestions, WIKI_BASE } from '../lib/wikiApi'
 import { displayName, loadDictionary, normalize, searchDictionary, STOPWORDS } from '../lib/ptSearch'
 import { searchGuides } from '../lib/guides'
 import { loadGameNames } from '../lib/localize'
+import { prefetchArticle } from '../lib/articleLoader'
 
 /** Caminho no app para uma página da wiki. Aceita "Título#Seção". */
 export function articlePath(page: string) {
@@ -123,6 +124,14 @@ export default function SearchBar({ autoFocus, large }: Props) {
     ...remote.filter((s) => !ownPages.has(s.page.toLowerCase())),
   ].slice(0, 8)
 
+  // A sugestão escolhida (setas ou mouse) já começa a baixar, para abrir mais rápido no Enter/clique
+  const activePage = suggestions[active]?.page
+  useEffect(() => {
+    if (!activePage) return
+    const timer = setTimeout(() => prefetchArticle(activePage), 150)
+    return () => clearTimeout(timer)
+  }, [activePage])
+
   function go(page: string) {
     setOpen(false)
     setQuery('')
@@ -174,7 +183,8 @@ export default function SearchBar({ autoFocus, large }: Props) {
           }}
           onFocus={() => {
             setOpen(true)
-            loadDictionary() // já começa a baixar o dicionário
+            // Já começa a baixar o dicionário, mas só quando o navegador estiver livre (não trava a primeira tela)
+            ;(window.requestIdleCallback ?? setTimeout)(() => loadDictionary())
           }}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           onKeyDown={onKeyDown}
