@@ -19,6 +19,8 @@ export default defineConfig({
         background_color: '#0f1420',
         display: 'standalone',
         start_url: '/',
+        // Abrir o app de novo (ex.: pelo atalho) traz a janela que já está aberta do lado do jogo, em vez de abrir outra
+        launch_handler: { client_mode: 'focus-existing' },
         icons: [
           { src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
           // PNGs para o Android: o "maskable" tem fundo cheio e o desenho menor, pra caber no formato do ícone do celular

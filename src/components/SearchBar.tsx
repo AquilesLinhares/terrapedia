@@ -195,7 +195,7 @@ export default function SearchBar({ autoFocus, large }: Props) {
   const showList = open && (showRecent ? suggestions.length > 0 : suggestions.length > 0 || !loading)
 
   return (
-    <form onSubmit={onSubmit} role="search" className="relative w-full">
+    <form onSubmit={onSubmit} role="search" className={`relative min-w-0 ${large ? 'w-full' : 'flex-1'}`}>
       <div
         className={`flex items-center gap-2 rounded-xl border border-line bg-panel/90 px-3 shadow-lg shadow-black/30 transition focus-within:border-accent ${
           large ? 'h-14' : 'h-11'
@@ -251,7 +251,7 @@ export default function SearchBar({ autoFocus, large }: Props) {
           </button>
         )}
         {!query && !listening && (
-          <kbd className="hidden shrink-0 rounded border border-line px-1.5 py-0.5 font-sans text-[11px] text-muted pointer-fine:inline" title="Atalho para abrir a busca">
+          <kbd className="hidden shrink-0 rounded border border-line px-1.5 py-0.5 font-sans text-[11px] text-muted sm:pointer-fine:inline" title="Atalho para abrir a busca">
             Ctrl K
           </kbd>
         )}
