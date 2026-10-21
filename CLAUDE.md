@@ -287,6 +287,9 @@ chave secreta/service_role no app. As duas variáveis também estão cadastradas
 A tabela `page_translations` (cache das traduções automáticas) foi apagada do Supabase em 2026-10-21. Tudo o que foi aplicado no banco está registrado nesse arquivo.
 Em Authentication → URL Configuration, a Site URL é o endereço publicado.
 Tabelas criadas em 2026-10-21 (registradas no fim do `schema.sql`): `world_craft_checks`, `notes`, `world_notes`.
+`supabase/tests/teste-mundo-checklist-notas.sql` testa o RLS delas com 3 usuários temporários (A e B no mundo, C de
+fora) numa transação desfeita no fim. Roda colando no SQL Editor do Supabase; passou nos 22 itens em 2026-10-21.
+(O MCP do Supabase recusa esse script porque ele escreve em `auth.users`; rode pelo SQL Editor.)
 
 ## Publicação
 
