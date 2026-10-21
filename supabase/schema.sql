@@ -373,3 +373,25 @@ $$;
 create trigger log_defeat after insert on public.world_progress for each row execute function private.log_defeat();
 create trigger log_world_group after insert on public.groups for each row execute function private.log_world_group();
 create trigger log_group_item after insert on public.group_items for each row execute function private.log_group_item();
+
+-- ============================================================
+-- Checklist da árvore de crafting (materiais que o mundo já tem)
+-- Uma linha por material marcado na árvore de um item. Membros veem, marcam e desmarcam.
+-- ============================================================
+create table public.world_craft_checks (
+  world_id uuid not null references public.worlds (id) on delete cascade,
+  item text not null check (char_length(item) between 1 and 120),
+  material text not null check (char_length(material) between 1 and 120),
+  checked_by uuid default auth.uid() references auth.users (id) on delete set null,
+  checked_at timestamptz not null default now(),
+  primary key (world_id, item, material)
+);
+create index world_craft_checks_checked_by_idx on public.world_craft_checks (checked_by);
+
+alter table public.world_craft_checks enable row level security;
+create policy "membros veem" on public.world_craft_checks for select to authenticated using (private.is_world_member(world_id));
+create policy "membros marcam" on public.world_craft_checks for insert to authenticated
+  with check (private.is_world_member(world_id) and (select auth.uid()) = checked_by);
+create policy "membros desmarcam" on public.world_craft_checks for delete to authenticated using (private.is_world_member(world_id));
+revoke all on public.world_craft_checks from anon, authenticated;
+grant select, insert, delete on public.world_craft_checks to authenticated;

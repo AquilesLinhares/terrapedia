@@ -12,7 +12,9 @@ import { ptName, treeRecipes, useRecipeBook, type Recipe, type RecipeBook } from
 import ItemChip, { Sprite } from '../components/ItemChip'
 import { Station } from '../components/RecipeList'
 import { articlePath } from '../components/SearchBar'
-import { ChevronLeftIcon, ChevronRightIcon } from '../components/icons'
+import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from '../components/icons'
+import { useCraftChecks } from '../lib/craftChecks'
+import { activeWorld, useWorld } from '../lib/world'
 
 /** Até que profundidade a árvore começa aberta (raiz = 0). */
 const DEFAULT_DEPTH = 2
@@ -34,8 +36,12 @@ export default function CraftingTreePage() {
     setToggled(new Map())
   }, [item])
 
-  const tree = useMemo(() => (book ? buildTree(book, choices, item, qty) : null), [book, choices, item, qty])
-  const totals = useMemo(() => (book ? computeTotals(book, choices, item, qty) : null), [book, choices, item, qty])
+  // Checklist "já tenho": salvo no mundo ativo (todos veem) ou neste aparelho
+  const checks = useCraftChecks(item)
+  const worldName = activeWorld(useWorld())?.name
+  const have = checks.checked
+  const tree = useMemo(() => (book ? buildTree(book, choices, item, qty, have) : null), [book, choices, item, qty, have])
+  const totals = useMemo(() => (book ? computeTotals(book, choices, item, qty, have) : null), [book, choices, item, qty, have])
 
   if (!book || !tree || !totals) {
     return <div className="mx-auto max-w-6xl animate-pulse px-4 py-8 text-muted">Carregando receitas…</div>
@@ -52,6 +58,7 @@ export default function CraftingTreePage() {
     )
   }
 
+  const missing = totals.materials.filter((m) => !m.have).length
   const isOpen = (node: TreeNode, depth: number) => toggled.get(node.key) ?? depth < openDepth
   const toggle = (node: TreeNode, depth: number) => setToggled(new Map(toggled).set(node.key, !isOpen(node, depth)))
   const setAll = (depth: number) => {
@@ -95,7 +102,7 @@ export default function CraftingTreePage() {
             <ToolbarButton onClick={() => setAll(1)}>Recolher tudo</ToolbarButton>
           </div>
           <ul className="rounded-xl border border-line bg-panel/60 p-2 sm:p-3">
-            <TreeRow book={book} node={tree} depth={0} isOpen={isOpen} toggle={toggle} />
+            <TreeRow book={book} node={tree} depth={0} isOpen={isOpen} toggle={toggle} have={have} onHave={checks.toggle} />
           </ul>
           <p className="mt-2 text-xs text-muted">
             Escolhas de receita e de item (ex.: Ferro ou Chumbo) valem para a árvore toda e ficam salvas neste aparelho.
@@ -104,14 +111,36 @@ export default function CraftingTreePage() {
 
         <aside className="space-y-4 lg:sticky lg:top-20 lg:order-2 lg:self-start">
           <SummaryBox title="Materiais totais">
+            <p className="mb-2 text-xs text-muted">
+              {missing === 0
+                ? 'Você já tem tudo!'
+                : `Faltam ${missing} de ${totals.materials.length}. Marque o que já tem.`}
+            </p>
             <ul className="space-y-1.5">
               {totals.materials.map((m) => (
-                <li key={m.name} className="flex items-center gap-2">
-                  <span className="w-12 shrink-0 text-right font-semibold text-gold tabular-nums">{m.qty}</span>
+                <li key={m.name} className={`flex items-center gap-2 ${m.have ? 'opacity-55' : ''}`}>
+                  <HaveCheck checked={m.have} onToggle={() => checks.toggle(m.name)} name={ptName(book, m.name)} />
+                  <span className={`w-10 shrink-0 text-right font-semibold tabular-nums ${m.have ? 'text-muted line-through' : 'text-gold'}`}>
+                    {m.qty}
+                  </span>
                   <ItemChip book={book} name={m.name} size="sm" showEn={false} />
                 </li>
               ))}
             </ul>
+            <p className="mt-3 border-t border-line pt-2 text-xs text-muted">
+              {checks.worldId ? (
+                <>
+                  Marcações do mundo <strong className="text-ink">{worldName}</strong>: todos os membros veem.
+                </>
+              ) : (
+                'Marcações salvas neste aparelho. Com um mundo ativo, ficam no mundo.'
+              )}
+              {checks.checked.size > 0 && (
+                <button type="button" onClick={checks.clear} className="ml-1 font-semibold text-accent hover:underline">
+                  Desmarcar tudo
+                </button>
+              )}
+            </p>
           </SummaryBox>
 
           <SummaryBox title="Bancadas">
@@ -152,9 +181,12 @@ interface RowProps {
   depth: number
   isOpen: (node: TreeNode, depth: number) => boolean
   toggle: (node: TreeNode, depth: number) => void
+  /** Checklist "já tenho" */
+  have: Set<string>
+  onHave: (name: string) => void
 }
 
-function TreeRow({ book, node, depth, isOpen, toggle }: RowProps) {
+function TreeRow({ book, node, depth, isOpen, toggle, have, onHave }: RowProps) {
   const options = treeRecipes(book, node.name)
   const members = node.group ? (book.groups.get(node.group) ?? []) : []
   const open = node.children.length > 0 && isOpen(node, depth)
@@ -180,7 +212,12 @@ function TreeRow({ book, node, depth, isOpen, toggle }: RowProps) {
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span className="text-right font-semibold text-gold tabular-nums sm:min-w-8">{node.qty}×</span>
+            {depth > 0 && <HaveCheck checked={have.has(node.name)} onToggle={() => onHave(node.name)} name={ptName(book, node.name)} />}
+            <span
+              className={`text-right font-semibold tabular-nums sm:min-w-8 ${have.has(node.name) ? 'text-muted line-through' : 'text-gold'}`}
+            >
+              {node.qty}×
+            </span>
             <ItemChip book={book} name={node.name} showEn={false} />
             {node.recipe && node.recipe.amount > 1 && (
               <span className="text-xs text-muted">
@@ -224,7 +261,7 @@ function TreeRow({ book, node, depth, isOpen, toggle }: RowProps) {
       {open && (
         <ul className="ml-2.5 border-l border-line/70 pl-1 sm:ml-4 sm:pl-3">
           {node.children.map((child) => (
-            <TreeRow key={child.key} book={book} node={child} depth={depth + 1} isOpen={isOpen} toggle={toggle} />
+            <TreeRow key={child.key} book={book} node={child} depth={depth + 1} isOpen={isOpen} toggle={toggle} have={have} onHave={onHave} />
           ))}
         </ul>
       )}
@@ -261,6 +298,25 @@ function Choice({ label, value, onChange, options }: ChoiceProps) {
         ))}
       </select>
     </label>
+  )
+}
+
+/** Caixinha "já tenho" do checklist. */
+function HaveCheck({ checked, onToggle, name }: { checked: boolean; onToggle: () => void; name: string }) {
+  return (
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={checked}
+      onClick={onToggle}
+      title={checked ? `Desmarcar: ainda não tenho ${name}` : `Já tenho ${name}`}
+      aria-label={`Já tenho ${name}`}
+      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border transition ${
+        checked ? 'border-gold bg-gold text-bg' : 'border-line bg-bg/50 text-transparent hover:border-accent'
+      }`}
+    >
+      <CheckIcon className="h-4 w-4" />
+    </button>
   )
 }
 

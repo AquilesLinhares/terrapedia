@@ -88,13 +88,16 @@ export interface TreeNode {
 
 const MAX_DEPTH = 25
 
-/** Monta a árvore de `name` (quantidade `qty`). Cada ramo calcula só o que ele precisa. */
-export function buildTree(b: RecipeBook, c: CraftChoices, name: string, qty = 1): TreeNode {
+/**
+ * Monta a árvore de `name` (quantidade `qty`). Cada ramo calcula só o que ele precisa.
+ * Itens em `have` (checklist "já tenho") não são abertos: não precisa craftar.
+ */
+export function buildTree(b: RecipeBook, c: CraftChoices, name: string, qty = 1, have: Set<string> = new Set()): TreeNode {
   function build(raw: string, qty: number, path: string, ancestors: Set<string>): TreeNode {
     const name = resolveGroup(b, c, raw)
     const key = `${path}/${raw}`
     const loop = ancestors.has(name) || ancestors.size >= MAX_DEPTH
-    const recipe = loop ? null : chosenRecipe(b, c, name)
+    const recipe = loop || (path !== '' && have.has(name)) ? null : chosenRecipe(b, c, name)
     const node: TreeNode = { key, name, group: raw !== name ? raw : undefined, qty, recipe, crafts: 0, children: [], loop }
     if (!recipe) return node
     node.crafts = Math.ceil(qty / recipe.amount)
@@ -106,8 +109,8 @@ export function buildTree(b: RecipeBook, c: CraftChoices, name: string, qty = 1)
 }
 
 export interface Totals {
-  /** Materiais básicos com a quantidade total */
-  materials: { name: string; qty: number }[]
+  /** Materiais básicos com a quantidade total (`have`: marcado no checklist; esses vêm por último) */
+  materials: { name: string; qty: number; have: boolean }[]
   /** Itens intermediários: quantos fazer de cada */
   crafted: { name: string; qty: number; recipe: Recipe }[]
   /** Bancadas usadas (texto como na receita: "Mythril Anvil", "By Hand"...) */
@@ -118,7 +121,7 @@ export interface Totals {
  * Soma tudo o que a árvore pede. Diferente da árvore, aqui itens repetidos em ramos diferentes
  * são somados antes de arredondar (ex.: 2 ramos pedem 1 Tocha cada → 1 receita de 3 tochas, não 2).
  */
-export function computeTotals(b: RecipeBook, c: CraftChoices, root: string, qty = 1): Totals {
+export function computeTotals(b: RecipeBook, c: CraftChoices, root: string, qty = 1, have: Set<string> = new Set()): Totals {
   const rootName = resolveGroup(b, c, root)
   const recipeOf = new Map<string, Recipe | null>()
   const loopEdges = new Set<string>() // "pai>filho" que voltariam para um item acima
@@ -128,7 +131,7 @@ export function computeTotals(b: RecipeBook, c: CraftChoices, root: string, qty 
   // Percorre o grafo (DFS) e guarda a ordem: cada item aparece depois de tudo que ele usa
   function visit(name: string) {
     state.set(name, 'visiting')
-    const recipe = chosenRecipe(b, c, name)
+    const recipe = name !== rootName && have.has(name) ? null : chosenRecipe(b, c, name)
     recipeOf.set(name, recipe)
     for (const ing of recipe?.ingredients ?? []) {
       const child = resolveGroup(b, c, ing.name)
@@ -167,7 +170,9 @@ export function computeTotals(b: RecipeBook, c: CraftChoices, root: string, qty 
 
   const byQty = (a: { qty: number }, b: { qty: number }) => b.qty - a.qty
   return {
-    materials: [...materials].map(([name, qty]) => ({ name, qty })).sort(byQty),
+    materials: [...materials]
+      .map(([name, qty]) => ({ name, qty, have: have.has(name) }))
+      .sort((x, y) => Number(x.have) - Number(y.have) || byQty(x, y)),
     crafted,
     stations: [...stations],
   }
