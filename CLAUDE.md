@@ -49,18 +49,27 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
   página inexistente e cópia de cada artigo aberto no aparelho. Veja "Quando a wiki cai" abaixo.
 - **Mundo compartilhado (feito)**: mundos com código de convite, membros com classe, progresso de chefes/eventos,
   etapa atual, grupos do mundo e atividade. Página `/mundo`. Veja "Mundo compartilhado" abaixo.
+- **Lote de melhorias leves (feito, 2026-10-21)**: velocidade (cópia do aparelho na hora + pré-carregamento),
+  Ctrl+K e histórico, checklist "já tenho" na árvore, notas nos artigos, busca por voz e janela compacta.
+  Veja "Melhorias leves" abaixo.
 
 ## Stack
 
 - Vite + React + TypeScript
 - Tailwind CSS v4 (plugin `@tailwindcss/vite`)
 - `vite-plugin-pwa` (manifest + service worker)
-- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`)
+- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`, `/historico`).
+  Só `HomePage` e `ArticlePage` vão no pacote principal; as outras telas são `lazy()` em `main.tsx`.
 
 ## Estrutura
 
 - `src/lib/wikiApi.ts` — chamadas à API da wiki (busca e parse) e os erros `PageNotFoundError` / `WikiUnavailableError`
 - `src/lib/pageCache.ts` — cópia no aparelho (IndexedDB) dos artigos já abertos
+- `src/lib/articleLoader.ts` — `getArticle` (reaproveita pedidos de até 5 min e salva no aparelho), `prefetchArticle`, `installLinkPrefetch`
+- `src/lib/recent.ts` — histórico das últimas 30 páginas (`useRecent()`, `recent.*`); tela `src/pages/HistoryPage.tsx`
+- `src/lib/notes.ts`, `src/components/NoteBox.tsx` — notas nos artigos (minha / do mundo)
+- `src/lib/craftChecks.ts` — checklist "já tenho" da árvore de crafting
+- `src/lib/voiceSearch.ts` — busca por voz (Web Speech API)
 - `src/lib/cleanArticle.ts` — limpa o HTML do artigo e reescreve links/imagens
 - `src/lib/ptSearch.ts` — busca local no dicionário PT ↔ EN (normalização + distância de edição)
 - `src/data/dictionary.json` — dicionário gerado (formato compacto `[pt, en, tipo, página?]`). Não editar à mão.
@@ -134,6 +143,10 @@ uma atualização do Terraria.
   (parede/plataforma/cerca/prateleira → bloco), para não andar em círculos. Item sem receita = material
   básico. Escolhas (receita, item do grupo, "não craftar") valem para a árvore toda e ficam em
   `terrapedia:craft-choices` no aparelho. Os totais somam itens repetidos antes de arredondar.
+- **Checklist "já tenho"** (`src/lib/craftChecks.ts`, `useCraftChecks(item)`): caixinha em cada item da árvore e nos
+  materiais totais. Item marcado não é aberto (`buildTree`/`computeTotals` recebem `have`), então totais, bancadas e
+  ordem de crafting descontam o que já tenho. Lista por árvore (item final). Com mundo ativo fica na tabela
+  `world_craft_checks` (membros veem e mudam; relê a cada 20 s); sem mundo, em `terrapedia:craft-checks`.
 
 ## Páginas reorganizadas (Fase 5)
 
@@ -192,12 +205,37 @@ Páginas reorganizadas (Fase 5) não passam por isso: já são escritas em portu
   `'maintenance'`. Página inexistente continua sendo `PageNotFoundError` (tela "Página não encontrada").
   A tela de erro tem o botão "Tentar de novo".
 - **Cópia no aparelho** (`src/lib/pageCache.ts`, IndexedDB `terrapedia` → `pages`): todo artigo que carrega é
-  salvo (HTML como veio da wiki, com a data), pelo título pedido e pelo título real. Se a wiki ou a internet
-  falhar, o artigo abre da cópia com o aviso "versão salva em [data]". Os resumos da Fase 5 vêm junto com o app
+  salvo (HTML como veio da wiki, com a data), pelo título pedido e pelo título real. Se existe cópia, ela aparece
+  **na hora** e a wiki é consultada em segundo plano (a página só é redesenhada se o HTML mudou). Se a wiki ou a
+  internet falhar, fica a cópia com o aviso "versão salva em [data]". Os resumos da Fase 5 vêm junto com o app
   e funcionam sempre.
 - **Sem proxy**: a API é chamada direto do navegador (`origin=*`). Não há proxy de CORS no projeto.
 - O service worker (`wiki-cache` em `vite.config.ts`) também guarda respostas da wiki por 7 dias; o IndexedDB
   é a garantia que não expira.
+
+## Melhorias leves
+
+- **Velocidade**: a API da wiki leva ~2,5–3,5 s num artigo nunca aberto. `getArticle` guarda o pedido por 5 min,
+  então o pré-carregamento vira a própria resposta: `installLinkPrefetch` (em `main.tsx`) baixa o artigo de qualquer
+  link `/wiki/...` depois de 120 ms com o mouse em cima, ou na hora em que o dedo encosta; a busca baixa a sugestão
+  escolhida (setas/mouse) após 150 ms. Com "economia de dados" ligada não pré-carrega. Imagens dos artigos têm
+  `loading="lazy"` + `decoding="async"` (a da ficha é `eager` com `fetchpriority="high"`); a largura/altura da wiki
+  reservam o espaço. Dicionário e receitas são `import()` separados; o dicionário só começa a baixar quando a busca
+  ganha foco e o navegador está livre (`requestIdleCallback`). Medição (2026-10-21, build local): artigo já aberto
+  antes, depois de reabrir o app: ~310–385 ms → 25–150 ms; pacote principal 618 KB → 501 KB (+ 75 KB comuns).
+- **Busca rápida**: Ctrl+K / Cmd+K ou "/" focam a busca de qualquer tela (atalho em `Layout.tsx`, acha o campo por
+  `[data-search-input]`). Busca vazia mostra as páginas abertas recentemente.
+- **Histórico**: `recent.add(ref)` é chamado pelo `ArticlePage` quando o nome PT e o sprite chegam. Só no aparelho
+  (`terrapedia:history`), máximo 30, sem repetir. Página `/historico` (link na busca vazia e na página inicial).
+- **Notas** (`NoteBox` abaixo do título do artigo e do resumo): "Minha nota" na tabela `notes` (RLS: só o dono; sem
+  login fica em `terrapedia:notes`) e "Nota do mundo" na tabela `world_notes` (uma por página em cada mundo; membros
+  veem, escrevem e apagam; guarda quem editou por último). Texto vazio apaga. Salvar faz `update` e, se não havia
+  linha, `insert` (o banco só deixa mudar `body`/`updated_*`). Ctrl+Enter salva.
+- **Voz**: botão de microfone na busca (`listen()` em pt-BR, texto parcial vai aparecendo). Sem `SpeechRecognition`
+  no navegador (ex.: Firefox) o botão some.
+- **Janela compacta**: tudo funciona a partir de ~360 px. Abaixo de 640 px a navegação vai para o rodapé; estilos da
+  wiki com `min-width` fixo são anulados (`index.css`). O PWA usa `launch_handler: focus-existing` para reabrir a
+  janela que já está do lado do jogo.
 
 ## Biblioteca (favoritos, grupos, buscar depois)
 
@@ -248,6 +286,7 @@ O `.env` (fora do GitHub) tem `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_K
 chave secreta/service_role no app. As duas variáveis também estão cadastradas na Vercel (veja "Publicação").
 A tabela `page_translations` (cache das traduções automáticas) foi apagada do Supabase em 2026-10-21. Tudo o que foi aplicado no banco está registrado nesse arquivo.
 Em Authentication → URL Configuration, a Site URL é o endereço publicado.
+Tabelas criadas em 2026-10-21 (registradas no fim do `schema.sql`): `world_craft_checks`, `notes`, `world_notes`.
 
 ## Publicação
 
