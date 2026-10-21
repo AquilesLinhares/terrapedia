@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { groupHas, library, useLibrary, type ArticleRef } from '../lib/library'
+import { useWorld } from '../lib/world'
 import { CheckIcon, PlusIcon } from './icons'
 
 /**
@@ -7,7 +8,9 @@ import { CheckIcon, PlusIcon } from './icons'
  * No celular ela sobe do rodapé (fácil de alcançar com o polegar); no PC fica no meio.
  */
 export default function GroupPicker({ article, onClose }: { article: ArticleRef; onClose: () => void }) {
-  const { groups } = useLibrary()
+  const { activeId } = useWorld()
+  // Grupos pessoais e os do mundo ativo
+  const groups = useLibrary().groups.filter((g) => !g.worldId || g.worldId === activeId)
   const [name, setName] = useState('')
 
   useEffect(() => {
@@ -62,6 +65,7 @@ export default function GroupPicker({ article, onClose }: { article: ArticleRef;
                       {inGroup && <CheckIcon className="h-3.5 w-3.5" />}
                     </span>
                     <span className="min-w-0 flex-1 truncate">{g.name}</span>
+                    {g.worldId && <span className="shrink-0 rounded-full bg-accent/15 px-2 text-xs font-semibold text-accent">mundo</span>}
                     <span className="shrink-0 text-xs text-muted">{g.items.length}</span>
                   </button>
                 </li>

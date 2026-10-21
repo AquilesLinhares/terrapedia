@@ -115,3 +115,10 @@ export const ListIcon = (props: IconProps) => (
     <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
   </Icon>
 )
+
+export const GlobeIcon = ({ filled, ...props }: IconProps & { filled?: boolean }) => (
+  <Icon {...props}>
+    <circle cx="12" cy="12" r="9" fill={filled ? 'currentColor' : 'none'} fillOpacity={filled ? 0.2 : 0} />
+    <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+  </Icon>
+)

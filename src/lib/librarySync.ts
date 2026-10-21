@@ -21,6 +21,8 @@ interface GroupRow {
   id: string
   name: string
   created_at: string
+  world_id: string | null
+  user_id: string
 }
 interface GroupItemRow extends ArticleRow {
   group_id: string
@@ -65,7 +67,7 @@ export async function fetchLibrary(): Promise<LibraryData> {
   const [favorites, readLater, groups, items, links] = await Promise.all([
     db.from('favorites').select('page, en, pt, sprite, added_at').order('added_at', { ascending: false }),
     db.from('read_later').select('page, en, pt, sprite, added_at, seen').order('added_at', { ascending: false }),
-    db.from('groups').select('id, name, created_at').order('created_at'),
+    db.from('groups').select('id, name, created_at, world_id, user_id').order('created_at'),
     db.from('group_items').select('group_id, page, en, pt, sprite, added_at').order('added_at'),
     db.from('group_links').select('group_id, from_page, to_page').order('created_at'),
   ])
@@ -80,6 +82,7 @@ export async function fetchLibrary(): Promise<LibraryData> {
       id: g.id,
       name: g.name,
       createdAt: g.created_at,
+      ...(g.world_id && { worldId: g.world_id, ownerId: g.user_id }),
       items: itemRows.filter((i) => i.group_id === g.id).map(toArticle),
       links: linkRows.filter((l) => l.group_id === g.id).map((l) => ({ from: l.from_page, to: l.to_page })),
     })),
@@ -120,11 +123,23 @@ export async function pushChanges(userId: string, before: LibraryData, after: Li
     Promise.all(requests).then((results) => results.forEach(check))
   const pages = (list: SavedArticle[]) => list.map((a) => a.page)
 
+  // Linhas novas são inseridas; as que já existiam só mudam os campos editáveis. Assim, num grupo
+  // do mundo, ninguém vira "dono" de um grupo ou item de outro membro (o banco só deixa mudar esses campos).
+  const newGroups = groups.upsert.filter((g) => !oldGroups.has(g.id))
+  const renamed = groups.upsert.filter((g) => oldGroups.has(g.id))
+  const groupName = (g: Group) => g.name.slice(0, 60) || 'Sem nome'
+
   // 1. Grupos novos ou renomeados primeiro (os itens dependem deles)
   await run([
-    ...(groups.upsert.length
-      ? [db.from('groups').upsert(groups.upsert.map((g) => ({ id: g.id, user_id: userId, name: g.name.slice(0, 60) || 'Sem nome', created_at: g.createdAt })))]
+    ...(newGroups.length
+      ? [
+          db.from('groups').upsert(
+            newGroups.map((g) => ({ id: g.id, user_id: userId, name: groupName(g), created_at: g.createdAt, world_id: g.worldId ?? null })),
+            { ignoreDuplicates: true },
+          ),
+        ]
       : []),
+    ...renamed.map((g) => db.from('groups').update({ name: groupName(g) }).eq('id', g.id)),
   ])
 
   // 2. Itens apagados e itens novos/alterados
@@ -145,9 +160,19 @@ export async function pushChanges(userId: string, before: LibraryData, after: Li
     ...(readLater.upsert.length
       ? [db.from('read_later').upsert(readLater.upsert.map((r) => ({ ...toRow(userId, r), seen: r.seen })))]
       : []),
-    ...items
-      .filter((i) => i.upsert.length)
-      .map((i) => db.from('group_items').upsert(i.upsert.map((a) => ({ ...toRow(userId, a), group_id: i.group.id })))),
+    ...items.flatMap((i) => {
+      const before = new Set((oldGroups.get(i.group.id)?.items ?? []).map(byPage))
+      const added = i.upsert.filter((a) => !before.has(a.page))
+      const changed = i.upsert.filter((a) => before.has(a.page))
+      return [
+        ...(added.length
+          ? [db.from('group_items').upsert(added.map((a) => ({ ...toRow(userId, a), group_id: i.group.id })), { ignoreDuplicates: true })]
+          : []),
+        ...changed.map((a) =>
+          db.from('group_items').update({ en: a.en, pt: a.pt ?? null, sprite: a.sprite ?? null }).eq('group_id', i.group.id).eq('page', a.page),
+        ),
+      ]
+    }),
   ])
 
   // 3. Ligações novas depois dos itens (cada ponta precisa existir em group_items)

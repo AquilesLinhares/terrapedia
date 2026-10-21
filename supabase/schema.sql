@@ -109,3 +109,267 @@ grant select, insert, update, delete on public.group_links to authenticated;
 
 -- ===== Cache das traduções automáticas: a tabela page_translations e a função merge_page_translation
 -- existiram de 2026-10-21 até serem apagadas no mesmo dia (o app não usa mais tradução automática). =====
+
+-- ===== Mundo compartilhado =====
+-- Já aplicado no projeto "terrapedia" (migração "shared_worlds", 2026-10-21).
+-- Um mundo tem membros, progresso (chefes/eventos derrotados) e um registro de atividade.
+-- Só membros veem e mexem nos dados do mundo. Criar e entrar por código passam pelas funções
+-- create_world/join_world, porque quem ainda não é membro não pode ver o mundo.
+-- Os grupos podem ser pessoais (world_id nulo) ou do mundo (todos os membros veem e mexem).
+
+create schema if not exists private;
+grant usage on schema private to authenticated;
+
+create table public.worlds (
+  id uuid primary key default gen_random_uuid(),
+  name text not null check (char_length(name) between 1 and 60),
+  mode text not null check (mode in ('classic', 'expert', 'master')),
+  invite_code text not null unique check (invite_code ~ '^TERRA-[A-Z0-9]{4}$'),
+  created_by uuid default auth.uid() references auth.users (id) on delete set null,
+  created_at timestamptz not null default now()
+);
+create index worlds_created_by_idx on public.worlds (created_by);
+
+create table public.world_members (
+  world_id uuid not null references public.worlds (id) on delete cascade,
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  display_name text not null check (char_length(display_name) between 1 and 30),
+  class text check (class in ('melee', 'ranged', 'magic', 'summoner')),
+  subclass text check (char_length(subclass) <= 40),
+  joined_at timestamptz not null default now(),
+  primary key (world_id, user_id)
+);
+create index world_members_user_id_idx on public.world_members (user_id);
+
+-- key = título EN da página do chefe/evento (ex.: "Skeletron"); a lista fica no app (src/lib/progression.ts)
+create table public.world_progress (
+  world_id uuid not null references public.worlds (id) on delete cascade,
+  key text not null check (char_length(key) between 1 and 60),
+  marked_by uuid default auth.uid() references auth.users (id) on delete set null,
+  marked_at timestamptz not null default now(),
+  primary key (world_id, key)
+);
+create index world_progress_marked_by_idx on public.world_progress (marked_by);
+
+-- Escrito só pelo banco (funções e gatilhos abaixo); o app só lê.
+create table public.world_activity (
+  id bigint generated always as identity primary key,
+  world_id uuid not null references public.worlds (id) on delete cascade,
+  user_id uuid references auth.users (id) on delete set null,
+  actor_name text not null,
+  kind text not null check (kind in ('created', 'joined', 'defeated', 'group_created', 'item_added')),
+  subject text,
+  subject_pt text,
+  group_name text,
+  created_at timestamptz not null default now()
+);
+create index world_activity_world_idx on public.world_activity (world_id, created_at desc);
+create index world_activity_user_id_idx on public.world_activity (user_id);
+
+-- Grupos do mundo
+alter table public.groups add column world_id uuid references public.worlds (id) on delete cascade;
+create index groups_world_id_idx on public.groups (world_id);
+-- Itens e ligações agora só precisam que o grupo exista (num grupo do mundo, cada membro adiciona os seus)
+alter table public.group_items drop constraint if exists group_items_group_id_user_id_fkey;
+alter table public.group_links drop constraint if exists group_links_group_id_user_id_fkey;
+alter table public.group_items add foreign key (group_id) references public.groups (id) on delete cascade;
+alter table public.group_links add foreign key (group_id) references public.groups (id) on delete cascade;
+drop index if exists public.group_items_group_user_idx;
+drop index if exists public.group_links_group_user_idx;
+alter table public.groups drop constraint if exists groups_id_user_id_key;
+
+-- Funções das regras (security definer para não cair em recursão no RLS; o schema private não vai pra API)
+create function private.is_world_member(wid uuid) returns boolean
+language sql stable security definer set search_path = ''
+as $$
+  select exists (select 1 from public.world_members m where m.world_id = wid and m.user_id = (select auth.uid()))
+$$;
+
+create function private.can_edit_group(gid uuid) returns boolean
+language sql stable security definer set search_path = ''
+as $$
+  select exists (
+    select 1 from public.groups g
+    where g.id = gid
+      and ((g.world_id is null and g.user_id = (select auth.uid()))
+        or (g.world_id is not null and private.is_world_member(g.world_id)))
+  )
+$$;
+
+create function private.member_name(wid uuid, uid uuid) returns text
+language sql stable security definer set search_path = ''
+as $$
+  select coalesce((select display_name from public.world_members where world_id = wid and user_id = uid), 'Alguém')
+$$;
+
+revoke all on function private.is_world_member(uuid), private.can_edit_group(uuid), private.member_name(uuid, uuid) from public;
+grant execute on function private.is_world_member(uuid), private.can_edit_group(uuid) to authenticated;
+
+-- RLS do mundo
+alter table public.worlds enable row level security;
+alter table public.world_members enable row level security;
+alter table public.world_progress enable row level security;
+alter table public.world_activity enable row level security;
+
+create policy "membros veem" on public.worlds for select to authenticated using (private.is_world_member(id));
+create policy "membros mudam" on public.worlds for update to authenticated
+  using (private.is_world_member(id)) with check (private.is_world_member(id));
+create policy "quem criou apaga" on public.worlds for delete to authenticated using ((select auth.uid()) = created_by);
+
+create policy "membros veem" on public.world_members for select to authenticated using (private.is_world_member(world_id));
+create policy "muda a própria ficha" on public.world_members for update to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "sai do mundo" on public.world_members for delete to authenticated using ((select auth.uid()) = user_id);
+
+create policy "membros veem" on public.world_progress for select to authenticated using (private.is_world_member(world_id));
+create policy "membros marcam" on public.world_progress for insert to authenticated
+  with check (private.is_world_member(world_id) and (select auth.uid()) = marked_by);
+create policy "membros desmarcam" on public.world_progress for delete to authenticated using (private.is_world_member(world_id));
+
+create policy "membros veem" on public.world_activity for select to authenticated using (private.is_world_member(world_id));
+
+-- Só as colunas que o app muda podem ser alteradas (ex.: ninguém troca o world_id de uma ficha)
+revoke all on public.worlds, public.world_members, public.world_progress, public.world_activity from anon, authenticated;
+grant select on public.worlds, public.world_members, public.world_progress, public.world_activity to authenticated;
+grant update (name, mode), delete on public.worlds to authenticated;
+grant update (display_name, class, subclass), delete on public.world_members to authenticated;
+grant insert, delete on public.world_progress to authenticated;
+
+-- RLS dos grupos: pessoais (do dono) ou do mundo (dos membros). Grupo do mundo só quem criou apaga.
+drop policy "ver os próprios" on public.groups;
+drop policy "criar os próprios" on public.groups;
+drop policy "mudar os próprios" on public.groups;
+drop policy "apagar os próprios" on public.groups;
+create policy "ver" on public.groups for select to authenticated using (
+  (world_id is null and (select auth.uid()) = user_id) or (world_id is not null and private.is_world_member(world_id)));
+create policy "criar" on public.groups for insert to authenticated with check (
+  (select auth.uid()) = user_id and (world_id is null or private.is_world_member(world_id)));
+create policy "mudar" on public.groups for update to authenticated
+  using ((world_id is null and (select auth.uid()) = user_id) or (world_id is not null and private.is_world_member(world_id)))
+  with check ((world_id is null and (select auth.uid()) = user_id) or (world_id is not null and private.is_world_member(world_id)));
+create policy "apagar" on public.groups for delete to authenticated using (
+  (select auth.uid()) = user_id and (world_id is null or private.is_world_member(world_id)));
+revoke update on public.groups from authenticated;
+grant update (name) on public.groups to authenticated;
+
+do $$
+declare
+  t text;
+begin
+  foreach t in array array['group_items', 'group_links'] loop
+    execute format('drop policy "ver os próprios" on public.%I', t);
+    execute format('drop policy "criar os próprios" on public.%I', t);
+    execute format('drop policy "mudar os próprios" on public.%I', t);
+    execute format('drop policy "apagar os próprios" on public.%I', t);
+    execute format('create policy "ver" on public.%I for select to authenticated using (private.can_edit_group(group_id))', t);
+    execute format('create policy "criar" on public.%I for insert to authenticated with check ((select auth.uid()) = user_id and private.can_edit_group(group_id))', t);
+    execute format('create policy "apagar" on public.%I for delete to authenticated using (private.can_edit_group(group_id))', t);
+  end loop;
+end $$;
+create policy "mudar" on public.group_items for update to authenticated
+  using (private.can_edit_group(group_id)) with check (private.can_edit_group(group_id));
+revoke update on public.group_items, public.group_links from authenticated;
+grant update (en, pt, sprite) on public.group_items to authenticated;
+
+-- Criar mundo e entrar por código
+create function public.create_world(p_name text, p_mode text, p_display_name text) returns uuid
+language plpgsql security definer set search_path = ''
+as $$
+declare
+  uid uuid := (select auth.uid());
+  wid uuid;
+  code text;
+  alphabet constant text := '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'; -- sem 0/O e 1/I, que se confundem
+begin
+  if uid is null then
+    raise exception 'login necessário';
+  end if;
+  loop
+    code := 'TERRA-' || (select string_agg(substr(alphabet, 1 + floor(random() * length(alphabet))::int, 1), '') from generate_series(1, 4));
+    begin
+      insert into public.worlds (name, mode, invite_code, created_by) values (trim(p_name), p_mode, code, uid) returning id into wid;
+      exit;
+    exception when unique_violation then
+      -- código já usado por outro mundo: sorteia de novo
+    end;
+  end loop;
+  insert into public.world_members (world_id, user_id, display_name) values (wid, uid, trim(p_display_name));
+  insert into public.world_activity (world_id, user_id, actor_name, kind) values (wid, uid, trim(p_display_name), 'created');
+  return wid;
+end
+$$;
+
+-- Aceita "TERRA-7K2Q", "terra 7k2q" ou só "7K2Q". Devolve o id do mundo, ou null se o código não existe.
+create function public.join_world(p_code text, p_display_name text) returns uuid
+language plpgsql security definer set search_path = ''
+as $$
+declare
+  uid uuid := (select auth.uid());
+  wid uuid;
+  clean text := upper(regexp_replace(coalesce(p_code, ''), '[^A-Za-z0-9]', '', 'g'));
+  added int;
+begin
+  if uid is null then
+    raise exception 'login necessário';
+  end if;
+  if clean like 'TERRA%' then
+    clean := substr(clean, 6);
+  end if;
+  select id into wid from public.worlds where invite_code = 'TERRA-' || clean;
+  if wid is null then
+    return null;
+  end if;
+  insert into public.world_members (world_id, user_id, display_name) values (wid, uid, trim(p_display_name)) on conflict do nothing;
+  get diagnostics added = row_count;
+  if added > 0 then
+    insert into public.world_activity (world_id, user_id, actor_name, kind) values (wid, uid, trim(p_display_name), 'joined');
+  end if;
+  return wid;
+end
+$$;
+
+revoke all on function public.create_world(text, text, text), public.join_world(text, text) from public, anon;
+grant execute on function public.create_world(text, text, text), public.join_world(text, text) to authenticated;
+
+-- Atividade automática: chefe derrotado, grupo do mundo criado, item adicionado a um grupo do mundo
+create function private.log_defeat() returns trigger
+language plpgsql security definer set search_path = ''
+as $$
+begin
+  insert into public.world_activity (world_id, user_id, actor_name, kind, subject)
+  values (new.world_id, new.marked_by, private.member_name(new.world_id, new.marked_by), 'defeated', new.key);
+  return null;
+end
+$$;
+
+create function private.log_world_group() returns trigger
+language plpgsql security definer set search_path = ''
+as $$
+begin
+  if new.world_id is not null then
+    insert into public.world_activity (world_id, user_id, actor_name, kind, group_name)
+    values (new.world_id, new.user_id, private.member_name(new.world_id, new.user_id), 'group_created', new.name);
+  end if;
+  return null;
+end
+$$;
+
+create function private.log_group_item() returns trigger
+language plpgsql security definer set search_path = ''
+as $$
+declare
+  wid uuid;
+  gname text;
+begin
+  select world_id, name into wid, gname from public.groups where id = new.group_id;
+  if wid is not null then
+    insert into public.world_activity (world_id, user_id, actor_name, kind, subject, subject_pt, group_name)
+    values (wid, new.user_id, private.member_name(wid, new.user_id), 'item_added', new.page, coalesce(new.pt, new.en), gname);
+  end if;
+  return null;
+end
+$$;
+
+create trigger log_defeat after insert on public.world_progress for each row execute function private.log_defeat();
+create trigger log_world_group after insert on public.groups for each row execute function private.log_world_group();
+create trigger log_group_item after insert on public.group_items for each row execute function private.log_group_item();

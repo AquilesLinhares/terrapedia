@@ -2,6 +2,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom'
 import SearchBar from './SearchBar'
 import { BottomNav, TopNav } from './NavBar'
 import ImportPrompt from './ImportPrompt'
+import WorldBar from './WorldBar'
 
 export default function Layout() {
   const isHome = useLocation().pathname === '/'
@@ -28,6 +29,8 @@ export default function Layout() {
           <TopNav />
         </div>
       </header>
+
+      <WorldBar />
 
       <main className="flex-1">
         <Outlet />

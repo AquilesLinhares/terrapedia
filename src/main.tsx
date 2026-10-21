@@ -10,6 +10,7 @@ import GroupsPage from './pages/GroupsPage'
 import GroupPage from './pages/GroupPage'
 import AccountPage from './pages/AccountPage'
 import CraftingTreePage from './pages/CraftingTreePage'
+import WorldPage from './pages/WorldPage'
 import './index.css'
 
 createRoot(document.getElementById('root')!).render(
@@ -25,6 +26,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="grupos/:id" element={<GroupPage />} />
           <Route path="conta" element={<AccountPage />} />
           <Route path="arvore/*" element={<CraftingTreePage />} />
+          <Route path="mundo" element={<WorldPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

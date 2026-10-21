@@ -42,6 +42,10 @@ export interface Group {
   id: string
   name: string
   createdAt: string
+  /** Grupo do mundo (todos os membros veem e mexem). Sem isso, é pessoal. */
+  worldId?: string
+  /** Quem criou (só com login). Num grupo do mundo, só essa pessoa apaga. */
+  ownerId?: string
   items: SavedArticle[]
   links: GroupLink[]
 }
@@ -258,7 +262,8 @@ function merge(base: LibraryData, extra: LibraryData): LibraryData {
     ...list,
     ...more.filter((m) => !list.some((i) => samePage(i.page, m.page))),
   ]
-  const sameName = (a: Group, b: Group) => a.name.trim().toLowerCase() === b.name.trim().toLowerCase()
+  // Só junta com grupos pessoais: os do aparelho nunca são de um mundo
+  const sameName = (a: Group, b: Group) => !a.worldId && a.name.trim().toLowerCase() === b.name.trim().toLowerCase()
   const groups = [...base.groups]
   for (const g of extra.groups) {
     const i = groups.findIndex((b) => sameName(b, g))
@@ -300,8 +305,16 @@ export function hasLink(group: Group, from: string, to: string) {
   return group.links.some((l) => sameLink(l, { from, to }))
 }
 
+/** Pode apagar o grupo? Pessoal: sempre. Do mundo: só quem criou. */
+export function canDeleteGroup(group: Group) {
+  return !group.worldId || group.ownerId === userId
+}
+
 // Todas as ações que mudam a biblioteca.
 export const library = {
+  /** Lê de novo a conta (ex.: grupos do mundo mudados por outro membro). */
+  refresh: refetch,
+
   toggleFavorite(ref: ArticleRef) {
     commit({
       ...data,
@@ -328,10 +341,12 @@ export const library = {
     commit({ ...data, readLater: data.readLater.filter((r) => !r.seen) })
   },
 
-  /** Cria um grupo e devolve o id dele. */
-  createGroup(name: string) {
+  /** Cria um grupo (pessoal, ou do mundo com `worldId`) e devolve o id dele. */
+  createGroup(name: string, worldId?: string) {
     const id = newId()
-    commit({ ...data, groups: [...data.groups, { id, name: name.trim(), createdAt: now(), items: [], links: [] }] })
+    const group: Group = { id, name: name.trim(), createdAt: now(), items: [], links: [] }
+    if (worldId && userId) Object.assign(group, { worldId, ownerId: userId })
+    commit({ ...data, groups: [...data.groups, group] })
     return id
   },
 

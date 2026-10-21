@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { hasLink, library, useLibrary, type Group, type SavedArticle } from '../lib/library'
+import { canDeleteGroup, hasLink, library, useLibrary, type Group, type SavedArticle } from '../lib/library'
+import { useWorld } from '../lib/world'
 import { useRecipeBook } from '../lib/recipes'
 import { EmptyState } from '../components/PageHeading'
 import SavedArticleRow, { RowButton } from '../components/SavedArticleRow'
@@ -17,9 +18,17 @@ export default function GroupPage() {
   const [linking, setLinking] = useState<SavedArticle | null>(null)
   const book = useRecipeBook()
 
+  const worldName = useWorld().worlds.find((w) => w.id === group?.worldId)?.name
+
   useEffect(() => {
     document.title = `${group?.name ?? 'Grupo'} · Terrapedia`
   }, [group?.name])
+
+  // Grupo do mundo: outros membros podem ter mudado
+  const isWorldGroup = !!group?.worldId
+  useEffect(() => {
+    if (isWorldGroup) library.refresh()
+  }, [isWorldGroup])
 
   if (!group) {
     return (
@@ -70,7 +79,10 @@ export default function GroupPage() {
         ) : (
           <div className="min-w-0">
             <h1 className="font-display text-3xl font-bold break-words text-gold">{group.name}</h1>
-            <p className="mt-1 text-sm text-muted">{group.items.length} artigo(s)</p>
+            <p className="mt-1 text-sm text-muted">
+              {group.worldId && <span className="mr-2 rounded-full bg-accent/15 px-2 py-0.5 text-xs font-semibold text-accent">Do mundo{worldName ? ` · ${worldName}` : ''}</span>}
+              {group.items.length} artigo(s)
+            </p>
           </div>
         )}
         {!editing && (
@@ -86,6 +98,7 @@ export default function GroupPage() {
               <PencilIcon className="h-4 w-4" />
               Renomear
             </button>
+            {canDeleteGroup(group) && (
             <button
               type="button"
               onClick={deleteGroup}
@@ -94,6 +107,7 @@ export default function GroupPage() {
               <TrashIcon className="h-4 w-4" />
               Apagar
             </button>
+            )}
           </div>
         )}
       </header>

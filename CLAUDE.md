@@ -47,13 +47,15 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
   Supabase) foi removida em 2026-10-21. Veja "Artigos em português" abaixo.
 - **Resistência quando a wiki cai (feito)**: mensagens diferentes para sem internet / wiki em manutenção /
   página inexistente e cópia de cada artigo aberto no aparelho. Veja "Quando a wiki cai" abaixo.
+- **Mundo compartilhado (feito)**: mundos com código de convite, membros com classe, progresso de chefes/eventos,
+  etapa atual, grupos do mundo e atividade. Página `/mundo`. Veja "Mundo compartilhado" abaixo.
 
 ## Stack
 
 - Vite + React + TypeScript
 - Tailwind CSS v4 (plugin `@tailwindcss/vite`)
 - `vite-plugin-pwa` (manifest + service worker)
-- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`)
+- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`)
 
 ## Estrutura
 
@@ -78,6 +80,9 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/lib/auth.ts` — login: `useAuth()`, `auth.signIn/signUp/signOut`, `onUserChange`
 - `src/lib/librarySync.ts` — lê a biblioteca das tabelas e envia só as diferenças
 - `supabase/schema.sql` — tabelas e regras de RLS (registro do que foi aplicado no projeto)
+- `src/lib/world.ts` — mundo compartilhado: `useWorld()`, `useWorldStage()`, `world.*` (veja "Mundo compartilhado")
+- `src/lib/progression.ts` — chefes/eventos em ordem (`MILESTONES`) e etapas (`STAGES`, `currentStage`, `stageAtLeast`)
+- `src/pages/WorldPage.tsx` — página "Meu mundo"; `src/components/WorldBar.tsx` — faixa do mundo ativo no topo
 - `src/lib/articleRef.ts` — monta o item salvo de um artigo (nome PT do dicionário + sprite da infobox)
 - `src/components/SearchBar.tsx` — busca com sugestões
 - `src/components/NavBar.tsx` — navegação (`TopNav` no PC, `BottomNav` fixa no rodapé do celular)
@@ -211,6 +216,29 @@ Tudo passa por `src/lib/library.ts`. As telas só usam `useLibrary()` (ler), `us
 
 Cada artigo salvo guarda `page` (título EN da wiki, é o id), `en`, `pt` e `sprite`. Cada grupo também
 guarda `links` (`{ from, to }` = "uso `from` para craftar `to`"); tirar um item do grupo apaga as ligações dele.
+
+## Mundo compartilhado
+
+Só com login. Tudo em `src/lib/world.ts`; as telas usam `useWorld()` (ler), `useWorldStage()` e `world.*` (mudar).
+
+- **Tabelas** (`supabase/schema.sql`, bloco "Mundo compartilhado"): `worlds` (nome, modo `classic`/`expert`/`master`,
+  `invite_code` tipo `TERRA-7K2Q`), `world_members` (nome no mundo, `class` `melee`/`ranged`/`magic`/`summoner`,
+  `subclass` livre), `world_progress` (um registro por chefe/evento derrotado: `key` = título EN da wiki, quem e quando),
+  `world_activity` (só leitura pelo app; escrita por gatilhos do banco). RLS: só membros veem e mexem
+  (`private.is_world_member`). Cada um só muda a própria ficha; só quem criou apaga o mundo.
+- **Criar / entrar**: funções `create_world` e `join_world` (security definer, porque quem não é membro não vê o
+  mundo). O código aceita "TERRA-7K2Q", "terra 7k2q" ou só "7K2Q". Mundo ativo salvo no aparelho em
+  `terrapedia:active-world:<id>`; aparece no topo (`WorldBar`). A página `/mundo` relê a cada 20 s.
+- **Atividade**: gatilhos gravam "criou o mundo", "entrou", "derrotou X" (ao marcar), "criou o grupo X" e
+  "adicionou Y ao grupo X" (itens em grupos do mundo). A página mostra as 20 últimas.
+- **Etapa atual**: calculada no app por `currentStage()` a partir das keys derrotadas. Os ids das etapas são fixos e
+  em ordem (`start`, `post-eye`, `post-evil`, `post-skeletron`, `hardmode`, `post-mech`, `post-all-mechs`,
+  `post-plantera`, `post-golem`, `post-cultist`, `post-moon-lord`). Guias de classe futuros devem usar
+  `useWorldStage()` e `stageAtLeast(etapa.id, 'post-skeletron')`. Chefe/evento novo = uma linha em `MILESTONES`.
+- **Grupos do mundo**: `groups.world_id` preenchido = grupo do mundo (todos os membros veem, adicionam itens e
+  ligações e renomeiam; só quem criou apaga). Vêm junto com a biblioteca (`fetchLibrary`), com `worldId` e `ownerId`.
+  Itens e grupos que já existem só mudam os campos editáveis (o banco não deixa trocar dono nem mundo), por isso
+  `pushChanges` insere o que é novo e faz `update` só de nome / en / pt / sprite.
 
 ## Supabase
 

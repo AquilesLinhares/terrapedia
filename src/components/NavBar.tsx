@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useLibrary, useSyncStatus } from '../lib/library'
-import { ClockIcon, FolderIcon, HomeIcon, StarIcon, UserIcon } from './icons'
+import { ClockIcon, FolderIcon, GlobeIcon, HomeIcon, StarIcon, UserIcon } from './icons'
 
 function useNavItems() {
   const lib = useLibrary()
@@ -10,6 +10,7 @@ function useNavItems() {
     { to: '/favoritos', label: 'Favoritos', short: 'Favoritos', icon: StarIcon, badge: 0 },
     { to: '/depois', label: 'Buscar depois', short: 'Depois', icon: ClockIcon, badge: unseen },
     { to: '/grupos', label: 'Grupos', short: 'Grupos', icon: FolderIcon, badge: 0 },
+    { to: '/mundo', label: 'Meu mundo', short: 'Mundo', icon: GlobeIcon, badge: 0 },
     // Ponto no ícone: há algo para importar ou mudanças que ainda não foram enviadas
     { to: '/conta', label: 'Conta', short: 'Conta', icon: UserIcon, badge: 0, dot: importOffer !== null || state === 'offline' },
   ]
@@ -63,7 +64,7 @@ export function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur sm:hidden"
       aria-label="Navegação"
     >
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-6">
         {[{ to: '/', label: 'Início', short: 'Início', icon: HomeIcon, badge: 0 }, ...items].map(({ to, short, icon: Icon, badge, dot }) => (
           <NavLink
             key={to}
