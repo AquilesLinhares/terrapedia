@@ -6,6 +6,8 @@ import { searchGuides } from '../lib/guides'
 import { loadGameNames } from '../lib/localize'
 import { prefetchArticle } from '../lib/articleLoader'
 import { useRecent } from '../lib/recent'
+import { listen, voiceSupported } from '../lib/voiceSearch'
+import { MicIcon } from './icons'
 
 /** Caminho no app para uma página da wiki. Aceita "Título#Seção". */
 export function articlePath(page: string) {
@@ -139,6 +141,29 @@ export default function SearchBar({ autoFocus, large }: Props) {
     return () => clearTimeout(timer)
   }, [activePage])
 
+  // Busca por voz: o que a pessoa fala vai aparecendo na caixa e as sugestões acompanham
+  const [listening, setListening] = useState(false)
+  const stopVoice = useRef<(() => void) | null>(null)
+  useEffect(() => () => stopVoice.current?.(), [])
+
+  function toggleVoice() {
+    if (listening) return stopVoice.current?.()
+    setListening(true)
+    stopVoice.current = listen(
+      (text) => {
+        setQuery(text)
+        setOpen(true)
+      },
+      (error) => {
+        setListening(false)
+        stopVoice.current = null
+        if (error === 'not-allowed' || error === 'service-not-allowed') {
+          alert('O navegador não deixou usar o microfone. Libere o acesso nas configurações do site e tente de novo.')
+        }
+      },
+    )
+  }
+
   function go(page: string) {
     setOpen(false)
     setQuery('')
@@ -211,7 +236,21 @@ export default function SearchBar({ autoFocus, large }: Props) {
           className={`min-w-0 flex-1 bg-transparent text-ink placeholder:text-muted focus:outline-none ${large ? 'text-lg' : 'text-base'}`}
         />
         {loading && <span className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-muted border-t-accent" />}
-        {!query && (
+        {voiceSupported && (
+          <button
+            type="button"
+            onClick={toggleVoice}
+            aria-pressed={listening}
+            aria-label={listening ? 'Parar de ouvir' : 'Buscar por voz'}
+            title={listening ? 'Parar de ouvir' : 'Buscar por voz'}
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition ${
+              listening ? 'animate-pulse bg-red-500/20 text-red-300' : 'text-muted hover:bg-bg/60 hover:text-ink'
+            }`}
+          >
+            <MicIcon className="h-5 w-5" />
+          </button>
+        )}
+        {!query && !listening && (
           <kbd className="hidden shrink-0 rounded border border-line px-1.5 py-0.5 font-sans text-[11px] text-muted pointer-fine:inline" title="Atalho para abrir a busca">
             Ctrl K
           </kbd>
