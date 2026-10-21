@@ -5,6 +5,7 @@ import { cleanArticle } from '../lib/cleanArticle'
 import { fetchSearch, PageNotFoundError, WikiUnavailableError, wikiPageUrl } from '../lib/wikiApi'
 import { loadPage } from '../lib/pageCache'
 import { getArticle } from '../lib/articleLoader'
+import { recent } from '../lib/recent'
 import { displayName, searchDictionary } from '../lib/ptSearch'
 import { articlePath } from '../components/SearchBar'
 import ArticleActions from '../components/ArticleActions'
@@ -113,6 +114,7 @@ export default function ArticlePage() {
         if (controller.signal.aborted) return
         setArticleRef(ref)
         library.refreshArticle(ref) // atualiza itens já salvos (ex.: sprite que faltava)
+        recent.add(ref)
       })
     }
 

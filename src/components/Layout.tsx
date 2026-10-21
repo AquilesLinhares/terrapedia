@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import SearchBar from './SearchBar'
 import { BottomNav, TopNav } from './NavBar'
@@ -7,6 +7,23 @@ import WorldBar from './WorldBar'
 
 export default function Layout() {
   const isHome = useLocation().pathname === '/'
+
+  // Ctrl+K (ou Cmd+K no Mac) ou "/" abre a busca de qualquer tela
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const typing = (e.target as HTMLElement).closest?.('input, textarea, select, [contenteditable="true"]')
+      const shortcut = (e.key.toLowerCase() === 'k' && (e.ctrlKey || e.metaKey)) || (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey)
+      if (!shortcut) return
+      const input = document.querySelector<HTMLInputElement>('[data-search-input]')
+      if (!input) return
+      e.preventDefault()
+      input.focus()
+      input.select()
+      input.click() // abre a lista (histórico) mesmo se a busca já estava com o foco
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [])
 
   return (
     // pb-14: espaço para a barra de navegação fixa no rodapé do celular

@@ -1,10 +1,11 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { fetchSuggestions, WIKI_BASE } from '../lib/wikiApi'
 import { displayName, loadDictionary, normalize, searchDictionary, STOPWORDS } from '../lib/ptSearch'
 import { searchGuides } from '../lib/guides'
 import { loadGameNames } from '../lib/localize'
 import { prefetchArticle } from '../lib/articleLoader'
+import { useRecent } from '../lib/recent'
 
 /** Caminho no app para uma página da wiki. Aceita "Título#Seção". */
 export function articlePath(page: string) {
@@ -45,6 +46,8 @@ export default function SearchBar({ autoFocus, large }: Props) {
   const [active, setActive] = useState(-1)
   const [loading, setLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const recentPages = useRecent()
+  const skipAutoOpen = useRef(!!autoFocus)
 
   // Resultados do dicionário PT ↔ EN: instantâneos, sem internet.
   useEffect(() => {
@@ -119,10 +122,14 @@ export default function SearchBar({ autoFocus, large }: Props) {
   const words = normalize(query).split(' ').filter((w) => w && !STOPWORDS.has(w))
   const nameStartsWith = local.some((s) => normalize(s.label).split(' ').some((t) => t.startsWith(words[0] ?? '')))
   const tagsFirst = byTags.complete && (words.length > 1 || !nameStartsWith)
-  const suggestions = [
-    ...(tagsFirst ? [...tagged, ...local] : [...local.slice(0, 8 - tagged.length), ...tagged]),
-    ...remote.filter((s) => !ownPages.has(s.page.toLowerCase())),
-  ].slice(0, 8)
+  // Busca vazia: as últimas páginas abertas (histórico)
+  const showRecent = query.trim() === ''
+  const suggestions: Suggestion[] = showRecent
+    ? recentPages.slice(0, 8).map((p) => ({ page: p.page, label: displayName({ pt: p.pt ?? p.en, en: p.en }), thumbnail: p.sprite }))
+    : [
+        ...(tagsFirst ? [...tagged, ...local] : [...local.slice(0, 8 - tagged.length), ...tagged]),
+        ...remote.filter((s) => !ownPages.has(s.page.toLowerCase())),
+      ].slice(0, 8)
 
   // A sugestão escolhida (setas ou mouse) já começa a baixar, para abrir mais rápido no Enter/clique
   const activePage = suggestions[active]?.page
@@ -155,11 +162,12 @@ export default function SearchBar({ autoFocus, large }: Props) {
   // Enter abre a sugestão escolhida; se nenhuma foi escolhida, a primeira da lista.
   function onSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (showRecent && active < 0) return // busca vazia: Enter não abre o histórico sozinho
     const chosen = suggestions[active]?.page ?? suggestions[0]?.page ?? query.trim()
     if (chosen) go(chosen)
   }
 
-  const showList = open && query.trim() !== '' && (suggestions.length > 0 || !loading)
+  const showList = open && (showRecent ? suggestions.length > 0 : suggestions.length > 0 || !loading)
 
   return (
     <form onSubmit={onSubmit} role="search" className="relative w-full">
@@ -182,11 +190,15 @@ export default function SearchBar({ autoFocus, large }: Props) {
             setOpen(true)
           }}
           onFocus={() => {
-            setOpen(true)
+            // O foco automático da página inicial não abre a lista (ela cobriria a tela); clicar ou digitar abre
+            if (skipAutoOpen.current) skipAutoOpen.current = false
+            else setOpen(true)
             // Já começa a baixar o dicionário, mas só quando o navegador estiver livre (não trava a primeira tela)
             ;(window.requestIdleCallback ?? setTimeout)(() => loadDictionary())
           }}
+          onClick={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
+          data-search-input
           onKeyDown={onKeyDown}
           placeholder="Buscar em português ou inglês..."
           aria-label="Buscar na wiki"
@@ -199,6 +211,11 @@ export default function SearchBar({ autoFocus, large }: Props) {
           className={`min-w-0 flex-1 bg-transparent text-ink placeholder:text-muted focus:outline-none ${large ? 'text-lg' : 'text-base'}`}
         />
         {loading && <span className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-muted border-t-accent" />}
+        {!query && (
+          <kbd className="hidden shrink-0 rounded border border-line px-1.5 py-0.5 font-sans text-[11px] text-muted pointer-fine:inline" title="Atalho para abrir a busca">
+            Ctrl K
+          </kbd>
+        )}
       </div>
 
       {showList && (
@@ -207,6 +224,11 @@ export default function SearchBar({ autoFocus, large }: Props) {
           role="listbox"
           className="absolute inset-x-0 top-full z-50 mt-2 max-h-[60vh] overflow-y-auto rounded-xl border border-line bg-panel py-1 shadow-2xl shadow-black/50"
         >
+          {showRecent && (
+            <li role="presentation" className="px-3 pt-1.5 pb-1 text-xs font-semibold tracking-wide text-muted uppercase">
+              Abertas recentemente
+            </li>
+          )}
           {suggestions.length === 0 && <li className="px-4 py-3 text-sm text-muted">Nenhuma sugestão. Aperte Enter para buscar.</li>}
           {suggestions.map((s, i) => (
             <li key={s.page} role="option" aria-selected={i === active}>
@@ -242,6 +264,18 @@ export default function SearchBar({ autoFocus, large }: Props) {
               </button>
             </li>
           ))}
+          {showRecent && (
+            <li role="presentation" className="border-t border-line">
+              <Link
+                to="/historico"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => setOpen(false)}
+                className="block px-3 py-2 text-sm font-semibold text-accent hover:underline"
+              >
+                Ver histórico completo
+              </Link>
+            </li>
+          )}
         </ul>
       )}
     </form>

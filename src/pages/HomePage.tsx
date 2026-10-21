@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import SearchBar, { articlePath } from '../components/SearchBar'
+import { useRecent } from '../lib/recent'
 
 // Atalhos: nome oficial em português (o mesmo do dicionário) e a página da wiki em inglês
 const QUICK_LINKS = [
@@ -14,6 +15,7 @@ const QUICK_LINKS = [
 ]
 
 export default function HomePage() {
+  const recentCount = useRecent().length
   return (
     <div className="mx-auto flex max-w-2xl flex-col items-center px-4 pt-[18vh] pb-16">
       <img src="/icon.svg" alt="" className="mb-4 h-20 w-20 drop-shadow-[0_0_24px_rgba(242,201,76,0.35)]" />
@@ -37,6 +39,11 @@ export default function HomePage() {
           </Link>
         ))}
       </div>
+      {recentCount > 0 && (
+        <Link to="/historico" className="mt-6 text-sm font-semibold text-accent hover:underline">
+          Histórico ({recentCount})
+        </Link>
+      )}
     </div>
   )
 }
