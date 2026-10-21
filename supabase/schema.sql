@@ -75,6 +75,7 @@ revoke all on public.favorites, public.read_later, public.groups, public.group_i
 grant select, insert, update, delete on public.favorites, public.read_later, public.groups, public.group_items to authenticated;
 
 -- ===== Fase 4: ligações feitas à mão dentro de um grupo ("uso X para craftar Y") =====
+-- Já aplicado no projeto "terrapedia" (migração "group_links", 2026-10-20).
 -- Para aplicar num projeto que já tem as tabelas acima, rode só este bloco no SQL Editor do Supabase.
 
 create table public.group_links (
