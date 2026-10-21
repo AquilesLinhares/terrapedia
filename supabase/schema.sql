@@ -395,3 +395,45 @@ create policy "membros marcam" on public.world_craft_checks for insert to authen
 create policy "membros desmarcam" on public.world_craft_checks for delete to authenticated using (private.is_world_member(world_id));
 revoke all on public.world_craft_checks from anon, authenticated;
 grant select, insert, delete on public.world_craft_checks to authenticated;
+
+-- ============================================================
+-- Notas nos artigos (pessoal e do mundo)
+-- ============================================================
+-- Nota pessoal: uma por página, só o dono vê
+create table public.notes (
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  page text not null check (char_length(page) between 1 and 200),
+  body text not null check (char_length(body) between 1 and 5000),
+  updated_at timestamptz not null default now(),
+  primary key (user_id, page)
+);
+alter table public.notes enable row level security;
+create policy "ver os próprios" on public.notes for select to authenticated using ((select auth.uid()) = user_id);
+create policy "criar os próprios" on public.notes for insert to authenticated with check ((select auth.uid()) = user_id);
+create policy "mudar os próprios" on public.notes for update to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "apagar os próprios" on public.notes for delete to authenticated using ((select auth.uid()) = user_id);
+revoke all on public.notes from anon, authenticated;
+grant select, insert, delete on public.notes to authenticated;
+grant update (body, updated_at) on public.notes to authenticated;
+
+-- Nota do mundo: uma por página em cada mundo; qualquer membro vê, escreve e apaga
+create table public.world_notes (
+  world_id uuid not null references public.worlds (id) on delete cascade,
+  page text not null check (char_length(page) between 1 and 200),
+  body text not null check (char_length(body) between 1 and 5000),
+  updated_by uuid default auth.uid() references auth.users (id) on delete set null,
+  updated_at timestamptz not null default now(),
+  primary key (world_id, page)
+);
+create index world_notes_updated_by_idx on public.world_notes (updated_by);
+alter table public.world_notes enable row level security;
+create policy "membros veem" on public.world_notes for select to authenticated using (private.is_world_member(world_id));
+create policy "membros escrevem" on public.world_notes for insert to authenticated
+  with check (private.is_world_member(world_id) and (select auth.uid()) = updated_by);
+create policy "membros mudam" on public.world_notes for update to authenticated
+  using (private.is_world_member(world_id)) with check (private.is_world_member(world_id) and (select auth.uid()) = updated_by);
+create policy "membros apagam" on public.world_notes for delete to authenticated using (private.is_world_member(world_id));
+revoke all on public.world_notes from anon, authenticated;
+grant select, insert, delete on public.world_notes to authenticated;
+grant update (body, updated_by, updated_at) on public.world_notes to authenticated;

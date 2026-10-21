@@ -9,6 +9,7 @@ import { recent } from '../lib/recent'
 import { displayName, searchDictionary } from '../lib/ptSearch'
 import { articlePath } from '../components/SearchBar'
 import ArticleActions from '../components/ArticleActions'
+import NoteBox from '../components/NoteBox'
 import { fetchArticleRef } from '../lib/articleRef'
 import { library, type ArticleRef } from '../lib/library'
 import { useRecipeBook } from '../lib/recipes'
@@ -189,6 +190,7 @@ export default function ArticlePage() {
     return (
       <article className="mx-auto max-w-5xl px-4 py-6">
         <ArticleHeader title={pageTitle} articleRef={articleRef} lang="pt" />
+        <NoteBox page={pageTitle} />
 
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gold/30 bg-gold/5 px-4 py-3">
           <p className="text-sm text-muted">
@@ -277,6 +279,7 @@ export default function ArticlePage() {
   return (
     <article className="mx-auto max-w-6xl px-4 py-6">
       <ArticleHeader title={state.title} articleRef={articleRef} lang={lang} onLang={setLang} />
+      <NoteBox page={state.title} />
       {state.savedAt && (
         <p className="mb-4 text-xs text-muted" role="status">
           A wiki não respondeu: versão salva em {new Date(state.savedAt).toLocaleDateString('pt-BR')}.
