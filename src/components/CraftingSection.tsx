@@ -31,10 +31,19 @@ export function treePath(item: string) {
   return `/arvore/${encodeURIComponent(item.replace(/ /g, '_'))}`
 }
 
+interface Props {
+  book: RecipeBook
+  crafting: Crafting
+  /** Só uma parte, sem o subtítulo (as páginas reorganizadas têm seções separadas) */
+  only?: 'recipes' | 'uses'
+}
+
 /** Seção "Crafting" do artigo: receitas, botão da árvore e "Usado em". */
-export default function CraftingSection({ book, crafting }: { book: RecipeBook; crafting: Crafting }) {
-  const { items, recipes, uses } = crafting
-  const withTree = items.filter((i) => treeRecipes(book, i).length > 0)
+export default function CraftingSection({ book, crafting, only }: Props) {
+  const { items } = crafting
+  const recipes = only === 'uses' ? [] : crafting.recipes
+  const uses = only === 'recipes' ? [] : crafting.uses
+  const withTree = only === 'uses' ? [] : items.filter((i) => treeRecipes(book, i).length > 0)
   const highlight = new Set([...items, ...uses.flatMap((u) => (u.via ? [u.via] : []))])
 
   return (
@@ -58,14 +67,14 @@ export default function CraftingSection({ book, crafting }: { book: RecipeBook; 
 
       {recipes.length > 0 && (
         <>
-          <h3>Receitas</h3>
+          {!only && <h3>Receitas</h3>}
           <RecipeList book={book} recipes={recipes} limit={12} />
         </>
       )}
 
       {uses.length > 0 && (
         <>
-          <h3>Usado em</h3>
+          {!only && <h3>Usado em</h3>}
           {uses.some((u) => u.via) && (
             <p className="text-sm text-muted">
               Em destaque: este item, ou o grupo em que ele entra (ex.: “Qualquer Barra de Ferro”).

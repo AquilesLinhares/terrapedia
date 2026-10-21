@@ -1,0 +1,129 @@
+{
+  "page": "Blood Moon",
+  "type": "evento",
+  "tags": [
+    "lua vermelha",
+    "lua de sangue",
+    "noite vermelha",
+    "água vermelha",
+    "chuva de sangue",
+    "chuva vermelha",
+    "sangue",
+    "evento noturno",
+    "noite perigosa",
+    "muitos inimigos",
+    "monstros à noite",
+    "zumbis",
+    "zumbi abre porta",
+    "olhos voadores",
+    "coelho do mal",
+    "peixe do mal",
+    "pinguim do mal",
+    "noivo",
+    "noiva",
+    "palhaço",
+    "lágrima",
+    "pescar sangue",
+    "pesca de sangue",
+    "farm de dinheiro",
+    "moedas"
+  ],
+  "summary": "Uma noite inteira em que a lua fica vermelha, a água vira sangue e a superfície se enche de inimigos — muitos deles só aparecem nessa noite.",
+  "facts": [
+    { "label": "Duração", "value": "A noite toda (19:30 às 4:30)" },
+    { "label": "Onde", "value": "Só na superfície" },
+    { "label": "Chance", "value": "1 em 9 por noite" },
+    { "label": "Fase do jogo", "value": "Pré-Hardmode e Hardmode" }
+  ],
+  "natural": {
+    "text": [
+      "Todo anoitecer (19:30) o jogo sorteia: **1 chance em 9** de ser Lua de Sangue (1 em 6 nos mundos com as seeds Celebration Mk 10 ou Zenith).",
+      "Só pode acontecer se algum jogador tiver **mais de 120 de vida máxima**.",
+      "Não acontece na lua nova, nem na noite em que o [[Eye of Cthulhu]] vai aparecer.",
+      "Uma noite não influencia a outra: podem vir várias seguidas, ou passar semanas sem nenhuma.",
+      "O aviso na tela é \"The Blood Moon is rising...\"."
+    ]
+  },
+  "summon": {
+    "text": [
+      "Use uma [[Bloody Tear]] à noite. Funciona mesmo sem as condições acima.",
+      "A Lágrima Sangrenta cai de qualquer inimigo da própria Lua de Sangue (veja Drops).",
+      "Quer cancelar? Invocar a [[Pumpkin Moon]] ou a [[Frost Moon]] (Hardmode) substitui a Lua de Sangue."
+    ],
+    "groups": [{ "items": [{ "name": "Bloody Tear", "note": "use à noite" }] }]
+  },
+  "effects": {
+    "text": [
+      "**Muito mais inimigos na superfície**: nascem mais rápido e em maior número do que cabe normalmente na tela, em qualquer bioma. No subterrâneo nada muda.",
+      "Os inimigos nascem até perto das casas dos NPCs, que normalmente os afastam.",
+      "**Zumbis abrem portas.**",
+      "Coelhinhos, peixes-dourados e pinguins viram versões malvadas (da Corrupção ou do Carmim, conforme o seu mundo) e atacam.",
+      "Na lua cheia, aparecem mais [[Werewolf|Lobisomens]] no lugar dos zumbis.",
+      "Inimigos soltam mais dinheiro.",
+      "Não dá para pular a noite dormindo numa [[Bed]] — mas o [[Enchanted Sundial]] ainda funciona.",
+      "Pesca: o poder de pesca fica 10% maior e dá para pescar inimigos e itens exclusivos.",
+      "Tela avermelhada; água e chuva ficam vermelhas.",
+      "A [[Zoologist]] vira uma raposa-lobisomem e a [[Deathweed]] floresce."
+    ]
+  },
+  "enemies": {
+    "groups": [
+      { "label": "A qualquer momento", "items": ["The Groom", "The Bride", "Blood Zombie", "Drippler"] },
+      { "label": "Em mundo de Corrupção", "items": ["Corrupt Bunny", "Corrupt Goldfish", "Corrupt Penguin"] },
+      { "label": "Em mundo de Carmim", "items": ["Vicious Bunny", "Vicious Goldfish", "Vicious Penguin"] },
+      {
+        "label": "Pescando",
+        "items": ["Wandering Eye Fish", "Zombie Merman", { "name": "Surly Slime", "note": "mascote da cidade, não é inimigo" }]
+      },
+      { "label": "No Hardmode", "items": ["Clown", "Chattering Teeth Bomb"] },
+      {
+        "label": "Pescando no Hardmode",
+        "items": [
+          { "name": "Dreadnautilus", "note": "mini-chefe" },
+          { "name": "Blood Squid", "note": "chamada pelo Sanguináutilo" },
+          "Blood Eel",
+          "Hemogoblin Shark"
+        ]
+      }
+    ]
+  },
+  "drops": {
+    "groups": [
+      { "label": "De qualquer inimigo da Lua de Sangue", "items": [{ "name": "Bloody Tear", "note": "invoca outra Lua de Sangue" }] },
+      { "label": "Do [[The Groom]]", "items": ["Top Hat"] },
+      { "label": "Da [[The Bride]]", "items": ["Wedding Veil", "Wedding Dress"] },
+      { "label": "De [[Drippler]] e [[Blood Zombie]]", "items": ["Money Trough", "Shark Tooth Necklace"] },
+      { "label": "Dos coelhinhos malvados", "items": ["Bunny Hood"] },
+      { "label": "Dos pinguins malvados", "items": [{ "name": "Pedguin's Hood", "note": "e o resto do conjunto" }] },
+      { "label": "Do [[Clown]] (Hardmode)", "items": ["Bananarang", "Trifold Map", "KO Cannon"] },
+      { "label": "De [[Wandering Eye Fish]] e [[Zombie Merman]]", "items": ["Blood Rain Bow", "Vampire Frog Staff", "Chum Caster"] },
+      { "label": "De [[Hemogoblin Shark]] e [[Blood Eel]]", "items": ["Haemorrhaxe"] },
+      { "label": "Só do [[Hemogoblin Shark]]", "items": ["Blood Thorn"] },
+      { "label": "Só da [[Blood Eel]]", "items": ["Drippler Crippler"] },
+      { "label": "Do [[Dreadnautilus]]", "items": ["Sanguine Staff", "Blood Moon Monolith"] },
+      { "label": "De qualquer inimigo pescado", "items": ["Chum Bucket"] },
+      { "label": "Pescando", "items": ["Advanced Combat Techniques", "Dread of the Red Sea"] },
+      { "label": "Colhendo a [[Deathweed]]", "items": ["Deathweed Seeds"] },
+      {
+        "label": "À venda só nesta noite",
+        "items": [
+          { "name": "Throwing Knife", "note": "Comerciante" },
+          { "name": "Silver Bullet", "note": "Comerciante de Armas" },
+          { "name": "Tungsten Bullet", "note": "Comerciante de Armas" },
+          { "name": "Bloodbath Dye", "note": "Comerciante de Tinturas" },
+          { "name": "Mime Mask", "note": "Alfaiate" },
+          { "name": "Fallen Tuxedo Shirt", "note": "Alfaiate" },
+          { "name": "Slap Hand", "note": "Comerciante Esqueleto (Hardmode)" }
+        ]
+      }
+    ]
+  },
+  "tips": [
+    "Equipamento fraco? **Desça para o subterrâneo**: lá a quantidade de inimigos é normal. Ficar dentro de casa não basta.",
+    "Ponha um bloco na frente das portas para os zumbis não conseguirem abrir.",
+    "Com vida máxima e bom equipamento, a noite vira um ótimo farm de moedas e drops.",
+    "Armas que causam dano contínuo (fogo, veneno, queimadura de gelo) rendem muito com tantos inimigos juntos.",
+    "[[Water Candle]] e [[Battle Potion]] aumentam ainda mais os inimigos (somam com a Lua de Sangue) — bom para farm."
+  ],
+  "source": { "revid": 1029816, "date": "2026-10-20" }
+}

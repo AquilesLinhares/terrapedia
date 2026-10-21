@@ -29,7 +29,7 @@ export function normalize(text: string) {
 }
 
 // Palavras pequenas que podem faltar sem problema ("espada cobre" acha "Espada de Cobre")
-const STOPWORDS = new Set(['de', 'da', 'do', 'das', 'dos', 'a', 'o', 'as', 'os', 'e', 'of', 'the', 'and'])
+export const STOPWORDS = new Set(['de', 'da', 'do', 'das', 'dos', 'a', 'o', 'as', 'os', 'e', 'of', 'the', 'and'])
 
 // Tipos que costumam ser o que a pessoa procura ganham um empurrãozinho no ranking
 const TYPE_BONUS: Record<string, number> = { chefe: 40, evento: 40, bioma: 30, guia: 30, npc: 15, item: 0, buff: -10, página: -5 }
@@ -89,7 +89,7 @@ function allowedTypos(word: string) {
  * Compara uma palavra digitada com as palavras de um nome.
  * Devolve quantos "erros" custou (0 = exata ou começo de palavra), ou -1 se não encontrou.
  */
-function matchToken(queryToken: string, tokens: string[], isLast: boolean) {
+export function matchToken(queryToken: string, tokens: string[], isLast: boolean) {
   let best = -1
   for (const token of tokens) {
     if (token === queryToken) return 0

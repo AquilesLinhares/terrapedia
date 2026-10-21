@@ -1,0 +1,117 @@
+{
+  "page": "Extractinator",
+  "type": "item",
+  "tags": [
+    "limo",
+    "lodo",
+    "lama",
+    "neve suja",
+    "lama de neve",
+    "fóssil",
+    "peneira",
+    "peneirar",
+    "filtrar",
+    "máquina",
+    "transformar blocos",
+    "trocar blocos",
+    "converter",
+    "processar",
+    "minério",
+    "minério que falta",
+    "minério do outro mundo",
+    "moedas",
+    "dinheiro",
+    "joias",
+    "pedras preciosas",
+    "âmbar",
+    "mosquito",
+    "farm de minério"
+  ],
+  "summary": "Uma máquina que \"peneira\" blocos de limo, neve com lama e fóssil do deserto e devolve moedas, minérios e joias — inclusive os minérios que não existem no seu mundo.",
+  "facts": [
+    { "label": "Tipo", "value": "Estação de crafting (3×3 blocos)" },
+    { "label": "Receita", "value": "Não tem — só encontrado" },
+    { "label": "Melhora para", "value": "[[Chlorophyte Extractinator]]" }
+  ],
+  "what": {
+    "text": [
+      "Coloque o Extrator no chão. Segurando um bloco que ele aceita, clique nele com o botão de usar/abrir (botão direito no PC): cada bloco vira um item aleatório. Com o autosseleção (Shift) o bloco certo é escolhido sozinho.",
+      "É o **único jeito de conseguir o [[Amber Mosquito]]** e, junto com os caixotes de pesca, o jeito mais fácil de pegar o minério \"do outro par\" (ex.: Platina num mundo que só tem Ouro).",
+      "Não dá minérios do Hardmode nem [[Demonite Ore|Demonita]]/[[Crimtane Ore|Carminita]]. Os do começo do Hardmode saem do [[Chlorophyte Extractinator]].",
+      "Com [[Wire|fio]]: quando recebe um sinal, ele processa sozinho um bloco de um [[Chest|baú]] colocado do lado (até 1 por segundo) — dá para automatizar."
+    ],
+    "groups": [
+      {
+        "label": "Blocos que ele aceita",
+        "items": [
+          { "name": "Silt Block", "note": "o mais comum" },
+          { "name": "Slush Block", "note": "igual ao limo" },
+          { "name": "Desert Fossil", "note": "mais âmbar e fósseis, menos minério" }
+        ]
+      },
+      {
+        "label": "O que sai do limo (chance por bloco)",
+        "items": [
+          { "name": "Copper Coin", "note": "64%" },
+          { "name": "Silver Coin", "note": "1,35%" },
+          { "name": "Gold Coin", "note": "0,1%" },
+          { "name": "Platinum Coin", "note": "0,007%" },
+          { "name": "Copper Ore", "note": "3,9% cada minério" },
+          "Tin Ore",
+          "Iron Ore",
+          "Lead Ore",
+          "Silver Ore",
+          "Tungsten Ore",
+          "Gold Ore",
+          "Platinum Ore",
+          { "name": "Amber", "note": "0,96%" },
+          { "name": "Amethyst", "note": "0,33% cada joia" },
+          "Topaz",
+          "Sapphire",
+          "Emerald",
+          "Ruby",
+          "Diamond",
+          { "name": "Amber Mosquito", "note": "0,01%" }
+        ]
+      },
+      {
+        "label": "Só do Fóssil do Deserto",
+        "items": [{ "name": "Sturdy Fossil", "qty": "1–7", "note": "10%" }]
+      },
+      {
+        "label": "Outras trocas",
+        "items": [
+          { "name": "Hive", "note": "vira Bloco de Mel" },
+          { "name": "Shell Pile", "note": "vira Bloco de Areia" },
+          { "name": "Obsidian", "note": "vira Bloco de Areia" },
+          { "name": "Old Shoe", "note": "lixo de pesca vira isca" },
+          { "name": "Tin Can", "note": "lixo de pesca vira isca" },
+          { "name": "Poo", "note": "vira terra (às vezes sementes)" }
+        ]
+      }
+    ]
+  },
+  "obtain": {
+    "text": [
+      "Não tem receita: só se acha pelo mundo.",
+      "O lugar mais comum é dentro das casinhas do [[Underground Desert]], às vezes já colocado.",
+      "Também pode vir em [[Gold Chest|Baús de Ouro]] do subterrâneo e das cavernas (5–7%), em [[Frozen Chest|Baús Congelados]] (4,9%) e em [[Wooden Crate|Caixotes de Madeira]] pescados (1,9%)."
+    ],
+    "groups": [{ "items": ["Gold Chest", "Frozen Chest", "Wooden Crate"] }]
+  },
+  "crafting": {
+    "text": ["Não dá para craftar o Extrator — veja \"Como conseguir\" acima."]
+  },
+  "usedIn": {
+    "text": [
+      "No Hardmode, junte com 18 [[Chlorophyte Bar|Barras de Clorofita]] na [[Mythril Anvil]] para fazer o [[Chlorophyte Extractinator]]: ele é 3× mais rápido, dá minérios do começo do Hardmode e troca cada minério pelo seu par (ex.: Ouro ↔ Platina)."
+    ]
+  },
+  "tips": [
+    "Antes de processar muitos blocos, libere uns 16–17 espaços no inventário, senão os itens caem no chão.",
+    "Limo é o melhor custo-benefício: é comum e seguro de pegar. O Fóssil do Deserto só vale a pena se você quer [[Amber]] ou [[Sturdy Fossil]].",
+    "Boa parte do dinheiro médio vem da chance pequena de sair Moeda de Platina — o resultado varia bastante.",
+    "Em mundos Skyblock, transforme [[Shell Pile|Montes de Conchas]] em areia."
+  ],
+  "source": { "revid": 1032478, "date": "2026-10-20" }
+}
