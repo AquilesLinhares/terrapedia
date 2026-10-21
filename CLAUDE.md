@@ -208,6 +208,14 @@ guarda `links` (`{ from, to }` = "uso `from` para craftar `to`"); tirar um item 
 Projeto "terrapedia" (região São Paulo). Login por e-mail e senha, sem confirmação de e-mail.
 O `.env` (fora do GitHub) tem `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` — veja
 `.env.example`. A chave pública pode ir pro navegador; quem protege os dados é o RLS. Nunca use a
-chave secreta/service_role no app. Ao publicar o site, cadastre essas duas variáveis na hospedagem.
+chave secreta/service_role no app. As duas variáveis também estão cadastradas na Vercel (veja "Publicação").
 Além da biblioteca, a tabela `page_translations` guarda o cache compartilhado das traduções (leitura pública,
 gravação só com login, sem apagar). Tudo o que foi aplicado no banco está registrado em `supabase/schema.sql`.
+Em Authentication → URL Configuration, a Site URL é o endereço publicado.
+
+## Publicação
+
+O site está na Vercel (time "Terrapedia", projeto `terrapedia`): **https://terrapedia-wiki.vercel.app**
+(o endereço `terrapedia-eta.vercel.app` também funciona). Cada push na `main` publica sozinho, pela ligação da
+Vercel com o GitHub. `vercel.json` manda toda rota para o `index.html`, para que recarregar `/grupos`,
+`/wiki/...` etc. funcione. Variáveis `VITE_*` mudadas na Vercel só valem depois de uma nova publicação.
