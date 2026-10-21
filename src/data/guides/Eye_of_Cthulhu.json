@@ -30,7 +30,7 @@
     { "label": "Vida", "value": "2.800 · 3.640 (Expert) · 4.641 (Mestre)" },
     { "label": "Defesa", "value": "12 na 1ª fase, 0 na 2ª" },
     { "label": "Quando", "value": "À noite (19:30 às 4:30)" },
-    { "label": "Fase do jogo", "value": "Pré-Hardmode (geralmente o 1º chefe)" }
+    { "label": "Fase do jogo", "value": "Pré-Modo Difícil (geralmente o 1º chefe)" }
   ],
   "summon": {
     "text": [
@@ -154,7 +154,7 @@
   },
   "tips": [
     "Com as barras de [[Demonite Ore|Demonita]] ou [[Crimtane Ore|Carminita]] dá para fazer espada, arco, machado, ioiô, chicote e vara de pesca. A armadura e a picareta também precisam de [[Shadow Scale]] ou [[Tissue Sample]], que vêm do próximo chefe ([[Eater of Worlds]] ou [[Brain of Cthulhu]]).",
-    "Farmar o Olho é um dos jeitos mais fáceis de ganhar dinheiro antes do Hardmode — e rende uns 30% a mais num mundo de Carmim.",
+    "Farmar o Olho é um dos jeitos mais fáceis de ganhar dinheiro antes do Modo Difícil — e rende uns 30% a mais num mundo de Carmim.",
     "Comece a desviar logo depois do 3º servo: assim você costuma escapar da primeira investida.",
     "Ele olha para o jogador que vai perseguir (útil no multiplayer).",
     "No Expert, pegue o [[Shield of Cthulhu]]: o dash ajuda muito nos próximos chefes."

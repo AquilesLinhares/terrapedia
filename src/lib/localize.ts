@@ -3,10 +3,9 @@
 // 1. Rótulos fixos (fichas, tabelas, títulos) vêm de WIKI_LABELS — funcionam sempre.
 // 2. Nomes do jogo (links, itens das tabelas, título da ficha) viram o nome oficial PT do dicionário.
 //    O nome em inglês aparece pequeno ao lado (tabelas e ficha) ou ao passar o mouse (no texto).
-// 3. O texto corrido é dividido em "trechos" (um parágrafo, um item de lista, uma célula...). Cada trecho
-//    vira um texto simples em que links, imagens e nomes do jogo são trocados por marcadores [0], [1]...
-//    É esse texto que vai para o tradutor; na volta, os marcadores são trocados de novo pelos elementos.
-//    Assim o tradutor nunca mexe nos nomes oficiais nem nos links.
+// 3. No texto corrido (que fica em inglês), nomes do jogo escritos sem link também viram o nome PT.
+//    Cada "trecho" (um parágrafo, um item de lista, uma célula...) vira um texto em que links, imagens e
+//    nomes são marcadores [0], [1]...; depois os marcadores são trocados de novo pelos elementos.
 
 import { loadDictionary, normalize } from './ptSearch'
 import { WIKI_LABELS } from './wikiLabels'
@@ -64,49 +63,25 @@ export function loadGameNames(): Promise<GameNames> {
   return names
 }
 
-export interface Segment {
-  /** Identificador do trecho (hash do texto em inglês com os marcadores) */
-  key: string
-  /** Texto em inglês com marcadores [0], [1]... no lugar de links e nomes */
-  text: string
-  /** Quantos marcadores o texto tem (a tradução precisa devolver todos) */
-  tokens: number
-}
-
-/** Traduções já feitas: chave do trecho → texto em português com os mesmos marcadores. */
-export type Translations = Record<string, string>
-
 const TOKEN = (i: number) => `[${i}]`
 const TOKEN_RE = /\[\s*(\d+)\s*\]/g
 const HAS_TOKEN = /\[\s*\d+\s*\]/
 
-/** A tradução devolveu todos os marcadores, uma vez cada? */
-export function tokensOk(text: string, count: number) {
-  const seen = [...text.matchAll(TOKEN_RE)].map((m) => Number(m[1]))
-  return seen.length === count && new Set(seen).size === count && seen.every((n) => n < count)
-}
-
-/**
- * Coloca o artigo em português. Devolve o HTML e a lista de trechos a traduzir.
- * Trechos que já estão em `translations` aparecem traduzidos; os outros ficam em inglês
- * (mas com os nomes do jogo em português).
- */
-export function localizeArticle(cleanHtml: string, gameNames: GameNames, translations: Translations = {}) {
+/** Coloca o artigo em português (rótulos e nomes do jogo; o texto corrido fica em inglês). Devolve o HTML. */
+export function localizeArticle(cleanHtml: string, gameNames: GameNames) {
   const doc = new DOMParser().parseFromString(cleanHtml, 'text/html')
-  const ctx: Context = { doc, names: gameNames, translations, done: new WeakSet(), segments: new Map() }
+  const ctx: Context = { doc, names: gameNames, done: new WeakSet() }
   translateLabels(ctx)
   translateLinkNames(ctx)
   processChildren(ctx, doc.body)
-  return { html: doc.body.innerHTML, segments: [...ctx.segments.values()] }
+  return doc.body.innerHTML
 }
 
 interface Context {
   doc: Document
   names: GameNames
-  translations: Translations
-  /** Elementos e textos que já estão em português (não vão para o tradutor) */
+  /** Elementos e textos que já estão em português (não são mexidos de novo) */
   done: WeakSet<Node>
-  segments: Map<string, Segment>
 }
 
 // ---------- 1. Rótulos ----------
@@ -229,19 +204,11 @@ function processRun(ctx: Context, run: Node[]) {
   const original = run.map((n) => (n.nodeType === Node.TEXT_NODE ? n.nodeValue : '')).join('')
   if (HAS_TOKEN.test(original)) return
 
-  const source = text.replace(/\s+/g, ' ').trim()
-  const hasWords = /[A-Za-z]{2,}/.test(source.replace(TOKEN_RE, ''))
-  let result = source
-  if (hasWords) {
-    const key = hashText(source)
-    if (!ctx.segments.has(key)) ctx.segments.set(key, { key, text: source, tokens: parts.length })
-    const translated = ctx.translations[key]
-    if (translated && tokensOk(translated, parts.length)) result = translated
-  } else if (parts.every((p) => run.includes(p))) {
-    return // nenhum nome achado no texto e nada para traduzir: nada muda
-  }
+  // Nenhum nome achado no texto: nada muda
+  if (parts.every((p) => run.includes(p))) return
+  const result = text.replace(/\s+/g, ' ').trim()
 
-  // Monta o trecho de novo (traduzido ou não), com os nomes PT, mantendo os espaços das pontas
+  // Monta o trecho de novo, com os nomes PT, mantendo os espaços das pontas
   const first = run[0]
   const last = run[run.length - 1]
   // Marca o lugar antes de mexer (os elementos do trecho vão ser movidos para dentro do fragmento)
@@ -307,18 +274,4 @@ function textNodes(el: Element): Text[] {
   const nodes: Text[] = []
   while (walker.nextNode()) nodes.push(walker.currentNode as Text)
   return nodes
-}
-
-/** Hash curto e estável de um texto (cyrb53), usado como chave do trecho. */
-function hashText(text: string) {
-  let h1 = 0xdeadbeef
-  let h2 = 0x41c6ce57
-  for (let i = 0; i < text.length; i++) {
-    const c = text.charCodeAt(i)
-    h1 = Math.imul(h1 ^ c, 2654435761)
-    h2 = Math.imul(h2 ^ c, 1597334677)
-  }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909)
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909)
-  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36)
 }

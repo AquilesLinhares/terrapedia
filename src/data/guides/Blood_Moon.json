@@ -33,7 +33,7 @@
     { "label": "Duração", "value": "A noite toda (19:30 às 4:30)" },
     { "label": "Onde", "value": "Só na superfície" },
     { "label": "Chance", "value": "1 em 9 por noite" },
-    { "label": "Fase do jogo", "value": "Pré-Hardmode e Hardmode" }
+    { "label": "Fase do jogo", "value": "Pré-Modo Difícil e Modo Difícil" }
   ],
   "natural": {
     "text": [
@@ -48,7 +48,7 @@
     "text": [
       "Use uma [[Bloody Tear]] à noite. Funciona mesmo sem as condições acima.",
       "A Lágrima Sangrenta cai de qualquer inimigo da própria Lua de Sangue (veja Drops).",
-      "Quer cancelar? Invocar a [[Pumpkin Moon]] ou a [[Frost Moon]] (Hardmode) substitui a Lua de Sangue."
+      "Quer cancelar? Invocar a [[Pumpkin Moon]] ou a [[Frost Moon]] (Modo Difícil) substitui a Lua de Sangue."
     ],
     "groups": [{ "items": [{ "name": "Bloody Tear", "note": "use à noite" }] }]
   },
@@ -75,9 +75,9 @@
         "label": "Pescando",
         "items": ["Wandering Eye Fish", "Zombie Merman", { "name": "Surly Slime", "note": "mascote da cidade, não é inimigo" }]
       },
-      { "label": "No Hardmode", "items": ["Clown", "Chattering Teeth Bomb"] },
+      { "label": "No Modo Difícil", "items": ["Clown", "Chattering Teeth Bomb"] },
       {
-        "label": "Pescando no Hardmode",
+        "label": "Pescando no Modo Difícil",
         "items": [
           { "name": "Dreadnautilus", "note": "mini-chefe" },
           { "name": "Blood Squid", "note": "chamada pelo Sanguináutilo" },
@@ -95,7 +95,7 @@
       { "label": "De [[Drippler]] e [[Blood Zombie]]", "items": ["Money Trough", "Shark Tooth Necklace"] },
       { "label": "Dos coelhinhos malvados", "items": ["Bunny Hood"] },
       { "label": "Dos pinguins malvados", "items": [{ "name": "Pedguin's Hood", "note": "e o resto do conjunto" }] },
-      { "label": "Do [[Clown]] (Hardmode)", "items": ["Bananarang", "Trifold Map", "KO Cannon"] },
+      { "label": "Do [[Clown]] (Modo Difícil)", "items": ["Bananarang", "Trifold Map", "KO Cannon"] },
       { "label": "De [[Wandering Eye Fish]] e [[Zombie Merman]]", "items": ["Blood Rain Bow", "Vampire Frog Staff", "Chum Caster"] },
       { "label": "De [[Hemogoblin Shark]] e [[Blood Eel]]", "items": ["Haemorrhaxe"] },
       { "label": "Só do [[Hemogoblin Shark]]", "items": ["Blood Thorn"] },
@@ -113,7 +113,7 @@
           { "name": "Bloodbath Dye", "note": "Comerciante de Tinturas" },
           { "name": "Mime Mask", "note": "Alfaiate" },
           { "name": "Fallen Tuxedo Shirt", "note": "Alfaiate" },
-          { "name": "Slap Hand", "note": "Comerciante Esqueleto (Hardmode)" }
+          { "name": "Slap Hand", "note": "Comerciante Esqueleto (Modo Difícil)" }
         ]
       }
     ]

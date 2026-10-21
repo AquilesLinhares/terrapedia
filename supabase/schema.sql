@@ -152,3 +152,9 @@ $$;
 
 revoke execute on function public.merge_page_translation(text, jsonb) from public, anon;
 grant execute on function public.merge_page_translation(text, jsonb) to authenticated;
+
+-- ===== Remoção do cache das traduções (2026-10-21): o app não usa mais a tabela acima =====
+-- AINDA NÃO APLICADO. Rodar no SQL Editor do Supabase; depois disso, apagar a seção "Cache compartilhado" acima.
+--
+-- drop function if exists public.merge_page_translation(text, jsonb);
+-- drop table if exists public.page_translations;

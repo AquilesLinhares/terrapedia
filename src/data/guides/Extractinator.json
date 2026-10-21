@@ -37,7 +37,7 @@
     "text": [
       "Coloque o Extrator no chão. Segurando um bloco que ele aceita, clique nele com o botão de usar/abrir (botão direito no PC): cada bloco vira um item aleatório. Com o autosseleção (Shift) o bloco certo é escolhido sozinho.",
       "É o **único jeito de conseguir o [[Amber Mosquito]]** e, junto com os caixotes de pesca, o jeito mais fácil de pegar o minério \"do outro par\" (ex.: Platina num mundo que só tem Ouro).",
-      "Não dá minérios do Hardmode nem [[Demonite Ore|Demonita]]/[[Crimtane Ore|Carminita]]. Os do começo do Hardmode saem do [[Chlorophyte Extractinator]].",
+      "Não dá minérios do Modo Difícil nem [[Demonite Ore|Demonita]]/[[Crimtane Ore|Carminita]]. Os do começo do Modo Difícil saem do [[Chlorophyte Extractinator]].",
       "Com [[Wire|fio]]: quando recebe um sinal, ele processa sozinho um bloco de um [[Chest|baú]] colocado do lado (até 1 por segundo) — dá para automatizar."
     ],
     "groups": [
@@ -104,7 +104,7 @@
   },
   "usedIn": {
     "text": [
-      "No Hardmode, junte com 18 [[Chlorophyte Bar|Barras de Clorofita]] na [[Mythril Anvil]] para fazer o [[Chlorophyte Extractinator]]: ele é 3× mais rápido, dá minérios do começo do Hardmode e troca cada minério pelo seu par (ex.: Ouro ↔ Platina)."
+      "No Modo Difícil, junte com 18 [[Chlorophyte Bar|Barras de Clorofita]] na [[Mythril Anvil]] para fazer o [[Chlorophyte Extractinator]]: ele é 3× mais rápido, dá minérios do começo do Modo Difícil e troca cada minério pelo seu par (ex.: Ouro ↔ Platina)."
     ]
   },
   "tips": [

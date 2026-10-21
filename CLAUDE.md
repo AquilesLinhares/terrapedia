@@ -18,8 +18,9 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Licença CC BY-NC-SA**: o conteúdo da wiki é CC BY-NC-SA 3.0. Toda página de artigo **sempre**
   mostra crédito à Terraria Wiki e um link para a página original. Projeto sem fins comerciais.
 - **Mobile primeiro**: tudo precisa ficar bom numa tela de celular.
-- **Tudo em português**: interface, nomes do jogo (nome oficial PT do dicionário) e, quando possível,
-  o texto dos artigos (tradução automática). O original em inglês fica sempre a um clique (botão PT / EN).
+- **Tudo em português**: interface, nomes do jogo (nome oficial PT do dicionário), rótulos das fichas e
+  os resumos da Fase 5 (que usam "Modo Difícil", não "Hardmode"). O texto corrido dos artigos completos fica
+  em inglês. O original em inglês fica sempre a um clique (botão PT / EN).
 
 ## Roadmap
 
@@ -42,9 +43,10 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
   Claude Code, sem API paga) num formato fixo por tipo, com etiquetas de busca por descrição. Piloto:
   Blood Moon, Eye of Cthulhu e Extractinator.
 - **Artigos em português (feito, entre a Fase 5 e as próximas páginas)**: nomes do jogo e rótulos da wiki
-  trocados pelo PT, texto corrido traduzido pela Translator API do Chrome (no aparelho, grátis) com
-  cache compartilhado no Supabase, botão PT / EN e aviso quando a tradução não está disponível.
-  Veja "Artigos em português" abaixo.
+  trocados pelo PT e botão PT / EN. A tradução do texto corrido (Translator API do Chrome + cache no
+  Supabase) foi removida em 2026-10-21. Veja "Artigos em português" abaixo.
+- **Resistência quando a wiki cai (feito)**: mensagens diferentes para sem internet / wiki em manutenção /
+  página inexistente e cópia de cada artigo aberto no aparelho. Veja "Quando a wiki cai" abaixo.
 
 ## Stack
 
@@ -55,7 +57,8 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 
 ## Estrutura
 
-- `src/lib/wikiApi.ts` — chamadas à API da wiki (busca e parse)
+- `src/lib/wikiApi.ts` — chamadas à API da wiki (busca e parse) e os erros `PageNotFoundError` / `WikiUnavailableError`
+- `src/lib/pageCache.ts` — cópia no aparelho (IndexedDB) dos artigos já abertos
 - `src/lib/cleanArticle.ts` — limpa o HTML do artigo e reescreve links/imagens
 - `src/lib/ptSearch.ts` — busca local no dicionário PT ↔ EN (normalização + distância de edição)
 - `src/data/dictionary.json` — dicionário gerado (formato compacto `[pt, en, tipo, página?]`). Não editar à mão.
@@ -67,11 +70,9 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/components/GroupLinkPicker.tsx` — ligar itens dentro de um grupo ("uso X para craftar Y")
 - `src/pages/CraftingTreePage.tsx` — página da árvore (`/arvore/<Item>`)
 - `src/lib/library.ts` — favoritos, grupos e "buscar depois" (veja "Biblioteca" abaixo)
-- `src/lib/localize.ts` — põe o artigo em português: rótulos, nomes do jogo e trechos para traduzir (`localizeArticle`, `loadGameNames`)
+- `src/lib/localize.ts` — põe o artigo em português: rótulos e nomes do jogo (`localizeArticle`, `loadGameNames`)
 - `src/lib/wikiLabels.ts` — dicionário fixo dos rótulos da wiki (Damage → Dano, Notes → Notas...)
-- `src/lib/translator.ts` — Translator API do Chrome (disponibilidade, download do modelo, tradução com marcadores)
-- `src/lib/translationCache.ts` — cache compartilhado das traduções (tabela `page_translations`)
-- `src/lib/useArticleTranslation.ts` — junta tudo no artigo: cache, tradução aos poucos, andamento
+- `src/lib/useLocalizedArticle.ts` — hook do artigo em português (chama `localizeArticle`)
 - `src/lib/articleLang.ts` — preferência PT / EN dos artigos (salva no aparelho)
 - `src/lib/supabase.ts` — cliente do Supabase (lê o `.env`; sem `.env` vira `null` e o app fica só local)
 - `src/lib/auth.ts` — login: `useAuth()`, `auth.signIn/signUp/signOut`, `onUserChange`
@@ -161,7 +162,8 @@ de itens que não existem no dicionário/receitas e regenera o `guide-index.json
 ## Artigos em português
 
 Os artigos completos da wiki aparecem em português por padrão (botão **PT / EN** no topo; a escolha fica em
-`terrapedia:article-lang`). `useArticleTranslation` chama `localizeArticle` sobre o HTML já limpo:
+`terrapedia:article-lang`). `useLocalizedArticle` chama `localizeArticle` sobre o HTML já limpo. O texto
+corrido fica em inglês (a tradução automática pela Translator API do Chrome foi testada e removida):
 
 1. **Rótulos** (fichas, cabeçalhos de tabela, títulos de seção, "(Forte)", moedas): `WIKI_LABELS` em
    `src/lib/wikiLabels.ts`. Funcionam sempre. Rótulo novo = uma linha nesse arquivo.
@@ -171,19 +173,26 @@ Os artigos completos da wiki aparecem em português por padrão (botão **PT / E
    Apelidos e nomes iguais ao inglês não contam. Nas tabelas e na ficha o nome EN aparece pequeno
    (`.en-name`); no texto, ao passar o mouse (`title`). Nomes no meio do texto (com maiúscula, como a wiki
    escreve) também viram PT (`.game-name`).
-3. **Texto corrido**: cada parágrafo/item/célula vira um "trecho" em texto simples, com marcadores `[0]`, `[1]`...
-   no lugar de links, imagens e nomes do jogo (assim o tradutor não mexe neles). A chave do trecho é um
-   hash do texto em inglês. A tradução só é usada se devolver todos os marcadores; ela entra como **texto
-   puro** (nunca como HTML), então um valor estranho no cache não consegue injetar nada.
-
-Fluxo da tradução: lê o cache (`page_translations`, todo mundo lê, inclusive sem login) → se faltar algo e o
-navegador tiver a Translator API (Chrome para computador), traduz de cima para baixo, atualizando a tela a
-cada ~1 s → salva no cache (só com login, pela função `merge_page_translation`). Se o Chrome precisar baixar
-o modelo, aparece o botão "Baixar tradutor" (o Chrome exige um clique). Sem API e sem cache, o texto fica
-em inglês com um aviso discreto — os nomes e rótulos continuam em PT. A API às vezes existe mas não
-responde (ex.: navegador embutido de outros apps): depois de 4 s ela é tratada como indisponível.
+   Para achar esses nomes, cada parágrafo/item/célula vira um "trecho" com marcadores `[0]`, `[1]`... no lugar
+   de links, imagens e nomes; depois os marcadores voltam a ser os elementos.
 
 Páginas reorganizadas (Fase 5) não passam por isso: já são escritas em português; a "página completa" delas sim.
+
+## Quando a wiki cai
+
+- **Erros diferentes** (`getJson` em `wikiApi.ts`): a wiki em manutenção responde 502/503 com uma página HTML
+  ("Maintenance - wiki.gg") sem CORS, e o navegador só diz "falhou". Então, quando o pedido falha, um pedido
+  `no-cors` ao `favicon.ico` mostra se o servidor está lá: respondeu → `WikiUnavailableError('maintenance')`;
+  não respondeu (ou `navigator.onLine` falso) → `'offline'`. Resposta não-OK ou que não é JSON também é
+  `'maintenance'`. Página inexistente continua sendo `PageNotFoundError` (tela "Página não encontrada").
+  A tela de erro tem o botão "Tentar de novo".
+- **Cópia no aparelho** (`src/lib/pageCache.ts`, IndexedDB `terrapedia` → `pages`): todo artigo que carrega é
+  salvo (HTML como veio da wiki, com a data), pelo título pedido e pelo título real. Se a wiki ou a internet
+  falhar, o artigo abre da cópia com o aviso "versão salva em [data]". Os resumos da Fase 5 vêm junto com o app
+  e funcionam sempre.
+- **Sem proxy**: a API é chamada direto do navegador (`origin=*`). Não há proxy de CORS no projeto.
+- O service worker (`wiki-cache` em `vite.config.ts`) também guarda respostas da wiki por 7 dias; o IndexedDB
+  é a garantia que não expira.
 
 ## Biblioteca (favoritos, grupos, buscar depois)
 
@@ -209,8 +218,8 @@ Projeto "terrapedia" (região São Paulo). Login por e-mail e senha, sem confirm
 O `.env` (fora do GitHub) tem `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` — veja
 `.env.example`. A chave pública pode ir pro navegador; quem protege os dados é o RLS. Nunca use a
 chave secreta/service_role no app. As duas variáveis também estão cadastradas na Vercel (veja "Publicação").
-Além da biblioteca, a tabela `page_translations` guarda o cache compartilhado das traduções (leitura pública,
-gravação só com login, sem apagar). Tudo o que foi aplicado no banco está registrado em `supabase/schema.sql`.
+A tabela `page_translations` (cache das traduções automáticas) não é mais usada pelo app; o SQL para apagá-la
+está no fim de `supabase/schema.sql`. Tudo o que foi aplicado no banco está registrado nesse arquivo.
 Em Authentication → URL Configuration, a Site URL é o endereço publicado.
 
 ## Publicação

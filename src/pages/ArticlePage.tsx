@@ -2,7 +2,8 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { cleanArticle } from '../lib/cleanArticle'
-import { fetchArticle, fetchSearch, PageNotFoundError, wikiPageUrl } from '../lib/wikiApi'
+import { fetchArticle, fetchSearch, PageNotFoundError, WikiUnavailableError, wikiPageUrl } from '../lib/wikiApi'
+import { loadPage, savePage } from '../lib/pageCache'
 import { displayName, searchDictionary } from '../lib/ptSearch'
 import { articlePath } from '../components/SearchBar'
 import ArticleActions from '../components/ArticleActions'
@@ -12,15 +13,22 @@ import { useRecipeBook } from '../lib/recipes'
 import CraftingSection, { craftingFor } from '../components/CraftingSection'
 import GuideView from '../components/GuideView'
 import { hasGuide, loadGuide, searchGuides, type Guide } from '../lib/guides'
-import { useArticleTranslation, type TranslationState } from '../lib/useArticleTranslation'
+import { useLocalizedArticle } from '../lib/useLocalizedArticle'
 import { useArticleLang, type ArticleLang } from '../lib/articleLang'
 import { loadGameNames } from '../lib/localize'
 
 type State =
   | { status: 'loading' }
-  | { status: 'ok'; title: string; html: string }
+  /** `savedAt`: a wiki não respondeu e esta é a cópia salva no aparelho */
+  | { status: 'ok'; title: string; html: string; savedAt?: number }
   | { status: 'notfound'; results: { page: string; label: string; snippet?: string; hint?: string }[] }
   | { status: 'error'; message: string }
+
+const ERROR_MESSAGES = {
+  offline: 'Sem internet. Conecte-se e tente de novo.',
+  maintenance: 'A Terraria Wiki está em manutenção ou fora do ar agora. Tente de novo daqui a pouco.',
+  other: 'Não foi possível carregar a página.',
+}
 
 export default function ArticlePage() {
   const { '*': rawTitle = '' } = useParams()
@@ -29,6 +37,7 @@ export default function ArticlePage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const title = useMemo(() => rawTitle.replace(/_/g, ' '), [rawTitle])
   const [state, setState] = useState<State>({ status: 'loading' })
+  const [attempt, setAttempt] = useState(0) // "Tentar de novo"
   // Nome PT e sprite do artigo, usados ao salvar em favoritos/grupos/"buscar depois"
   const [articleRef, setArticleRef] = useState<ArticleRef | null>(null)
   // Receitas: desenhadas no lugar da seção "Crafting" da wiki (o "slot" marcado pelo cleanArticle)
@@ -48,14 +57,10 @@ export default function ArticlePage() {
   const wantsFull = searchParams.has('completa') || (!!hash && !hash.startsWith('#resumo-'))
   const showGuide = !!guidePage && !wantsFull
 
-  // Português (nomes, rótulos e tradução automática) ou o original em inglês
+  // Português (nomes e rótulos do jogo) ou o original em inglês
   const [lang, setLang] = useArticleLang()
-  const translation = useArticleTranslation(
-    state.status === 'ok' ? state.title : null,
-    state.status === 'ok' ? state.html : null,
-    lang === 'pt' && !showGuide,
-  )
-  const articleHtml = state.status === 'ok' ? (lang === 'pt' ? translation.html : state.html) : null
+  const localizedHtml = useLocalizedArticle(state.status === 'ok' ? state.html : null, lang === 'pt' && !showGuide)
+  const articleHtml = state.status === 'ok' ? (lang === 'pt' ? localizedHtml : state.html) : null
 
   useLayoutEffect(() => {
     setCraftingSlot(contentRef.current?.querySelector<HTMLElement>('[data-crafting-slot]') ?? null)
@@ -91,8 +96,20 @@ export default function ArticlePage() {
 
     fetchArticle(title, controller.signal)
       .then((article) => {
+        savePage(title, article)
+        return article
+      })
+      .catch(async (err) => {
+        // Wiki fora do ar ou sem internet: usa a cópia salva no aparelho, se houver
+        if (!(err instanceof WikiUnavailableError)) throw err
+        const saved = await loadPage(title)
+        if (!saved) throw err
+        return saved
+      })
+      .then((article) => {
         const html = cleanArticle(article.html)
-        setState({ status: 'ok', title: article.title, html })
+        const savedAt = 'savedAt' in article ? article.savedAt : undefined
+        setState({ status: 'ok', title: article.title, html, savedAt })
         document.title = `${article.title} · Terrapedia`
         setArticleRef({ page: article.title, en: article.title })
         fetchArticleRef(article.title, html, controller.signal).then((ref) => {
@@ -126,12 +143,12 @@ export default function ArticlePage() {
             .map((r) => ({ page: r.title, label: displayName({ pt: names.lower.get(r.title.toLowerCase()) ?? r.title, en: r.title }), snippet: r.snippet }))
           setState({ status: 'notfound', results: [...fromTags, ...fromDict, ...fromWiki] })
         } else {
-          setState({ status: 'error', message: 'Não foi possível carregar a página. Verifique sua internet.' })
+          setState({ status: 'error', message: ERROR_MESSAGES[err instanceof WikiUnavailableError ? err.reason : 'other'] })
         }
       })
 
     return () => controller.abort()
-  }, [title])
+  }, [title, attempt])
 
   // Se a URL tem "#Secao", rola até ela depois que o conteúdo aparece.
   useEffect(() => {
@@ -204,7 +221,18 @@ export default function ArticlePage() {
   }
 
   if (state.status === 'error') {
-    return <p className="mx-auto max-w-4xl px-4 py-12 text-center text-muted">{state.message}</p>
+    return (
+      <div className="mx-auto max-w-4xl px-4 py-12 text-center text-muted">
+        <p>{state.message}</p>
+        <button
+          type="button"
+          onClick={() => setAttempt((n) => n + 1)}
+          className="mt-4 h-9 rounded-full border border-line bg-panel px-4 text-sm font-semibold text-accent transition hover:border-accent"
+        >
+          Tentar de novo
+        </button>
+      </div>
+    )
   }
 
   if (state.status === 'notfound') {
@@ -237,7 +265,11 @@ export default function ArticlePage() {
   return (
     <article className="mx-auto max-w-6xl px-4 py-6">
       <ArticleHeader title={state.title} articleRef={articleRef} lang={lang} onLang={setLang} />
-      {lang === 'pt' && <TranslationNotice state={translation.state} onDownload={translation.startDownload} />}
+      {state.savedAt && (
+        <p className="mb-4 text-xs text-muted" role="status">
+          A wiki não respondeu: versão salva em {new Date(state.savedAt).toLocaleDateString('pt-BR')}.
+        </p>
+      )}
 
       {guidePage && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-panel/70 px-4 py-2.5">
@@ -278,7 +310,7 @@ export default function ArticlePage() {
           {state.title}
         </a>
         ” da Terraria Wiki, licenciado sob <LicenseLink />. O conteúdo foi adaptado (menus e navegação removidos)
-        {lang === 'pt' && ' e traduzido: nomes pelo dicionário oficial do jogo e o texto por tradução automática'}.
+        {lang === 'pt' && ', com os nomes do jogo em português pelo dicionário oficial'}.
       </p>
     </article>
   )
@@ -337,49 +369,6 @@ function ArticleHeader({ title, articleRef, lang, onLang }: HeaderProps) {
       )}
     </header>
   )
-}
-
-/** Aviso discreto sobre a tradução do texto corrido (andamento, download ou indisponível). */
-function TranslationNotice({ state, onDownload }: { state: TranslationState; onDownload: () => void }) {
-  const box = 'mb-4 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border border-line bg-panel/60 px-3 py-2 text-xs text-muted'
-  if (state.kind === 'translating') {
-    const pct = Math.round((state.done / state.total) * 100)
-    return (
-      <div className={box} role="status">
-        <span className="h-3 w-3 animate-spin rounded-full border-2 border-muted border-t-accent" />
-        Traduzindo o texto no seu aparelho… {pct}%
-      </div>
-    )
-  }
-  if (state.kind === 'download') {
-    return (
-      <div className={box}>
-        <span className="flex-1">
-          {state.progress !== undefined
-            ? `Baixando o tradutor do Chrome… ${Math.round(state.progress * 100)}%`
-            : 'O texto está em inglês. O Chrome pode traduzir esta página no seu aparelho, de graça.'}
-        </span>
-        {state.progress === undefined && (
-          <button type="button" onClick={onDownload} className="font-semibold text-accent hover:underline">
-            Baixar tradutor
-          </button>
-        )}
-      </div>
-    )
-  }
-  if (state.kind === 'unavailable') {
-    const all = state.missing === state.total
-    return (
-      <p className={box}>
-        {all ? 'Texto em inglês' : 'Parte do texto está em inglês'}: a tradução automática não está disponível neste
-        navegador (funciona no Chrome para computador). Os nomes do jogo já estão em português.
-      </p>
-    )
-  }
-  if (state.kind === 'done' && state.failed > 0) {
-    return <p className={box}>Alguns trechos não puderam ser traduzidos e ficaram em inglês.</p>
-  }
-  return null
 }
 
 function LicenseLink() {

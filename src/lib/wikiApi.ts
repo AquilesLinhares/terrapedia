@@ -9,6 +9,44 @@ function apiUrl(params: Record<string, string>) {
   return `${API_URL}?${search}`
 }
 
+/** A wiki não respondeu: sem internet ou wiki em manutenção/fora do ar. */
+export class WikiUnavailableError extends Error {
+  constructor(readonly reason: 'offline' | 'maintenance') {
+    super(reason)
+  }
+}
+
+/** Busca na API e lê o JSON, separando "sem internet" de "wiki em manutenção". */
+async function getJson(url: string, signal?: AbortSignal) {
+  let res: Response
+  try {
+    res = await fetch(url, { signal })
+  } catch (err) {
+    if (signal?.aborted) throw err
+    throw new WikiUnavailableError((await wikiReachable()) ? 'maintenance' : 'offline')
+  }
+  // Em manutenção a wiki responde 502/503 com uma página HTML ("Maintenance - wiki.gg") no lugar do JSON
+  if (!res.ok) throw new WikiUnavailableError('maintenance')
+  try {
+    return await res.json()
+  } catch (err) {
+    if (signal?.aborted) throw err
+    throw new WikiUnavailableError('maintenance')
+  }
+}
+
+// A página de manutenção não libera CORS, então o navegador só diz "falhou". Um pedido "no-cors" (sem ler a
+// resposta) mostra se o servidor está lá. O endereço muda a cada vez para não vir do cache do service worker.
+async function wikiReachable() {
+  if (!navigator.onLine) return false
+  try {
+    await fetch(`${WIKI_BASE}/favicon.ico?ping=${Date.now()}`, { mode: 'no-cors', cache: 'no-store' })
+    return true
+  } catch {
+    return false
+  }
+}
+
 /** Endereço da página original na wiki (usado nos créditos). */
 export function wikiPageUrl(title: string) {
   return `${WIKI_BASE}/wiki/${encodeURIComponent(title.replace(/ /g, '_'))}`
@@ -24,7 +62,7 @@ const LANGUAGE_SUBPAGE = /\/[a-z]{2}(-[a-z]+)?$/
 
 /** Sugestões enquanto o usuário digita (busca por começo do título, com miniatura). */
 export async function fetchSuggestions(query: string, signal?: AbortSignal): Promise<Suggestion[]> {
-  const res = await fetch(
+  const data = await getJson(
     apiUrl({
       action: 'query',
       generator: 'prefixsearch',
@@ -36,9 +74,8 @@ export async function fetchSuggestions(query: string, signal?: AbortSignal): Pro
       pithumbsize: '48',
       redirects: '1',
     }),
-    { signal },
+    signal,
   )
-  const data = await res.json()
   const pages: { title: string; index: number; thumbnail?: { source: string } }[] = data.query?.pages ?? []
   return pages
     .filter((p) => !LANGUAGE_SUBPAGE.test(p.title) && !p.title.startsWith('Terraria Wiki:'))
@@ -54,22 +91,20 @@ export interface SearchResult {
 
 /** Busca no texto completo (usada quando a página digitada não existe). */
 export async function fetchSearch(query: string, signal?: AbortSignal): Promise<SearchResult[]> {
-  const res = await fetch(
+  const data = await getJson(
     apiUrl({ action: 'query', list: 'search', srsearch: query, srnamespace: '0', srlimit: '20' }),
-    { signal },
+    signal,
   )
-  const data = await res.json()
   const results: SearchResult[] = data.query?.search ?? []
   return results.filter((r) => !LANGUAGE_SUBPAGE.test(r.title))
 }
 
 /** Imagem principal de um artigo (normalmente o sprite do item/NPC). */
 export async function fetchPageImage(title: string, signal?: AbortSignal): Promise<string | undefined> {
-  const res = await fetch(
+  const data = await getJson(
     apiUrl({ action: 'query', titles: title, prop: 'pageimages', piprop: 'thumbnail', pithumbsize: '64', redirects: '1' }),
-    { signal },
+    signal,
   )
-  const data = await res.json()
   const page: { thumbnail?: { source: string } } | undefined = data.query?.pages?.[0]
   return page?.thumbnail?.source
 }
@@ -83,11 +118,10 @@ export class PageNotFoundError extends Error {}
 
 /** Busca o HTML já renderizado de um artigo. Segue redirecionamentos automaticamente. */
 export async function fetchArticle(title: string, signal?: AbortSignal): Promise<ParsedArticle> {
-  const res = await fetch(
+  const data = await getJson(
     apiUrl({ action: 'parse', page: title, prop: 'text', redirects: '1', disableeditsection: '1', disabletoc: '1' }),
-    { signal },
+    signal,
   )
-  const data = await res.json()
   if (data.error) {
     if (data.error.code === 'missingtitle' || data.error.code === 'invalidtitle') throw new PageNotFoundError(title)
     throw new Error(data.error.info ?? 'Erro ao carregar a página')
