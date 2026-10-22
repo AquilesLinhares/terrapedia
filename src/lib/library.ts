@@ -1,9 +1,9 @@
-// "Biblioteca" do usuário: favoritos, grupos e a lista "buscar depois".
+// "Biblioteca" do usuário: favoritos, grupos, a lista "buscar depois" e o acesso rápido (itens fixados).
 //
 // Dois modos, e as telas não sabem a diferença (leem com `useLibrary()`, mudam com `library.*`):
 //   - sem login: tudo fica só neste aparelho (localStorage, chave `terrapedia:library`);
 //   - com login: os dados são da conta no Supabase (tabelas favorites, read_later, groups e
-//     group_items — veja supabase/schema.sql). Uma cópia fica no aparelho para abrir rápido e
+//     group_items, group_links e quick_access — veja supabase/schema.sql). Uma cópia fica no aparelho para abrir rápido e
 //     funcionar sem internet.
 // Toda mudança passa por `commit()`. Logado, ele chama `work()`, que envia ao Supabase só o que
 // mudou desde o último estado que o servidor confirmou (`synced`). Se falhar (sem internet), as
@@ -55,15 +55,17 @@ export interface LibraryData {
   favorites: SavedArticle[]
   readLater: ReadLaterItem[]
   groups: Group[]
+  /** Acesso rápido (janelinha flutuante), na ordem escolhida */
+  quick: SavedArticle[]
 }
 
-const EMPTY: LibraryData = { version: 1, favorites: [], readLater: [], groups: [] }
+const EMPTY: LibraryData = { version: 1, favorites: [], readLater: [], groups: [], quick: [] }
 
 export interface SyncStatus {
   /** local = sem login · loading = lendo a conta · syncing = enviando · synced = tudo salvo · offline = falhou, tenta depois */
   state: 'local' | 'loading' | 'syncing' | 'synced' | 'offline'
   /** O que há neste aparelho para importar na conta (aparece só no primeiro login) */
-  importOffer: { favorites: number; readLater: number; groups: number } | null
+  importOffer: { favorites: number; readLater: number; groups: number; quick: number } | null
 }
 
 /** Cópia da conta guardada no aparelho: os dados atuais e o último estado confirmado pelo servidor. */
@@ -93,9 +95,10 @@ function write(key: string, value: unknown) {
   }
 }
 
-/** Dados salvos antes das ligações não têm `links`: completa para o formato atual. */
+/** Dados salvos antes das ligações (ou do acesso rápido) não têm `links`/`quick`: completa para o formato atual. */
 function upgrade(lib: LibraryData): LibraryData {
-  return lib.groups.every((g) => g.links) ? lib : { ...lib, groups: lib.groups.map((g) => ({ ...g, links: g.links ?? [] })) }
+  const groups = lib.groups.every((g) => g.links) ? lib.groups : lib.groups.map((g) => ({ ...g, links: g.links ?? [] }))
+  return lib.quick && groups === lib.groups ? lib : { ...lib, groups, quick: lib.quick ?? [] }
 }
 
 const loadLocal = (): LibraryData => upgrade({ ...EMPTY, ...read<Partial<LibraryData>>(LOCAL_KEY), version: 1 })
@@ -184,8 +187,8 @@ function refetch() {
 function checkImportOffer() {
   if (!userId || read(importAskedKey(userId))) return
   const local = loadLocal()
-  const offer = { favorites: local.favorites.length, readLater: local.readLater.length, groups: local.groups.length }
-  if (offer.favorites + offer.readLater + offer.groups > 0) setStatus({ importOffer: offer })
+  const offer = { favorites: local.favorites.length, readLater: local.readLater.length, groups: local.groups.length, quick: local.quick.length }
+  if (offer.favorites + offer.readLater + offer.groups + offer.quick > 0) setStatus({ importOffer: offer })
 }
 
 onUserChange((user) => {
@@ -281,6 +284,7 @@ function merge(base: LibraryData, extra: LibraryData): LibraryData {
     favorites: addMissing(base.favorites, extra.favorites),
     readLater: addMissing(base.readLater, extra.readLater),
     groups,
+    quick: addMissing(base.quick, extra.quick),
   }
 }
 
@@ -295,6 +299,10 @@ export function isFavorite(lib: LibraryData, page: string) {
 
 export function readLaterItem(lib: LibraryData, page: string) {
   return lib.readLater.find((r) => samePage(r.page, page))
+}
+
+export function isQuick(lib: LibraryData, page: string) {
+  return lib.quick.some((q) => samePage(q.page, page))
 }
 
 export function groupHas(group: Group, page: string) {
@@ -331,6 +339,24 @@ export const library = {
         ? data.readLater.filter((r) => !samePage(r.page, ref.page))
         : [{ ...ref, addedAt: now(), seen: false }, ...data.readLater],
     })
+  },
+
+  /** Fixa no fim do acesso rápido, ou tira se já estava. */
+  toggleQuick(ref: ArticleRef) {
+    commit({
+      ...data,
+      quick: isQuick(data, ref.page) ? data.quick.filter((q) => !samePage(q.page, ref.page)) : [...data.quick, { ...ref, addedAt: now() }],
+    })
+  },
+
+  /** Sobe (-1) ou desce (+1) um item do acesso rápido. */
+  moveQuick(page: string, delta: -1 | 1) {
+    const from = data.quick.findIndex((q) => samePage(q.page, page))
+    const to = from + delta
+    if (from === -1 || to < 0 || to >= data.quick.length) return
+    const quick = [...data.quick]
+    ;[quick[from], quick[to]] = [quick[to], quick[from]]
+    commit({ ...data, quick })
   },
 
   setSeen(page: string, seen: boolean) {
@@ -407,6 +433,7 @@ export const library = {
       favorites: data.favorites.map((f) => refresh(f, ref)),
       readLater: data.readLater.map((r) => refresh(r, ref)),
       groups: data.groups.map((g) => ({ ...g, items: g.items.map((i) => refresh(i, ref)) })),
+      quick: data.quick.map((q) => refresh(q, ref)),
     }
     if (JSON.stringify(next) !== JSON.stringify(data)) commit(next)
   },

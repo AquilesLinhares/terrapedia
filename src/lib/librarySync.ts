@@ -64,16 +64,18 @@ function check<T>({ data, error }: { data: T | null; error: { message: string } 
 /** Lê a biblioteca inteira da conta logada (o RLS devolve só as linhas dela). */
 export async function fetchLibrary(): Promise<LibraryData> {
   const db = client()
-  const [favorites, readLater, groups, items, links] = await Promise.all([
+  const [favorites, readLater, groups, items, links, quick] = await Promise.all([
     db.from('favorites').select('page, en, pt, sprite, added_at').order('added_at', { ascending: false }),
     db.from('read_later').select('page, en, pt, sprite, added_at, seen').order('added_at', { ascending: false }),
     db.from('groups').select('id, name, created_at, world_id, user_id').order('created_at'),
     db.from('group_items').select('group_id, page, en, pt, sprite, added_at').order('added_at'),
     db.from('group_links').select('group_id, from_page, to_page').order('created_at'),
+    db.from('quick_access').select('page, en, pt, sprite, added_at').order('position'),
   ])
   const itemRows = check<GroupItemRow[]>(items)
-  // Se a tabela de ligações ainda não foi criada no banco, o resto da biblioteca continua funcionando
+  // Se a tabela de ligações (ou do acesso rápido) ainda não foi criada no banco, o resto da biblioteca continua funcionando
   const linkRows = links.error && /group_links/.test(links.error.message) ? [] : check<GroupLinkRow[]>(links)
+  const quickRows = quick.error && /quick_access/.test(quick.error.message) ? [] : check<ArticleRow[]>(quick)
   return {
     version: 1,
     favorites: check<ArticleRow[]>(favorites).map(toArticle),
@@ -86,6 +88,7 @@ export async function fetchLibrary(): Promise<LibraryData> {
       items: itemRows.filter((i) => i.group_id === g.id).map(toArticle),
       links: linkRows.filter((l) => l.group_id === g.id).map((l) => ({ from: l.from_page, to: l.to_page })),
     })),
+    quick: quickRows.map(toArticle),
   }
 }
 
@@ -106,6 +109,8 @@ const sameReadLater = (a: ReadLaterItem, b: ReadLaterItem) => sameArticle(a, b) 
 const sameGroup = (a: Group, b: Group) => a.name === b.name
 const byPage = (a: SavedArticle) => a.page
 const byId = (g: Group) => g.id
+/** Acesso rápido com a posição de cada item (mudar a ordem muda a linha no banco). */
+const withPosition = (lib: LibraryData) => lib.quick.map((q, position) => ({ ...q, position }))
 const byLink = (l: GroupLink) => `${l.from}
 ${l.to}`
 
@@ -114,6 +119,7 @@ export async function pushChanges(userId: string, before: LibraryData, after: Li
   const db = client()
   const favorites = diff(before.favorites, after.favorites, byPage, sameArticle)
   const readLater = diff(before.readLater, after.readLater, byPage, sameReadLater)
+  const quick = diff(withPosition(before), withPosition(after), byPage, (a, b) => sameArticle(a, b) && a.position === b.position)
   const groups = diff(before.groups, after.groups, byId, sameGroup)
   const oldGroups = new Map(before.groups.map((g) => [g.id, g]))
   const items = after.groups.map((g) => ({ group: g, ...diff(oldGroups.get(g.id)?.items ?? [], g.items, byPage, sameArticle) }))
@@ -146,6 +152,7 @@ export async function pushChanges(userId: string, before: LibraryData, after: Li
   await run([
     ...(favorites.removed.length ? [db.from('favorites').delete().in('page', pages(favorites.removed))] : []),
     ...(readLater.removed.length ? [db.from('read_later').delete().in('page', pages(readLater.removed))] : []),
+    ...(quick.removed.length ? [db.from('quick_access').delete().in('page', pages(quick.removed))] : []),
     ...items
       .filter((i) => i.removed.length)
       .map((i) => db.from('group_items').delete().eq('group_id', i.group.id).in('page', pages(i.removed))),
@@ -159,6 +166,9 @@ export async function pushChanges(userId: string, before: LibraryData, after: Li
     ...(favorites.upsert.length ? [db.from('favorites').upsert(favorites.upsert.map((f) => toRow(userId, f)))] : []),
     ...(readLater.upsert.length
       ? [db.from('read_later').upsert(readLater.upsert.map((r) => ({ ...toRow(userId, r), seen: r.seen })))]
+      : []),
+    ...(quick.upsert.length
+      ? [db.from('quick_access').upsert(quick.upsert.map((q) => ({ ...toRow(userId, q), position: q.position })))]
       : []),
     ...items.flatMap((i) => {
       const before = new Set((oldGroups.get(i.group.id)?.items ?? []).map(byPage))

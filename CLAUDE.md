@@ -52,6 +52,9 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Lote de melhorias leves (feito, 2026-10-21)**: velocidade (cópia do aparelho na hora + pré-carregamento),
   Ctrl+K e histórico, checklist "já tenho" na árvore, notas nos artigos, busca por voz e janela compacta.
   Veja "Melhorias leves" abaixo.
+- **Acesso rápido flutuante (feito, 2026-10-22)**: janelinha "glass" que fica por cima do jogo (Document
+  Picture-in-Picture, Chrome/Edge no PC) com itens fixados, favoritos, buscar depois e etapa do mundo.
+  Veja "Acesso rápido flutuante" abaixo.
 
 ## Stack
 
@@ -70,6 +73,9 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/lib/notes.ts`, `src/components/NoteBox.tsx` — notas nos artigos (minha / do mundo)
 - `src/lib/craftChecks.ts` — checklist "já tenho" da árvore de crafting
 - `src/lib/voiceSearch.ts` — busca por voz (Web Speech API)
+- `src/lib/quickWindow.ts` — abre/fecha a janelinha flutuante (`openQuickWindow`, `useQuickWindow`, `quickWindowSupported`)
+- `src/components/QuickWindow.tsx` — `QuickWindowHost` (portal no Layout), botão do menu e cartão da página inicial;
+  `src/components/QuickPanel.tsx` — conteúdo da janelinha (baixado só quando ela abre)
 - `src/lib/cleanArticle.ts` — limpa o HTML do artigo e reescreve links/imagens
 - `src/lib/ptSearch.ts` — busca local no dicionário PT ↔ EN (normalização + distância de edição)
 - `src/data/dictionary.json` — dicionário gerado (formato compacto `[pt, en, tipo, página?]`). Não editar à mão.
@@ -237,13 +243,36 @@ Páginas reorganizadas (Fase 5) não passam por isso: já são escritas em portu
   wiki com `min-width` fixo são anulados (`index.css`). O PWA usa `launch_handler: focus-existing` para reabrir a
   janela que já está do lado do jogo.
 
+## Acesso rápido flutuante
+
+- **Janela**: `documentPictureInPicture.requestWindow()` (só num clique; Chrome/Edge 116+ no PC). A janela nasce vazia:
+  `copyStyles` copia as folhas do app (as de outro site, como o Google Fonts, viram `<link>`), põe a classe
+  `quick-window` no `<html>` e o `QuickWindowHost` (no `Layout`) desenha o `QuickPanel` lá dentro com `createPortal`.
+  Por ser o mesmo app, o painel usa a mesma biblioteca e o mesmo roteador: `navigate()` abre a página na janela
+  principal e a janelinha continua aberta. Fechar a aba principal fecha a janelinha.
+- **Tamanho**: padrão 320×480; o que a pessoa deixar fica em `terrapedia:quick-size` (salvo ao redimensionar e ao
+  fechar). Aba escolhida em `terrapedia:quick-tab`.
+- **Conteúdo**: mini busca (só o dicionário local, sem pedir nada à wiki), abas Rápido / Favoritos / Depois / Mundo num
+  "dock" embaixo. Rápido tem subir / descer / tirar (aparecem ao passar o mouse); Depois tem o "já vi"; Mundo mostra
+  nome, modo, etapa e os 5 próximos chefes/eventos de `MILESTONES`. Nada atualiza sozinho: as listas mudam quando a
+  biblioteca/mundo mudam no app.
+- **Visual**: a janela do sistema não pode ser transparente, então o "vidro" é fundo escuro com brilhos (`html.quick-window body`)
+  e painéis translúcidos (`.glass` em `index.css`).
+- **Fixar**: botão "Fixar" nos artigos e resumos (`ArticleActions`) → `library.toggleQuick` / `moveQuick`. Os itens ficam em
+  `LibraryData.quick` (a ordem é a do array) e, com login, na tabela `quick_access` (RLS: só o dono; `position` = ordem).
+  Mudar a ordem manda `upsert` das linhas que mudaram de posição.
+- **Sem a API** (celular, Firefox, Safari, navegador embutido): o botão do menu some e a página inicial mostra a dica
+  "abra no Chrome ou Edge do PC". Se o navegador recusar abrir (ex.: navegador dentro de outro app), aparece um aviso.
+- **Teste**: o navegador embutido do Claude Code tem a API mas não abre a janela ("no window"); dá para testar trocando
+  `documentPictureInPicture.requestWindow` por uma função que devolve o `contentWindow` de um `<iframe>`.
+
 ## Biblioteca (favoritos, grupos, buscar depois)
 
 Tudo passa por `src/lib/library.ts`. As telas só usam `useLibrary()` (ler), `useSyncStatus()`
 (situação da conta) e `library.*` (mudar). Toda mudança passa por `commit()`.
 
 - **Sem login**: salvo no localStorage na chave `terrapedia:library` (como na Fase 3A).
-- **Com login**: dados nas tabelas `favorites`, `read_later`, `groups`, `group_items`, `group_links` do Supabase,
+- **Com login**: dados nas tabelas `favorites`, `read_later`, `groups`, `group_items`, `group_links`, `quick_access` do Supabase,
   com RLS (cada pessoa só vê as próprias linhas). Uma cópia fica em `terrapedia:cloud:<id>`
   junto com `synced` (último estado confirmado pelo servidor). `commit()` chama `work()`, que
   envia a diferença entre `synced` e os dados atuais (`pushChanges`); sem internet, tenta de novo
@@ -287,6 +316,7 @@ chave secreta/service_role no app. As duas variáveis também estão cadastradas
 A tabela `page_translations` (cache das traduções automáticas) foi apagada do Supabase em 2026-10-21. Tudo o que foi aplicado no banco está registrado nesse arquivo.
 Em Authentication → URL Configuration, a Site URL é o endereço publicado.
 Tabelas criadas em 2026-10-21 (registradas no fim do `schema.sql`): `world_craft_checks`, `notes`, `world_notes`.
+Em 2026-10-22: `quick_access` (acesso rápido; RLS conferido: o dono vê, outra conta não vê nem muda).
 `supabase/tests/teste-mundo-checklist-notas.sql` testa o RLS delas com 3 usuários temporários (A e B no mundo, C de
 fora) numa transação desfeita no fim. Roda colando no SQL Editor do Supabase; passou nos 22 itens em 2026-10-21.
 (O MCP do Supabase recusa esse script porque ele escreve em `auth.users`; rode pelo SQL Editor.)

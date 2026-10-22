@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useLibrary, useSyncStatus } from '../lib/library'
 import { ClockIcon, FolderIcon, GlobeIcon, HomeIcon, StarIcon, UserIcon } from './icons'
+import { QuickWindowButton } from './QuickWindow'
 
 function useNavItems() {
   const lib = useLibrary()
@@ -52,6 +53,7 @@ export function TopNav() {
           )}
         </NavLink>
       ))}
+      <QuickWindowButton />
     </nav>
   )
 }

@@ -129,3 +129,36 @@ export const MicIcon = (props: IconProps) => (
     <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
   </Icon>
 )
+
+export const PinIcon = ({ filled, ...props }: IconProps & { filled?: boolean }) => (
+  <Icon {...props} filled={filled}>
+    <path d="M9 4h6l-1 5 3 3v2H7v-2l3-3z" />
+    <path d="M12 14v7" />
+  </Icon>
+)
+
+/** Janelinha por cima de outra (acesso rápido flutuante) */
+export const FloatIcon = ({ filled, ...props }: IconProps & { filled?: boolean }) => (
+  <Icon {...props}>
+    <rect x="3" y="4" width="18" height="15" rx="2" />
+    <rect x="11" y="10" width="7" height="6" rx="1" fill={filled ? 'currentColor' : 'none'} />
+  </Icon>
+)
+
+export const ChevronUpIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="m5 15 7-7 7 7" />
+  </Icon>
+)
+
+export const ChevronDownIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="m5 9 7 7 7-7" />
+  </Icon>
+)
+
+export const XIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="M6 6l12 12M18 6 6 18" />
+  </Icon>
+)

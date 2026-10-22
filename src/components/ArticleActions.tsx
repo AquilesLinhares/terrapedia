@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { groupHas, isFavorite, library, readLaterItem, useLibrary, type ArticleRef } from '../lib/library'
-import { ClockIcon, FolderIcon, StarIcon } from './icons'
+import { groupHas, isFavorite, isQuick, library, readLaterItem, useLibrary, type ArticleRef } from '../lib/library'
+import { quickWindowSupported } from '../lib/quickWindow'
+import { ClockIcon, FolderIcon, PinIcon, StarIcon } from './icons'
 import GroupPicker from './GroupPicker'
 
 /** Botões "Favorito", "Depois" e "Grupo" no topo de cada artigo. */
@@ -10,6 +11,7 @@ export default function ArticleActions({ article }: { article: ArticleRef }) {
   const favorite = isFavorite(lib, article.page)
   const later = readLaterItem(lib, article.page)
   const groupCount = lib.groups.filter((g) => groupHas(g, article.page)).length
+  const pinned = isQuick(lib, article.page)
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -33,6 +35,19 @@ export default function ArticleActions({ article }: { article: ArticleRef }) {
         label={groupCount > 0 ? `Grupos (${groupCount})` : 'Grupo'}
         title="Adicionar a um grupo"
         icon={<FolderIcon className="h-4.5 w-4.5" filled={groupCount > 0} />}
+      />
+      <ActionButton
+        active={pinned}
+        onClick={() => library.toggleQuick(article)}
+        label={pinned ? 'Fixado' : 'Fixar'}
+        title={
+          pinned
+            ? 'Tirar do acesso rápido'
+            : quickWindowSupported
+              ? 'Fixar no acesso rápido (janelinha flutuante)'
+              : 'Fixar no acesso rápido (a janelinha flutuante abre no Chrome ou Edge do PC)'
+        }
+        icon={<PinIcon className="h-4.5 w-4.5" filled={pinned} />}
       />
       {pickerOpen && <GroupPicker article={article} onClose={() => setPickerOpen(false)} />}
     </div>

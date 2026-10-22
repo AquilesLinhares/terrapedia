@@ -8,6 +8,7 @@ export function describeOffer(offer: NonNullable<SyncStatus['importOffer']>) {
     offer.favorites && plural(offer.favorites, 'favorito', 'favoritos'),
     offer.readLater && `${offer.readLater} em Buscar depois`,
     offer.groups && plural(offer.groups, 'grupo', 'grupos'),
+    offer.quick && `${offer.quick} no acesso rápido`,
   ].filter((part): part is string => Boolean(part))
   return parts.length > 1 ? `${parts.slice(0, -1).join(', ')} e ${parts.at(-1)}` : parts[0]
 }

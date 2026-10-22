@@ -437,3 +437,27 @@ create policy "membros apagam" on public.world_notes for delete to authenticated
 revoke all on public.world_notes from anon, authenticated;
 grant select, insert, delete on public.world_notes to authenticated;
 grant update (body, updated_by, updated_at) on public.world_notes to authenticated;
+
+-- ============================================================
+-- Acesso rápido (itens fixados na janelinha flutuante)
+-- Aplicado no projeto "terrapedia" em 2026-10-22 (migração "quick_access").
+-- Pessoal: cada um só vê e mexe nas próprias linhas. `position` é a ordem na lista (0 = primeiro).
+-- ============================================================
+create table public.quick_access (
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  page text not null check (char_length(page) between 1 and 200),
+  en text not null check (char_length(en) between 1 and 200),
+  pt text check (char_length(pt) <= 200),
+  sprite text check (char_length(sprite) <= 500),
+  position integer not null default 0 check (position between 0 and 1000),
+  added_at timestamptz not null default now(),
+  primary key (user_id, page)
+);
+alter table public.quick_access enable row level security;
+create policy "ver os próprios" on public.quick_access for select to authenticated using ((select auth.uid()) = user_id);
+create policy "criar os próprios" on public.quick_access for insert to authenticated with check ((select auth.uid()) = user_id);
+create policy "mudar os próprios" on public.quick_access for update to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "apagar os próprios" on public.quick_access for delete to authenticated using ((select auth.uid()) = user_id);
+revoke all on public.quick_access from anon, authenticated;
+grant select, insert, update, delete on public.quick_access to authenticated;

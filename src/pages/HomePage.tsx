@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import SearchBar, { articlePath } from '../components/SearchBar'
 import { useRecent } from '../lib/recent'
+import { QuickWindowCard } from '../components/QuickWindow'
 
 // Atalhos: nome oficial em português (o mesmo do dicionário) e a página da wiki em inglês
 const QUICK_LINKS = [
@@ -44,6 +45,7 @@ export default function HomePage() {
           Histórico ({recentCount})
         </Link>
       )}
+      <QuickWindowCard />
     </div>
   )
 }

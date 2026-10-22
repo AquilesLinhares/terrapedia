@@ -4,6 +4,7 @@ import SearchBar from './SearchBar'
 import { BottomNav, TopNav } from './NavBar'
 import ImportPrompt from './ImportPrompt'
 import WorldBar from './WorldBar'
+import { QuickWindowHost } from './QuickWindow'
 
 export default function Layout() {
   const isHome = useLocation().pathname === '/'
@@ -75,6 +76,7 @@ export default function Layout() {
 
       <BottomNav />
       <ImportPrompt />
+      <QuickWindowHost />
     </div>
   )
 }
