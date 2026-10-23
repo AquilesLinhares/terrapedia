@@ -33,7 +33,7 @@ export function QuickWindowButton() {
       }`}
     >
       <FloatIcon className="h-5 w-5" filled={open} />
-      <span className="hidden lg:inline">Acesso rápido</span>
+      <span className="hidden xl:inline">Acesso rápido</span>
     </button>
   )
 }

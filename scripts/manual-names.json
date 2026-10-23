@@ -88,5 +88,13 @@
   { "pt": "Armadura de Tartaruga", "en": "Turtle armor", "type": "página" },
   { "pt": "Armadura de Besouro", "en": "Beetle armor", "type": "página" },
   { "pt": "Armadura das Chamas do Sol", "en": "Solar Flare armor", "type": "página" },
-  { "pt": "Armadura de Titânio", "en": "Titanium armor", "type": "página" }
+  { "pt": "Armadura de Titânio", "en": "Titanium armor", "type": "página" },
+  { "pt": "Armadura de Obsidiana", "en": "Obsidian armor", "type": "página" },
+  { "pt": "Armadura Proibida", "en": "Forbidden armor", "type": "página" },
+  { "pt": "Armadura Tiki", "en": "Tiki armor", "type": "página" },
+  { "pt": "Armadura Assustadora", "en": "Spooky armor", "type": "página" },
+  { "pt": "Armadura do Monge", "en": "Monk armor", "type": "página" },
+  { "pt": "Armadura do Aprendiz", "en": "Apprentice armor", "type": "página" },
+  { "pt": "Armadura da Caçadora", "en": "Huntress armor", "type": "página" },
+  { "pt": "Armadura do Shinobi Invasor", "en": "Shinobi Infiltrator armor", "type": "página" }
 ]

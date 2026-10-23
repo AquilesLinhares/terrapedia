@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useLibrary, useSyncStatus } from '../lib/library'
-import { ClockIcon, FolderIcon, GlobeIcon, HomeIcon, StarIcon, UserIcon } from './icons'
+import { ClockIcon, FolderIcon, GlobeIcon, HomeIcon, StarIcon, UserIcon, WrenchIcon } from './icons'
 import { QuickWindowButton } from './QuickWindow'
 
 function useNavItems() {
@@ -12,6 +12,7 @@ function useNavItems() {
     { to: '/depois', label: 'Buscar depois', short: 'Depois', icon: ClockIcon, badge: unseen },
     { to: '/grupos', label: 'Grupos', short: 'Grupos', icon: FolderIcon, badge: 0 },
     { to: '/mundo', label: 'Meu mundo', short: 'Mundo', icon: GlobeIcon, badge: 0 },
+    { to: '/ferramentas', label: 'Ferramentas', short: 'Ferram.', icon: WrenchIcon, badge: 0 },
     // Ponto no ícone: há algo para importar ou mudanças que ainda não foram enviadas
     { to: '/conta', label: 'Conta', short: 'Conta', icon: UserIcon, badge: 0, dot: importOffer !== null || state === 'offline' },
   ]
@@ -48,7 +49,7 @@ export function TopNav() {
                 <Icon className="h-5 w-5" filled={isActive} />
                 <Badge count={badge} dot={dot} />
               </span>
-              <span className="hidden lg:inline">{label}</span>
+              <span className="hidden xl:inline">{label}</span>
             </>
           )}
         </NavLink>
@@ -66,7 +67,7 @@ export function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur sm:hidden"
       aria-label="Navegação"
     >
-      <div className="grid grid-cols-6">
+      <div className="grid grid-cols-7">
         {[{ to: '/', label: 'Início', short: 'Início', icon: HomeIcon, badge: 0 }, ...items].map(({ to, short, icon: Icon, badge, dot }) => (
           <NavLink
             key={to}
