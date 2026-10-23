@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
+import { CLASS_LIST, hasClassGuide } from '../lib/classGuides'
 import { useLibrary } from '../lib/library'
 import { MILESTONES, milestone, type Milestone, type Phase } from '../lib/progression'
 import { supabase } from '../lib/supabase'
@@ -382,6 +383,11 @@ function MyCard({ me }: { me: Member }) {
               <option key={s} value={s} />
             ))}
           </datalist>
+          {hasClassGuide(me.playerClass) && (
+            <Link to={`/classes/${CLASS_LIST.find((c) => c.class === me.playerClass)!.slug}`} className="block text-sm font-semibold text-accent hover:underline">
+              Abrir o guia de {CLASS_LABELS[me.playerClass]} nesta etapa
+            </Link>
+          )}
         </>
       )}
       {error && <p className="text-sm text-red-300">{error}</p>}

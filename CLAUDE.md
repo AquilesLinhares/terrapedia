@@ -55,13 +55,17 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Acesso rápido flutuante (feito, 2026-10-22)**: janelinha "glass" que fica por cima do jogo (Document
   Picture-in-Picture, Chrome/Edge no PC) com itens fixados, favoritos, buscar depois e etapa do mundo.
   Veja "Acesso rápido flutuante" abaixo.
+- **Guias de classe (piloto do Invocador, 2026-10-22)**: uma página por classe em `/classes/<classe>`, etapas iguais às do
+  mundo compartilhado, abas Resumo e Detalhado (mapa de caminhos), filtro de subclasse e selos Expert/Mestre. Faltam
+  Corpo a corpo, À distância e Mago. Veja "Guias de classe" abaixo.
 
 ## Stack
 
 - Vite + React + TypeScript
 - Tailwind CSS v4 (plugin `@tailwindcss/vite`)
 - `vite-plugin-pwa` (manifest + service worker)
-- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`, `/historico`).
+- React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`, `/historico`,
+  `/classes`, `/classes/:slug`).
   Só `HomePage` e `ArticlePage` vão no pacote principal; as outras telas são `lazy()` em `main.tsx`.
 
 ## Estrutura
@@ -110,6 +114,10 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/data/guide-index.json` — etiquetas de busca, gerado por `scripts/build-guides.mjs`. Não editar à mão.
 - `src/lib/guides.ts` — formato das páginas reorganizadas, `hasGuide`/`loadGuide` e busca por etiquetas (`searchGuides`)
 - `src/components/GuideView.tsx` — desenha a página reorganizada (texto com `[[Item]]`, listas de itens, receitas)
+- `src/data/classes/<classe>.json` — guias de classe (`summoner.json`...); `src/lib/classGuides.ts` — formato, `CLASS_LIST`, `loadClassGuide`
+- `src/data/exclusive-items.json` — itens exclusivos de Expert/Mestre citados nos guias, gerado por `scripts/build-classes.mjs`. Não editar à mão.
+- `src/pages/ClassesPage.tsx` (`/classes`), `src/pages/ClassGuidePage.tsx` (`/classes/:slug`), `src/components/ClassSummary.tsx` (aba Resumo),
+  `ClassPathMap.tsx` (aba Detalhado), `ClassItems.tsx` (itens, sprites e selo Expert/Mestre)
 - `src/index.css` — tema escuro e estilos do conteúdo da wiki (`.wiki-content`)
 
 ## Comandos
@@ -118,6 +126,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `npm run build` — build de produção (checa tipos)
 - `npm run preview` — testa o build
 - `node scripts/build-guides.mjs` — confere as páginas reorganizadas e gera o índice de etiquetas
+- `node scripts/build-classes.mjs` — confere os guias de classe e gera os selos Expert/Mestre (precisa de internet)
 
 ## Dicionário PT-BR ↔ EN
 
@@ -182,6 +191,32 @@ melhor somem. Aparecem nas sugestões com "pela descrição: ..." e na página "
 
 Depois de criar ou editar uma página, rode `node scripts/build-guides.mjs`: ele confere o formato, avisa sobre nomes
 de itens que não existem no dicionário/receitas e regenera o `guide-index.json`.
+
+## Guias de classe
+
+Um arquivo por classe em `src/data/classes/` com o nome do `PlayerClass` (`summoner.json`, depois `magic.json`, `melee.json`,
+`ranged.json`). Classe sem arquivo aparece como "em breve" em `/classes`. Fonte: "Guide:Class setups" da wiki (só a parte da
+classe) + páginas dos itens, organizados com nossas palavras e na versão atual do jogo (1.4.5). Formato em `src/lib/classGuides.ts`:
+
+- **Guia**: `intro`, `basics` (como a classe funciona), `subclasses` (`id` na URL, `label` igual às sugestões da ficha do mundo,
+  `icon`), `names` (nomes PT que faltam no dicionário, ex.: conjuntos de armadura — também vão em `scripts/manual-names.json`),
+  `stages`, `source`.
+- **Etapa** (`stage` = id de `STAGES` em `progression.ts`, em ordem): `summary`, `armor` + `armorAlt` (melhor no geral),
+  `weapons` (um por subclasse: `{ sub, item?, alt?, note? }`; sem `item` = nada bom nessa etapa), `accessories`, `buffs`,
+  `paths` (mapa) e `next` (`target` = `key` de `MILESTONES`, `optional`, `prep`, `arena`).
+- **Caminho** (`paths`): `id` único no guia, `title`, `when` ("se você usa X..."), `sub`, `armor`, `weapons`, `extras`, `pros`,
+  `cons`, `next` (ids de caminhos da etapa seguinte).
+- **Itens**: `"Nome EN"` ou `{ name, note?, qty?, image?, sub? }`. `image` troca o sprite (ex.: `"Hallowed armor Hood.png"`);
+  `sub` faz o item só aparecer com aquele filtro. Textos aceitam `[[Item]]` e `**negrito**` como as páginas reorganizadas.
+  Prefira `[[Item]]` sem texto próprio: o nome PT oficial aparece sozinho.
+
+**Na tela**: abre na etapa do mundo ativo (`useWorldStage()`; se o guia não tiver aquela etapa, a última já alcançada).
+Filtro de subclasse: o da URL (`?sub=`), senão a subclasse escrita na ficha do mundo. Na URL também `?aba=detalhado` e `?etapa=`.
+Selo **Expert**/**Mestre** pela raridade do item na wiki (-12 / -13); num mundo Clássico aparece riscado ("só Expert").
+O Detalhado mostra todas as etapas numa linha do tempo; tocar num caminho destaca de onde ele vem e para onde vai.
+
+Depois de criar ou editar um guia, rode `node scripts/build-classes.mjs`: confere chaves, etapas, ligações dos caminhos, chefes,
+subclasses e se todo item existe no dicionário/receitas, e regenera `exclusive-items.json`.
 
 ## Artigos em português
 
@@ -316,7 +351,11 @@ chave secreta/service_role no app. As duas variáveis também estão cadastradas
 A tabela `page_translations` (cache das traduções automáticas) foi apagada do Supabase em 2026-10-21. Tudo o que foi aplicado no banco está registrado nesse arquivo.
 Em Authentication → URL Configuration, a Site URL é o endereço publicado.
 Tabelas criadas em 2026-10-21 (registradas no fim do `schema.sql`): `world_craft_checks`, `notes`, `world_notes`.
-Em 2026-10-22: `quick_access` (acesso rápido; RLS conferido: o dono vê, outra conta não vê nem muda).
+Em 2026-10-22: `quick_access` (acesso rápido; RLS conferido: o dono vê, outra conta não vê nem muda). No mesmo dia,
+`rls_auto_enable()` (função do "automatic RLS" do Supabase, chamada pelo gatilho de eventos `ensure_rls`) perdeu o EXECUTE para
+`public`, `anon` e `authenticated`; o gatilho continua ligando o RLS em tabelas novas. Avisos de segurança que ficam de propósito:
+`create_world`/`join_world` chamáveis por quem tem login (é assim que o app cria e entra em mundos) e "Leaked password protection"
+desligado (recurso de plano pago).
 `supabase/tests/teste-mundo-checklist-notas.sql` testa o RLS delas com 3 usuários temporários (A e B no mundo, C de
 fora) numa transação desfeita no fim. Roda colando no SQL Editor do Supabase; passou nos 22 itens em 2026-10-21.
 (O MCP do Supabase recusa esse script porque ele escreve em `auth.users`; rode pelo SQL Editor.)

@@ -40,11 +40,16 @@ export default function HomePage() {
           </Link>
         ))}
       </div>
-      {recentCount > 0 && (
-        <Link to="/historico" className="mt-6 text-sm font-semibold text-accent hover:underline">
-          Histórico ({recentCount})
+      <div className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-semibold">
+        <Link to="/classes" className="text-accent hover:underline">
+          Guias de classe
         </Link>
-      )}
+        {recentCount > 0 && (
+          <Link to="/historico" className="text-accent hover:underline">
+            Histórico ({recentCount})
+          </Link>
+        )}
+      </div>
       <QuickWindowCard />
     </div>
   )

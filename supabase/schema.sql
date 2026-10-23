@@ -461,3 +461,11 @@ create policy "mudar os próprios" on public.quick_access for update to authenti
 create policy "apagar os próprios" on public.quick_access for delete to authenticated using ((select auth.uid()) = user_id);
 revoke all on public.quick_access from anon, authenticated;
 grant select, insert, update, delete on public.quick_access to authenticated;
+
+-- ============================================================
+-- Função do "automatic RLS" do Supabase (liga o RLS em toda tabela nova, pelo gatilho de eventos `ensure_rls`).
+-- Aplicado em 2026-10-22 (migração "revoke_rls_auto_enable_execute"): ninguém pode chamá-la pela API
+-- (/rest/v1/rpc/rls_auto_enable). O gatilho continua funcionando: conferido criando uma tabela de teste numa
+-- transação desfeita (relrowsecurity = true).
+-- ============================================================
+revoke execute on function public.rls_auto_enable() from public, anon, authenticated;

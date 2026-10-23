@@ -16,6 +16,8 @@ const AccountPage = lazy(() => import('./pages/AccountPage'))
 const CraftingTreePage = lazy(() => import('./pages/CraftingTreePage'))
 const WorldPage = lazy(() => import('./pages/WorldPage'))
 const HistoryPage = lazy(() => import('./pages/HistoryPage'))
+const ClassesPage = lazy(() => import('./pages/ClassesPage'))
+const ClassGuidePage = lazy(() => import('./pages/ClassGuidePage'))
 
 installLinkPrefetch()
 
@@ -34,6 +36,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="arvore/*" element={<CraftingTreePage />} />
           <Route path="mundo" element={<WorldPage />} />
           <Route path="historico" element={<HistoryPage />} />
+          <Route path="classes" element={<ClassesPage />} />
+          <Route path="classes/:slug" element={<ClassGuidePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

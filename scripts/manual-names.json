@@ -69,5 +69,13 @@
   { "pt": "Imperatriz da Luz", "en": "Empress of Light", "type": "chefe" },
   { "pt": "Cultista Lunático", "en": "Lunatic Cultist", "type": "chefe" },
   { "pt": "Rainha Geleia", "en": "Queen Slime", "type": "chefe", "aliases": ["Rainha Slime"] },
-  { "pt": "Cervídeo", "en": "Deerclops", "type": "chefe" }
+  { "pt": "Cervídeo", "en": "Deerclops", "type": "chefe" },
+  { "pt": "Armadura de Abelha", "en": "Bee armor", "type": "página" },
+  { "pt": "Armadura de Aranha", "en": "Spider armor", "type": "página" },
+  { "pt": "Armadura Consagrada", "en": "Hallowed armor", "type": "página" },
+  { "pt": "Armadura do Escudeiro", "en": "Squire armor", "type": "página" },
+  { "pt": "Armadura de Clorofita", "en": "Chlorophyte armor", "type": "página" },
+  { "pt": "Armadura do Cavaleiro de Valhalla", "en": "Valhalla Knight armor", "type": "página" },
+  { "pt": "Armadura de Pó das Estrelas", "en": "Stardust armor", "type": "página" },
+  { "pt": "Armadura de Abóbora", "en": "Pumpkin armor", "type": "página" }
 ]

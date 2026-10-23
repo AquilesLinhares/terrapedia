@@ -1,0 +1,2376 @@
+{
+  "class": "summoner",
+  "slug": "invocador",
+  "title": "Invocador",
+  "emblem": "Summoner Emblem",
+  "intro": "O invocador luta com ajudantes: **lacaios** que seguem você e atacam sozinhos, **sentinelas** que ficam paradas atirando e **chicotes**, que você usa na mão para marcar o alvo e deixar os ajudantes mais fortes. Tem pouca defesa, mas acerta quase tudo sem esforço.",
+  "basics": [
+    "Cada lacaio ocupa um **espaço de lacaio**. Você começa com 1; armaduras, acessórios e a [[Summoning Potion]] dão mais. O mesmo vale para as sentinelas (começa com 1).",
+    "Dá para **misturar lacaios** de cajados diferentes. Em várias etapas, a mistura de um de cada rende mais do que vários iguais.",
+    "Chicote na mão faz os lacaios atacarem o inimigo que você acertou e dá **dano de marcação** (dano extra em cada golpe dos lacaios). Contra chefes que soltam inimigos pequenos, mire os lacaios no chefe (botão direito com o cajado) e use outra arma.",
+    "Com acessórios de **pilha de chicotes** (ex.: [[Twilight Grasp]]), o efeito de dois ou mais chicotes fica ativo ao mesmo tempo: bata com um e troque para o outro.",
+    "Mesmo jogando de outra classe, a [[Bewitching Table]] e a [[War Table]] dão um lacaio e uma sentinela a mais de graça. Use sempre."
+  ],
+  "subclasses": [
+    {
+      "id": "lacaios",
+      "label": "Lacaios",
+      "icon": "Imp Staff",
+      "text": "Ajudantes que seguem você e atacam sozinhos. O jeito mais tranquilo de jogar: você se concentra em desviar."
+    },
+    {
+      "id": "sentinelas",
+      "label": "Sentinelas",
+      "icon": "Queen Spider Staff",
+      "text": "Torres que ficam paradas onde você invoca. Muito fortes em arenas preparadas; com um estilingue (ex.: [[Royal Guard's Harness]]) dá para carregar uma com você."
+    },
+    {
+      "id": "chicotes",
+      "label": "Chicotes",
+      "icon": "Firecracker",
+      "text": "Arma na mão que marca o alvo e multiplica o dano dos lacaios. Pede ficar mais perto do inimigo."
+    }
+  ],
+  "names": {
+    "Bee armor": "Armadura de Abelha",
+    "Spider armor": "Armadura de Aranha",
+    "Hallowed armor": "Armadura Consagrada",
+    "Squire armor": "Armadura do Escudeiro",
+    "Chlorophyte armor": "Armadura de Clorofita",
+    "Valhalla Knight armor": "Armadura do Cavaleiro de Valhalla",
+    "Stardust armor": "Armadura de Pó das Estrelas",
+    "Pumpkin armor": "Armadura de Abóbora"
+  },
+  "stages": [
+    {
+      "stage": "start",
+      "summary": "Ainda não existe armadura de invocador. O casaco de pelo de flinx dá o primeiro lacaio extra; o resto da armadura pode ser a de mais defesa que você tiver.",
+      "armor": {
+        "name": "Flinx Fur Coat",
+        "note": "com o capacete e a calça de mais defesa (ex.: as peças da [[Platinum armor]])"
+      },
+      "armorAlt": [
+        {
+          "name": "Pumpkin armor",
+          "note": "+10% de dano de tudo; abóboras vêm do Shimmer com cactos"
+        },
+        "Platinum armor"
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": {
+            "name": "Flinx Staff",
+            "note": "pelo de flinx (Neve) + ouro/platina"
+          },
+          "alt": [
+            "Vampire Frog Staff",
+            "Finch Staff",
+            "Clay Bud Staff",
+            "Abigail's Flower"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": {
+            "name": "Snapthorn",
+            "note": "ferrões, cipós e esporos da Selva"
+          },
+          "alt": [
+            "Leather Whip",
+            "Cobwhip"
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "note": "Ainda não há sentinela boa. A primeira é o [[Houndius Shootius]], do [[Deerclops]]."
+        }
+      ],
+      "accessories": [
+        {
+          "name": "Feral Claws",
+          "note": "chicotes mais rápidos e com golpe automático",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Shark Tooth Necklace",
+          "note": "ótimo para lacaios de dano baixo"
+        },
+        "Hermes Boots",
+        "Cloud in a Bottle",
+        "Band of Regeneration"
+      ],
+      "buffs": [
+        "Summoning Potion",
+        "Ironskin Potion",
+        "Regeneration Potion",
+        "Swiftness Potion",
+        "Well Fed",
+        {
+          "name": "Life Crystal",
+          "qty": "10–15"
+        }
+      ],
+      "paths": [
+        {
+          "id": "start-mix",
+          "title": "Mistura de lacaios",
+          "when": "Se você quer começar no modo tranquilo, deixando os ajudantes trabalharem.",
+          "sub": [
+            "lacaios"
+          ],
+          "armor": [
+            "Flinx Fur Coat"
+          ],
+          "weapons": [
+            {
+              "name": "Flinx Staff",
+              "qty": "1"
+            },
+            {
+              "name": "Vampire Frog Staff",
+              "qty": "resto"
+            }
+          ],
+          "pros": [
+            "Lacaios acertam sozinhos: dá para explorar e minerar protegido.",
+            "Tudo sai cedo, sem chefe."
+          ],
+          "cons": [
+            "Dano baixo contra chefes.",
+            "O sapo depende de pescar na [[Blood Moon]]."
+          ],
+          "next": [
+            "eye-pals"
+          ]
+        },
+        {
+          "id": "start-whip",
+          "title": "Chicote na mão",
+          "when": "Se você prefere atacar junto e já foi (ou vai) até a Selva.",
+          "sub": [
+            "chicotes"
+          ],
+          "armor": [
+            "Flinx Fur Coat",
+            "Pumpkin armor"
+          ],
+          "weapons": [
+            "Snapthorn",
+            {
+              "name": "Finch Staff",
+              "qty": "1"
+            }
+          ],
+          "extras": [
+            "Feral Claws"
+          ],
+          "pros": [
+            "O [[Snapthorn]] é forte por muito tempo e acelera os outros chicotes.",
+            "Dano ativo bom desde o começo."
+          ],
+          "cons": [
+            "Precisa ficar perto dos inimigos.",
+            "A Selva é perigosa no comecinho."
+          ],
+          "next": [
+            "eye-whip"
+          ]
+        }
+      ],
+      "next": {
+        "target": "Eye of Cthulhu",
+        "optional": [
+          {
+            "key": "King Slime",
+            "why": "fácil e dá o [[Slime Staff]], um lacaio a mais para misturar"
+          }
+        ],
+        "prep": [
+          "Use [[Life Crystal]] (vários) até ter pelo menos 200 de vida.",
+          "Invoque de noite com o [[Suspicious Looking Eye]] (feito com 6 [[Lens]]) ou espere ele aparecer sozinho.",
+          "Leve poções de cura ([[Lesser Healing Potion]]) e lacaios já invocados antes de começar."
+        ],
+        "arena": [
+          "Uma ou duas fileiras compridas de plataformas no céu para correr e pular.",
+          "[[Campfire]] e [[Heart Lantern]] por perto aumentam a regeneração."
+        ]
+      }
+    },
+    {
+      "stage": "post-eye",
+      "summary": "O minério do Olho já faz um chicote, e logo pode vir o [[Goblin Army]]. Depois dele, aparecem os Pals: [[Cattiva]] e [[Foxparks]], dois dos melhores lacaios do começo.",
+      "armor": {
+        "name": "Flinx Fur Coat",
+        "note": "ainda o melhor peito para invocador"
+      },
+      "armorAlt": [
+        "Pumpkin armor",
+        "Platinum armor"
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": {
+            "name": "Foxparks",
+            "note": "resgate na superfície, de dia, depois do Exército Goblin"
+          },
+          "alt": [
+            "Cattiva",
+            "Vampire Frog Staff",
+            "Flinx Staff"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": "Snapthorn",
+          "alt": [
+            {
+              "name": "Vasculash",
+              "note": "Carmesim"
+            },
+            {
+              "name": "Soulscourge",
+              "note": "Corrupção"
+            }
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "note": "Ainda sem sentinela boa. Depois do Devorador/Cérebro chegam o Taverneiro e as sentinelas do [[Old One's Army]]."
+        }
+      ],
+      "accessories": [
+        {
+          "name": "Feral Claws",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        "Shark Tooth Necklace",
+        {
+          "name": "Shield of Cthulhu",
+          "note": "investida que salva a vida"
+        },
+        "Hermes Boots",
+        "Cloud in a Bottle"
+      ],
+      "buffs": [
+        "Summoning Potion",
+        "Ironskin Potion",
+        "Regeneration Potion",
+        "Swiftness Potion",
+        "Well Fed"
+      ],
+      "paths": [
+        {
+          "id": "eye-pals",
+          "title": "Pals + mistura",
+          "when": "Se o Exército Goblin já veio e você achou um Pal em perigo (cercado por arqueiros goblins).",
+          "sub": [
+            "lacaios"
+          ],
+          "armor": [
+            "Flinx Fur Coat"
+          ],
+          "weapons": [
+            {
+              "name": "Foxparks",
+              "qty": "1"
+            },
+            {
+              "name": "Cattiva",
+              "qty": "1"
+            },
+            {
+              "name": "Vampire Frog Staff",
+              "qty": "1"
+            },
+            {
+              "name": "Flinx Staff",
+              "qty": "1"
+            }
+          ],
+          "pros": [
+            "Segurando o botão, o [[Foxparks]] vira lança-chamas: melhor que qualquer chicote até o [[Snapthorn]].",
+            "A [[Cattiva]] ainda minera junto com você."
+          ],
+          "cons": [
+            "Pals aparecem por sorte, um de cada vez.",
+            "Precisa de vários espaços de lacaio para a mistura toda."
+          ],
+          "next": [
+            "evil-bee"
+          ]
+        },
+        {
+          "id": "eye-whip",
+          "title": "Chicote do mal",
+          "when": "Se você ainda não tem os materiais da Selva: 12 barras do minério do Olho já fazem um chicote.",
+          "sub": [
+            "chicotes"
+          ],
+          "armor": [
+            "Flinx Fur Coat"
+          ],
+          "weapons": [
+            {
+              "name": "Vasculash",
+              "note": "ou [[Soulscourge]]"
+            },
+            {
+              "name": "Flinx Staff",
+              "qty": "1"
+            }
+          ],
+          "extras": [
+            "Feral Claws"
+          ],
+          "pros": [
+            "Sai na hora, com o minério que o Olho deixa.",
+            "Bom para segurar até o [[Snapthorn]]."
+          ],
+          "cons": [
+            "Dano de marcação baixo; troque assim que der."
+          ],
+          "next": [
+            "evil-obsidian"
+          ]
+        }
+      ],
+      "next": {
+        "target": "Eater of Worlds",
+        "optional": [
+          {
+            "key": "Goblin Army",
+            "why": "libera o Funileiro Goblin (junta acessórios) e os Pals"
+          }
+        ],
+        "prep": [
+          "O chefe depende do mundo: [[Eater of Worlds]] na Corrupção, [[Brain of Cthulhu]] no Carmesim. Os dois contam como a mesma etapa.",
+          "Invoque quebrando 3 orbes/corações ou com [[Worm Food]] / [[Bloody Spine]] dentro do bioma.",
+          "Contra o Cérebro, lacaios que pulam muito (sapo, flinx) acertam bem os Creepers."
+        ],
+        "arena": [
+          "Cave um espaço aberto perto da superfície do bioma, com plataformas.",
+          "[[Shield of Cthulhu]] ou botas rápidas ajudam a fugir do Devorador."
+        ]
+      }
+    },
+    {
+      "stage": "post-evil",
+      "summary": "Agora dá para fazer a primeira armadura de invocador de verdade e o [[Imp Staff]] (pedra infernal). O Taverneiro chega e traz as sentinelas do [[Old One's Army]].",
+      "armor": {
+        "name": "Obsidian armor",
+        "note": "+31% de dano de invocação e chicotes mais rápidos"
+      },
+      "armorAlt": [
+        {
+          "name": "Bee armor",
+          "note": "melhor para jogar só com lacaios"
+        }
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": {
+            "name": "Imp Staff",
+            "note": "misture com flinx, sapo e os Pals"
+          },
+          "alt": [
+            "Hornet Staff",
+            "Foxparks",
+            "Cattiva"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": "Snapthorn",
+          "alt": [
+            {
+              "name": "Starcrash",
+              "note": "melhor com lacaios de dano alto"
+            }
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "item": {
+            "name": "Houndius Shootius",
+            "note": "do [[Deerclops]]"
+          },
+          "alt": [
+            {
+              "name": "Ballista Rod",
+              "note": "Taverneiro"
+            },
+            "Explosive Trap Rod"
+          ]
+        }
+      ],
+      "accessories": [
+        {
+          "name": "Feral Claws",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Pygmy Necklace",
+          "note": "+1 lacaio; Doutor Bruxo, de noite"
+        },
+        {
+          "name": "Apprentice's Scarf",
+          "note": "+1 sentinela e +10% de dano",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        {
+          "name": "Squire's Shield",
+          "note": "+1 sentinela e +10% de dano",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        "Shield of Cthulhu",
+        {
+          "name": "Worm Scarf",
+          "note": "-17% de dano recebido (Devorador)"
+        },
+        {
+          "name": "Brain of Confusion",
+          "note": "esquiva (Cérebro)"
+        },
+        "Hermes Boots"
+      ],
+      "buffs": [
+        "Summoning Potion",
+        "War Table",
+        {
+          "name": "Flask of Fire",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        "Ironskin Potion",
+        "Regeneration Potion",
+        "Endurance Potion"
+      ],
+      "paths": [
+        {
+          "id": "evil-bee",
+          "title": "Abelha: só lacaios",
+          "when": "Se você já derrotou a [[Queen Bee]] e quer jogar parado, desviando.",
+          "sub": [
+            "lacaios"
+          ],
+          "armor": [
+            "Bee armor"
+          ],
+          "weapons": [
+            {
+              "name": "Imp Staff",
+              "qty": "1"
+            },
+            {
+              "name": "Foxparks",
+              "qty": "1"
+            },
+            {
+              "name": "Cattiva",
+              "qty": "1"
+            },
+            {
+              "name": "Flinx Staff",
+              "qty": "1"
+            },
+            {
+              "name": "Vampire Frog Staff",
+              "qty": "1"
+            }
+          ],
+          "pros": [
+            "Mais espaços de lacaio que a obsidiana.",
+            "Combina com o [[Hornet Staff]], que sai do mesmo chefe."
+          ],
+          "cons": [
+            "Menos dano por lacaio.",
+            "Depende de um chefe opcional."
+          ],
+          "next": [
+            "skel-imp"
+          ]
+        },
+        {
+          "id": "evil-obsidian",
+          "title": "Obsidiana: chicote ativo",
+          "when": "Se você gosta de atacar junto. Troca um lacaio por mais dano e chicote mais rápido.",
+          "sub": [
+            "chicotes",
+            "lacaios"
+          ],
+          "armor": [
+            "Obsidian armor"
+          ],
+          "weapons": [
+            "Snapthorn",
+            {
+              "name": "Imp Staff",
+              "qty": "1"
+            },
+            {
+              "name": "Flinx Staff",
+              "qty": "1"
+            }
+          ],
+          "extras": [
+            "Feral Claws",
+            "Flask of Fire"
+          ],
+          "pros": [
+            "Não depende de chefe opcional: obsidiana, seda e escamas/amostras.",
+            "Chicote bem mais rápido."
+          ],
+          "cons": [
+            "Um lacaio a menos.",
+            "Pede ficar perto dos inimigos."
+          ],
+          "next": [
+            "skel-imp",
+            "skel-mushroom"
+          ]
+        },
+        {
+          "id": "evil-sentry",
+          "title": "Torres do Taverneiro",
+          "when": "Se você gosta de preparar o lugar da luta e quer o máximo de sentinelas.",
+          "sub": [
+            "sentinelas"
+          ],
+          "armor": [
+            "Obsidian armor"
+          ],
+          "weapons": [
+            "Houndius Shootius",
+            "Ballista Rod",
+            {
+              "name": "Imp Staff",
+              "qty": "1"
+            }
+          ],
+          "extras": [
+            "Apprentice's Scarf",
+            "War Table"
+          ],
+          "pros": [
+            "Muito dano parado, ótimo para defender a casa e lutar em arena.",
+            "Sentinelas não brigam pelos espaços de lacaio."
+          ],
+          "cons": [
+            "Chefe que anda muito sai do alcance.",
+            "Precisa juntar [[Defender Medal]] no Exército do Ancião."
+          ],
+          "next": [
+            "skel-sentry"
+          ]
+        }
+      ],
+      "next": {
+        "target": "Skeletron",
+        "optional": [
+          {
+            "key": "Queen Bee",
+            "why": "dá a armadura de abelha e o [[Hornet Staff]]"
+          },
+          {
+            "key": "Old One's Army",
+            "why": "medalhas para as sentinelas e a [[War Table]] (+1 sentinela)"
+          }
+        ],
+        "prep": [
+          "Fale com o Velho na entrada da Masmorra, de noite, e lute ali mesmo.",
+          "Fuja das cabeças girando: ele fica muito mais forte se você lutar de dia (morte certa)."
+        ],
+        "arena": [
+          "Plataformas no céu acima da entrada da Masmorra.",
+          "Fogueira, Lanterna de Coração e uma [[Ironskin Potion]]."
+        ]
+      }
+    },
+    {
+      "stage": "post-skeletron",
+      "summary": "A Masmorra abre: [[Bewitching Table]] (+1 lacaio), o [[Silver Shield]] para pilha de chicotes e o [[Spinal Tap]]. Prepare a ponte no Submundo para a Parede de Carne.",
+      "armor": {
+        "name": "Bee armor",
+        "note": "para mistura de lacaios"
+      },
+      "armorAlt": [
+        {
+          "name": "Obsidian armor",
+          "note": "para quem bate com chicote"
+        }
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": {
+            "name": "Imp Staff",
+            "note": "misture ou use todos os espaços contra a Parede"
+          },
+          "alt": [
+            "Mushroom Staff",
+            "Vampire Frog Staff",
+            "Foxparks"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": {
+            "name": "Spinal Tap",
+            "note": "ossos e teias da Masmorra"
+          },
+          "alt": [
+            "Starcrash",
+            "Snapthorn"
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "item": "Houndius Shootius",
+          "alt": [
+            "Ballista Rod",
+            "Explosive Trap Rod"
+          ]
+        }
+      ],
+      "accessories": [
+        {
+          "name": "Silver Shield",
+          "note": "+1 marcação de chicote e imunidade a empurrão",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Feral Claws",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        "Pygmy Necklace",
+        {
+          "name": "Apprentice's Scarf",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        {
+          "name": "Squire's Shield",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        "Shield of Cthulhu"
+      ],
+      "buffs": [
+        "Summoning Potion",
+        "Bewitching Table",
+        "War Table",
+        {
+          "name": "Flask of Poison",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        "Water Walking Potion",
+        "Ironskin Potion"
+      ],
+      "paths": [
+        {
+          "id": "skel-imp",
+          "title": "Demônios + Starcrash",
+          "when": "Se você vai lutar contra a Parede sem arena (andando sobre a lava com a [[Water Walking Potion]]).",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            "Bee armor",
+            "Obsidian armor"
+          ],
+          "weapons": [
+            {
+              "name": "Imp Staff",
+              "qty": "quase todos"
+            },
+            {
+              "name": "Vampire Frog Staff",
+              "qty": "1–2",
+              "note": "mirando o olho de cima"
+            },
+            "Starcrash"
+          ],
+          "pros": [
+            "Limpa os Famintos muito rápido.",
+            "Funciona mesmo sem ponte."
+          ],
+          "cons": [
+            "O [[Starcrash]] pede ficar perto.",
+            "Fora da Parede, perde para as outras misturas."
+          ],
+          "next": [
+            "hm-sanguine"
+          ]
+        },
+        {
+          "id": "skel-mushroom",
+          "title": "Cogumelos + Spinal Tap",
+          "when": "Se você constrói a ponte no Submundo antes da luta.",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            "Obsidian armor"
+          ],
+          "weapons": [
+            {
+              "name": "Mushroom Staff",
+              "qty": "quase todos"
+            },
+            {
+              "name": "Vampire Frog Staff",
+              "qty": "1–2"
+            },
+            "Spinal Tap"
+          ],
+          "extras": [
+            "Silver Shield",
+            "Snapthorn"
+          ],
+          "pros": [
+            "Dano alto e constante, com mais alcance que o Starcrash.",
+            "O [[Spinal Tap]] é bom contra vários inimigos."
+          ],
+          "cons": [
+            "Precisa de ponte (pelo menos uma fileira de plataformas)."
+          ],
+          "next": [
+            "hm-blade"
+          ]
+        },
+        {
+          "id": "skel-sentry",
+          "title": "Sentinelas na ponte",
+          "when": "Se você já usa sentinelas e vai lutar numa ponte longa.",
+          "sub": [
+            "sentinelas"
+          ],
+          "armor": [
+            "Obsidian armor"
+          ],
+          "weapons": [
+            "Houndius Shootius",
+            "Ballista Rod",
+            {
+              "name": "Vampire Frog Staff",
+              "qty": "1–2"
+            }
+          ],
+          "extras": [
+            "Apprentice's Scarf",
+            "War Table"
+          ],
+          "pros": [
+            "Até 3 sentinelas no pré-Modo Difícil (cachecol/escudo + Mesa de Guerra).",
+            "Ótimo contra os Famintos que chegam perto."
+          ],
+          "cons": [
+            "A Parede anda sem parar: reinvoque as sentinelas no caminho."
+          ],
+          "next": [
+            "hm-sentry"
+          ]
+        }
+      ],
+      "next": {
+        "target": "Wall of Flesh",
+        "prep": [
+          "Jogue uma [[Guide Voodoo Doll]] na lava do Submundo (mata o Guia, que volta depois).",
+          "Pelo menos um sapo do [[Vampire Frog Staff]] mirando o olho de cima ajuda sempre.",
+          "**Atenção:** derrotar a Parede muda o mundo para o Modo Difícil (inimigos mais fortes e biomas se espalhando)."
+        ],
+        "arena": [
+          "Ponte de plataformas no Submundo, de preferência de ponta a ponta.",
+          "Sem ponte: [[Water Walking Potion]] ou botas que andam na lava."
+        ]
+      }
+    },
+    {
+      "stage": "hardmode",
+      "summary": "Os melhores lacaios do começo do Modo Difícil saem da [[Queen Slime]] e do [[Dreadnautilus]] (Lua de Sangue). Arranje asas e escolha entre um conjunto de dano ou de defesa.",
+      "armor": {
+        "name": "Spider armor",
+        "note": "+28% de dano e +3 lacaios"
+      },
+      "armorAlt": [
+        {
+          "name": "Titanium Mask",
+          "note": "defesa + chicote mais rápido, com [[Forbidden Robes]] e [[Spider Greaves]]"
+        },
+        "Forbidden Robes"
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": {
+            "name": "Blade Staff",
+            "note": "da Rainha Geleia"
+          },
+          "alt": [
+            "Sanguine Staff",
+            "Ruinous Staff",
+            "Spider Staff"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": {
+            "name": "Firecracker",
+            "note": "da Parede de Carne"
+          },
+          "alt": [
+            "Cool Whip",
+            "Spinal Tap"
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "item": "Queen Spider Staff",
+          "alt": [
+            "Barnacle Staff"
+          ]
+        }
+      ],
+      "accessories": [
+        {
+          "name": "Summoner Emblem",
+          "note": "+15% de dano"
+        },
+        "Pygmy Necklace",
+        {
+          "name": "Twilight Grasp",
+          "note": "+2 marcações de chicote",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Druidic Serpent Cloak",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Royal Guard's Harness",
+          "note": "carrega uma sentinela com você",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        {
+          "name": "Demon Heart",
+          "note": "+1 espaço de acessório"
+        },
+        {
+          "name": "Wings",
+          "image": "Angel Wings.png",
+          "note": "qualquer asa; as primeiras usam Almas do Voo"
+        }
+      ],
+      "buffs": [
+        "Flask of Ichor",
+        "Summoning Potion",
+        "Bewitching Table",
+        "War Table",
+        "Ironskin Potion",
+        "Endurance Potion"
+      ],
+      "paths": [
+        {
+          "id": "hm-blade",
+          "title": "Adagas + Cool Whip",
+          "when": "Se você consegue vencer a [[Queen Slime]] (pede asas e muita esquiva).",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            "Spider armor"
+          ],
+          "weapons": [
+            {
+              "name": "Blade Staff",
+              "qty": "todos"
+            },
+            "Cool Whip",
+            {
+              "name": "Spinal Tap",
+              "note": "para pilha de chicotes"
+            }
+          ],
+          "extras": [
+            "Twilight Grasp"
+          ],
+          "pros": [
+            "Adagas boas contra chefes e contra grupos.",
+            "Ignoram parte da defesa dos inimigos."
+          ],
+          "cons": [
+            "Quase não ganham com bônus de porcentagem.",
+            "A Rainha Geleia enche a tela de projéteis."
+          ],
+          "next": [
+            "mech-mix"
+          ]
+        },
+        {
+          "id": "hm-sanguine",
+          "title": "Morcegos/Ruínas + Firecracker",
+          "when": "Se você pescou o [[Dreadnautilus]] na Lua de Sangue ou juntou fragmentos proibidos para o [[Ruinous Staff]].",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            "Spider armor"
+          ],
+          "weapons": [
+            {
+              "name": "Sanguine Staff",
+              "qty": "todos"
+            },
+            {
+              "name": "Ruinous Staff",
+              "note": "o mais forte; deixe 3 aranhas ([[Spider Staff]]) fora das lutas de chefe"
+            },
+            "Firecracker"
+          ],
+          "extras": [
+            "Summoner Emblem",
+            "Starcrash"
+          ],
+          "pros": [
+            "As opções mais fortes desta etapa.",
+            "O [[Firecracker]] multiplica cada golpe dos lacaios."
+          ],
+          "cons": [
+            "Mais difíceis de conseguir que as adagas.",
+            "Não junte o [[Cool Whip]] com o [[Firecracker]]: o floco de neve atrapalha."
+          ],
+          "next": [
+            "mech-firecracker"
+          ]
+        },
+        {
+          "id": "hm-sentry",
+          "title": "Sentinela carregada",
+          "when": "Se você achou um [[Heavy Sling]] (cai do Mímico de Gelo) e quer levar a sentinela junto.",
+          "sub": [
+            "sentinelas"
+          ],
+          "armor": [
+            {
+              "name": "Titanium Mask",
+              "note": "+ [[Forbidden Robes]] e [[Spider Greaves]]"
+            }
+          ],
+          "weapons": [
+            "Queen Spider Staff",
+            "Barnacle Staff",
+            {
+              "name": "Spider Staff",
+              "qty": "resto"
+            }
+          ],
+          "extras": [
+            "Royal Guard's Harness",
+            "Squire's Shield"
+          ],
+          "pros": [
+            "Uma aranha do [[Queen Spider Staff]] rende como 2–3 morcegos.",
+            "Defesa alta e imunidade a empurrão."
+          ],
+          "cons": [
+            "Só uma sentinela vai junto; as outras ficam paradas.",
+            "O estilingue depende de sorte com Mímicos de Gelo."
+          ],
+          "next": [
+            "mech-squire"
+          ]
+        }
+      ],
+      "next": {
+        "target": "The Twins",
+        "optional": [
+          {
+            "key": "Queen Slime",
+            "why": "dá o [[Blade Staff]]"
+          },
+          {
+            "key": "Pirate Invasion",
+            "why": "moedas e acessórios; bom treino de grupo"
+          }
+        ],
+        "prep": [
+          "Qualquer chefe mecânico serve para esta etapa. Para o invocador vale começar pelos [[The Twins]]: as Almas da Visão fazem o [[Optic Staff]].",
+          "Asas são quase obrigatórias daqui em diante.",
+          "Invoque de noite com o [[Mechanical Eye]] (ou [[Mechanical Worm]] / [[Mechanical Skull]])."
+        ],
+        "arena": [
+          "Várias fileiras de plataformas no céu, bem compridas.",
+          "Fogueira, Lanterna de Coração e uma piscina de [[Honey]] ou estátua de coração por perto."
+        ]
+      }
+    },
+    {
+      "stage": "post-mech",
+      "summary": "O primeiro mecânico libera as Barras Consagradas (chicote [[Durendal]] e armadura consagrada) e o [[Kinship Peach]], que deixa a Cattiva e o Foxparks bem mais fortes.",
+      "armor": {
+        "name": "Hallowed armor",
+        "image": "Hallowed armor Hood.png",
+        "note": "com o capuz; esquiva de vez em quando"
+      },
+      "armorAlt": [
+        "Spider armor",
+        {
+          "name": "Squire armor",
+          "note": "defesa (Taverneiro)"
+        }
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": {
+            "name": "Trusty Foxparks",
+            "note": "[[Foxparks]] + [[Kinship Peach]]"
+          },
+          "alt": [
+            "Trusty Cattiva",
+            "Optic Staff",
+            "Spider Staff",
+            "Blade Staff"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": {
+            "name": "Durendal",
+            "note": "12 Barras Consagradas"
+          },
+          "alt": [
+            "Firecracker",
+            "Snapthorn"
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "item": "Queen Spider Staff",
+          "alt": [
+            {
+              "name": "Ballista Cane",
+              "note": "ótima com o Firecracker"
+            },
+            "Explosive Trap Cane"
+          ]
+        }
+      ],
+      "accessories": [
+        "Summoner Emblem",
+        "Pygmy Necklace",
+        {
+          "name": "Twilight Grasp",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Druidic Serpent Cloak",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Wicked Claws",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Royal Guard's Harness",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        "Demon Heart",
+        {
+          "name": "Wings",
+          "image": "Angel Wings.png",
+          "note": "qualquer asa; as primeiras usam Almas do Voo"
+        }
+      ],
+      "buffs": [
+        "Flask of Ichor",
+        "Summoning Potion",
+        "Bewitching Table",
+        "War Table",
+        "Lifeforce Potion",
+        "Endurance Potion"
+      ],
+      "paths": [
+        {
+          "id": "mech-mix",
+          "title": "Mistura com Pals fiéis",
+          "when": "Se você tem os Pals: com o pêssego eles viram os melhores lacaios para misturar.",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            {
+              "name": "Hallowed armor",
+              "image": "Hallowed armor Hood.png"
+            }
+          ],
+          "weapons": [
+            {
+              "name": "Trusty Foxparks",
+              "qty": "1"
+            },
+            {
+              "name": "Trusty Cattiva",
+              "qty": "1"
+            },
+            {
+              "name": "Spider Staff",
+              "qty": "1–3"
+            },
+            {
+              "name": "Optic Staff",
+              "qty": "resto"
+            },
+            "Durendal"
+          ],
+          "extras": [
+            "Twilight Grasp"
+          ],
+          "pros": [
+            "A melhor combinação geral até a Plantera.",
+            "Funciona com o [[Durendal]] ou com o [[Firecracker]]."
+          ],
+          "cons": [
+            "O [[Kinship Peach]] gasta uma [[Life Fruit]].",
+            "O [[Optic Staff]] só depois dos Gêmeos."
+          ],
+          "next": [
+            "mechs-visor"
+          ]
+        },
+        {
+          "id": "mech-firecracker",
+          "title": "Tudo no Firecracker",
+          "when": "Se você já usa morcegos/ruínas com o [[Firecracker]] e quer manter o dano alto por golpe.",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            "Spider armor"
+          ],
+          "weapons": [
+            {
+              "name": "Ruinous Staff",
+              "qty": "6"
+            },
+            {
+              "name": "Trusty Foxparks",
+              "qty": "1",
+              "note": "ataca rápido e ativa mais explosões"
+            },
+            "Firecracker"
+          ],
+          "extras": [
+            "Twilight Grasp",
+            "Ballista Cane"
+          ],
+          "pros": [
+            "Dano enorme em alvo único.",
+            "Combina com a [[Ballista Cane]]."
+          ],
+          "cons": [
+            "Fraco contra grupos de inimigos.",
+            "Chicote de alcance curto."
+          ],
+          "next": [
+            "mechs-firecracker"
+          ]
+        },
+        {
+          "id": "mech-squire",
+          "title": "Escudeiro: defesa e sentinelas",
+          "when": "Se você quer aguentar mais pancada e já junta Medalhas no Exército do Ancião (nível 2).",
+          "sub": [
+            "sentinelas"
+          ],
+          "armor": [
+            "Squire armor"
+          ],
+          "weapons": [
+            "Ballista Cane",
+            "Queen Spider Staff",
+            {
+              "name": "Optic Staff",
+              "qty": "resto"
+            }
+          ],
+          "extras": [
+            "Royal Guard's Harness"
+          ],
+          "pros": [
+            "Muita defesa e regeneração.",
+            "Bônus de corpo a corpo deixam o chicote mais forte."
+          ],
+          "cons": [
+            "Menos dano de lacaio.",
+            "Rende mais misturando com uma arma de corpo a corpo."
+          ],
+          "next": [
+            "mechs-squire"
+          ]
+        }
+      ],
+      "next": {
+        "target": "The Destroyer",
+        "prep": [
+          "Faltam os outros mecânicos: [[The Destroyer]] e o [[Skeletron Prime]]. Os três juntos liberam a Clorofita.",
+          "Contra o Destruidor, lacaios que perfuram vários segmentos (aranhas, ruínas) rendem muito.",
+          "Contra o Esqueletron Alfa, mire os lacaios na cabeça."
+        ],
+        "arena": [
+          "As mesmas plataformas no céu; para o Destruidor, uma área bem larga."
+        ]
+      }
+    },
+    {
+      "stage": "post-all-mechs",
+      "summary": "Com os três mecânicos derrotados, a Clorofita aparece na Selva e a Plantera pode nascer. A viseira de clorofita é o melhor capacete para lacaios.",
+      "armor": {
+        "name": "Chlorophyte Visor",
+        "note": "+ [[Forbidden Robes]] e [[Spider Greaves]]"
+      },
+      "armorAlt": [
+        {
+          "name": "Hallowed armor",
+          "image": "Hallowed armor Hood.png"
+        },
+        {
+          "name": "Monk's Bushy Brow Bald Cap",
+          "note": "para chicotes: troca dano por velocidade"
+        },
+        "Squire armor"
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": "Optic Staff",
+          "alt": [
+            "Trusty Foxparks",
+            "Trusty Cattiva",
+            "Spider Staff",
+            "Blade Staff"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": "Durendal",
+          "alt": [
+            "Firecracker",
+            "Snapthorn"
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "item": "Queen Spider Staff",
+          "alt": [
+            "Ballista Cane",
+            "Explosive Trap Cane"
+          ]
+        }
+      ],
+      "accessories": [
+        "Summoner Emblem",
+        "Pygmy Necklace",
+        {
+          "name": "Twilight Grasp",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Druidic Serpent Cloak",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Royal Guard's Harness",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        "Demon Heart",
+        {
+          "name": "Wings",
+          "image": "Angel Wings.png",
+          "note": "qualquer asa; as primeiras usam Almas do Voo"
+        }
+      ],
+      "buffs": [
+        "Flask of Ichor",
+        "Summoning Potion",
+        "Bewitching Table",
+        "War Table",
+        "Lifeforce Potion",
+        "Endurance Potion"
+      ],
+      "paths": [
+        {
+          "id": "mechs-visor",
+          "title": "Viseira de clorofita",
+          "when": "Se você joga principalmente com lacaios.",
+          "sub": [
+            "lacaios"
+          ],
+          "armor": [
+            {
+              "name": "Chlorophyte Visor",
+              "note": "+ [[Forbidden Robes]] e [[Spider Greaves]]"
+            }
+          ],
+          "weapons": [
+            {
+              "name": "Trusty Foxparks",
+              "qty": "1"
+            },
+            {
+              "name": "Trusty Cattiva",
+              "qty": "1"
+            },
+            {
+              "name": "Spider Staff",
+              "qty": "1–3"
+            },
+            {
+              "name": "Optic Staff",
+              "qty": "resto"
+            },
+            "Durendal"
+          ],
+          "pros": [
+            "Mais dano e mais lacaios que o capuz consagrado.",
+            "Mistura forte contra a Plantera."
+          ],
+          "cons": [
+            "Defesa baixa: cuidado com a segunda fase da Plantera."
+          ],
+          "next": [
+            "plant-mix"
+          ]
+        },
+        {
+          "id": "mechs-firecracker",
+          "title": "Firecracker + Ruínas",
+          "when": "Se você segue no [[Firecracker]] com lacaios de dano alto.",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            {
+              "name": "Chlorophyte Visor",
+              "note": "+ [[Forbidden Robes]] e [[Spider Greaves]]"
+            }
+          ],
+          "weapons": [
+            {
+              "name": "Ruinous Staff",
+              "qty": "6"
+            },
+            {
+              "name": "Trusty Foxparks",
+              "qty": "1"
+            },
+            "Firecracker",
+            "Durendal"
+          ],
+          "extras": [
+            "Twilight Grasp",
+            "Druidic Serpent Cloak"
+          ],
+          "pros": [
+            "Pilha de chicotes ([[Durendal]] + [[Firecracker]]) com dano muito alto."
+          ],
+          "cons": [
+            "Precisa de dois acessórios de chicote.",
+            "Fraco limpando inimigos pequenos."
+          ],
+          "next": [
+            "plant-firecracker"
+          ]
+        },
+        {
+          "id": "mechs-squire",
+          "title": "Monge/Escudeiro",
+          "when": "Se você usa sentinelas ou um chicote forte e quer mais uma sentinela.",
+          "sub": [
+            "sentinelas",
+            "chicotes"
+          ],
+          "armor": [
+            {
+              "name": "Monk's Bushy Brow Bald Cap",
+              "note": "ou [[Squire's Great Helm]] para regenerar"
+            },
+            "Squire's Plating"
+          ],
+          "weapons": [
+            "Queen Spider Staff",
+            "Ballista Cane",
+            "Durendal"
+          ],
+          "extras": [
+            "Royal Guard's Harness"
+          ],
+          "pros": [
+            "+1 sentinela e chicote 20% mais rápido.",
+            "Bom com o [[Blade Staff]], que quase não usa bônus de dano."
+          ],
+          "cons": [
+            "Perde 16% de dano e um lacaio em relação à viseira."
+          ],
+          "next": [
+            "plant-squire"
+          ]
+        }
+      ],
+      "next": {
+        "target": "Plantera",
+        "optional": [
+          {
+            "key": "Frost Legion",
+            "why": "fácil, para treinar o grupo"
+          }
+        ],
+        "prep": [
+          "Ache e quebre o Bulbo da Plantera (rosa) na Selva subterrânea.",
+          "Chicotes fazem os lacaios irem atrás dos tentáculos: mire os lacaios na Plantera e prefira não usar chicote quando eles se espalharem.",
+          "[[Flask of Ichor]] e poções de defesa ajudam muito na segunda fase."
+        ],
+        "arena": [
+          "Cave um túnel largo e comprido na Selva subterrânea (ou várias plataformas).",
+          "Não saia da Selva: ela fica furiosa e muito mais forte."
+        ]
+      }
+    },
+    {
+      "stage": "post-plantera",
+      "summary": "Grande salto: a armadura Tiki (Doutor Bruxo), o chicote da Plantera e os baús de bioma com as chaves. O [[Firecracker]] volta a brilhar com o [[Desert Tiger Staff]].",
+      "armor": {
+        "name": "Tiki armor",
+        "note": "+30% de dano, +4 lacaios e mais alcance de chicote"
+      },
+      "armorAlt": [
+        {
+          "name": "Squire's Great Helm",
+          "note": "defesa: com [[Squire's Plating]] e [[Tiki Pants]]"
+        },
+        "Squire armor",
+        {
+          "name": "Chlorophyte armor",
+          "image": "Chlorophyte armor Visor.png"
+        }
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": {
+            "name": "Desert Tiger Staff",
+            "note": "baú do Deserto (Chave do Deserto)"
+          },
+          "alt": [
+            "Deadly Sphere Staff",
+            "Blade Staff",
+            "Trusty Foxparks"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": {
+            "name": "Vulgar Display of Flower",
+            "note": "da Plantera"
+          },
+          "alt": [
+            "Firecracker",
+            "Durendal",
+            "Morning Star"
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "item": {
+            "name": "Staff of the Frost Hydra",
+            "note": "baú de Gelo da Masmorra"
+          },
+          "alt": [
+            "Queen Spider Staff",
+            "Ballista Cane"
+          ]
+        }
+      ],
+      "accessories": [
+        "Summoner Emblem",
+        {
+          "name": "Hercules Beetle",
+          "note": "+15% de dano; Doutor Bruxo"
+        },
+        "Pygmy Necklace",
+        {
+          "name": "Twilight Grasp",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Druidic Serpent Cloak",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Royal Guard's Harness",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        {
+          "name": "Spore Sac",
+          "note": "esporos que atacam sozinhos (Plantera)"
+        },
+        "Demon Heart",
+        {
+          "name": "Wings",
+          "image": "Angel Wings.png",
+          "note": "qualquer asa; as primeiras usam Almas do Voo"
+        }
+      ],
+      "buffs": [
+        "Flask of Venom",
+        "Flask of Ichor",
+        "Summoning Potion",
+        "Bewitching Table",
+        "War Table",
+        "Lifeforce Potion"
+      ],
+      "paths": [
+        {
+          "id": "plant-firecracker",
+          "title": "Tigres + Firecracker",
+          "when": "Se você tem acessórios de pilha de chicotes e a Chave do Deserto.",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            "Tiki armor"
+          ],
+          "weapons": [
+            {
+              "name": "Desert Tiger Staff",
+              "qty": "todos",
+              "note": "modificador Implacável"
+            },
+            "Vulgar Display of Flower",
+            "Firecracker",
+            "Durendal"
+          ],
+          "extras": [
+            "Twilight Grasp",
+            "Druidic Serpent Cloak",
+            "Flask of Venom"
+          ],
+          "pros": [
+            "O maior dano do invocador nesta etapa.",
+            "Os tigres pulam atrás dos inimigos através dos blocos."
+          ],
+          "cons": [
+            "Três chicotes para alternar: mais trabalho.",
+            "Alcance curto do [[Firecracker]]."
+          ],
+          "next": [
+            "golem-vdof"
+          ]
+        },
+        {
+          "id": "plant-mix",
+          "title": "Mistura + Morning Star",
+          "when": "Se você prefere o jeito tranquilo de antes, só trocando as peças.",
+          "sub": [
+            "lacaios"
+          ],
+          "armor": [
+            "Tiki armor"
+          ],
+          "weapons": [
+            {
+              "name": "Trusty Cattiva",
+              "qty": "1"
+            },
+            {
+              "name": "Trusty Foxparks",
+              "qty": "1"
+            },
+            {
+              "name": "Desert Tiger Staff",
+              "qty": "1",
+              "note": "modificador Fabuloso"
+            },
+            {
+              "name": "Deadly Sphere Staff",
+              "qty": "resto",
+              "note": "ou [[Blade Staff]]"
+            },
+            "Morning Star"
+          ],
+          "pros": [
+            "Bom contra chefes e contra grupos.",
+            "Pouca troca de arma."
+          ],
+          "cons": [
+            "A [[Morning Star]] é rara (Esqueletos Blindados da Masmorra).",
+            "A [[Deadly Sphere Staff]] depende do Eclipse Solar."
+          ],
+          "next": [
+            "golem-xeno"
+          ]
+        },
+        {
+          "id": "plant-squire",
+          "title": "Escudeiro + Hidra",
+          "when": "Se você quer defesa e torres fortes.",
+          "sub": [
+            "sentinelas"
+          ],
+          "armor": [
+            "Squire's Great Helm",
+            "Squire's Plating",
+            "Tiki Pants"
+          ],
+          "weapons": [
+            "Staff of the Frost Hydra",
+            "Ballista Cane",
+            "Queen Spider Staff"
+          ],
+          "extras": [
+            "Royal Guard's Harness"
+          ],
+          "pros": [
+            "Muita defesa e regeneração.",
+            "O [[Staff of the Frost Hydra]] é ótimo com o [[Firecracker]]."
+          ],
+          "cons": [
+            "Precisa preparar a arena.",
+            "O baú de Gelo pede a Chave Congelada."
+          ],
+          "next": [
+            "golem-valhalla"
+          ]
+        }
+      ],
+      "next": {
+        "target": "Golem",
+        "optional": [
+          {
+            "key": "Pumpkin Moon",
+            "why": "[[Necromantic Scroll]], [[Raven Staff]] e [[Dark Harvest]]"
+          },
+          {
+            "key": "Duke Fishron",
+            "why": "[[Tempest Staff]] e o chicote [[Electric Eel]]"
+          },
+          {
+            "key": "Empress of Light",
+            "why": "o chicote [[Kaleidoscope]] (e o [[Terraprisma]] se vencer de dia)"
+          }
+        ],
+        "prep": [
+          "A Plantera deixa a [[Temple Key]]: abra o Templo Lihzahrd na Selva.",
+          "Chegue ao altar e use uma [[Lihzahrd Power Cell]].",
+          "Cuidado com as armadilhas do templo no caminho (dardos, bolas de espinho, lanças)."
+        ],
+        "arena": [
+          "Limpe e aumente a sala do altar.",
+          "Plataformas ajudam a desviar dos punhos."
+        ]
+      }
+    },
+    {
+      "stage": "post-golem",
+      "summary": "Agora vem o melhor lacaio antes do fim: o [[Terraprisma]], se você vencer a Imperatriz de dia. Sem ele, o [[Xeno Staff]] da Invasão Marciana segura bem. Armaduras novas no Taverneiro (nível 3).",
+      "armor": {
+        "name": "Tiki armor",
+        "note": "o melhor no geral"
+      },
+      "armorAlt": [
+        {
+          "name": "Spooky armor",
+          "note": "dano máximo"
+        },
+        {
+          "name": "Valhalla Knight armor",
+          "note": "defesa"
+        }
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": {
+            "name": "Terraprisma",
+            "note": "Imperatriz da Luz derrotada de dia"
+          },
+          "alt": [
+            "Xeno Staff",
+            "Blade Staff",
+            "Tempest Staff",
+            "Raven Staff"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": {
+            "name": "Kaleidoscope",
+            "note": "da Imperatriz da Luz"
+          },
+          "alt": [
+            "Electric Eel",
+            "Dark Harvest",
+            "Vulgar Display of Flower",
+            "Morning Star"
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "item": {
+            "name": "Ballista Staff",
+            "note": "Taverneiro, nível 3"
+          },
+          "alt": [
+            "Explosive Trap Staff",
+            "Lightning Aura Staff",
+            "Staff of the Frost Hydra"
+          ]
+        }
+      ],
+      "accessories": [
+        {
+          "name": "Papyrus Scarab",
+          "note": "+1 lacaio e +15% de dano"
+        },
+        {
+          "name": "Necromantic Scroll",
+          "note": "+1 lacaio e +10% de dano"
+        },
+        "Pygmy Necklace",
+        {
+          "name": "Twilight Grasp",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Ouroboros Ring",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Templar's Sling",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        "Demon Heart",
+        "Empress Wings",
+        {
+          "name": "Soaring Insignia",
+          "note": "voo sem fim (Imperatriz)"
+        }
+      ],
+      "buffs": [
+        "Flask of Ichor",
+        "Flask of Venom",
+        "Summoning Potion",
+        "Bewitching Table",
+        "War Table",
+        "Lifeforce Potion"
+      ],
+      "paths": [
+        {
+          "id": "golem-kaleido",
+          "title": "Terraprisma + Caleidoscópio",
+          "when": "Se você venceu a [[Empress of Light]] de dia (cada golpe dela mata na hora).",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            "Tiki armor"
+          ],
+          "weapons": [
+            {
+              "name": "Terraprisma",
+              "qty": "todos"
+            },
+            "Kaleidoscope",
+            "Electric Eel",
+            "Dark Harvest"
+          ],
+          "extras": [
+            "Twilight Grasp",
+            "Ouroboros Ring"
+          ],
+          "pros": [
+            "O mais forte antes do Senhor da Lua.",
+            "O [[Terraprisma]] segue útil até o fim do jogo."
+          ],
+          "cons": [
+            "A Imperatriz de dia é um dos desafios mais difíceis do jogo."
+          ],
+          "next": [
+            "cult-dragon",
+            "cult-cells"
+          ]
+        },
+        {
+          "id": "golem-vdof",
+          "title": "Pilha do Firecracker",
+          "when": "Se você já usa o [[Firecracker]] com a [[Vulgar Display of Flower]].",
+          "sub": [
+            "chicotes"
+          ],
+          "armor": [
+            "Spooky armor"
+          ],
+          "weapons": [
+            {
+              "name": "Xeno Staff",
+              "qty": "todos"
+            },
+            "Vulgar Display of Flower",
+            "Firecracker",
+            "Dark Harvest"
+          ],
+          "extras": [
+            "Twilight Grasp",
+            "Ouroboros Ring"
+          ],
+          "pros": [
+            "Dano muito alto sem precisar da Imperatriz de dia."
+          ],
+          "cons": [
+            "A armadura assustadora não dá alcance de chicote.",
+            "Pede ficar perto."
+          ],
+          "next": [
+            "cult-firecracker"
+          ]
+        },
+        {
+          "id": "golem-xeno",
+          "title": "OVNIs ou adagas",
+          "when": "Se você ainda não tem o Terraprisma.",
+          "sub": [
+            "lacaios"
+          ],
+          "armor": [
+            "Tiki armor"
+          ],
+          "weapons": [
+            {
+              "name": "Xeno Staff",
+              "qty": "todos",
+              "note": "ou [[Blade Staff]] com o [[Dark Harvest]]"
+            },
+            "Morning Star"
+          ],
+          "pros": [
+            "Os OVNIs teleportam até os inimigos e acertam na hora.",
+            "Bem mais fácil de conseguir."
+          ],
+          "cons": [
+            "Bem abaixo do Terraprisma."
+          ],
+          "next": [
+            "cult-cells"
+          ]
+        },
+        {
+          "id": "golem-valhalla",
+          "title": "Valhalla + torres",
+          "when": "Se você quer o máximo de defesa e usa sentinelas.",
+          "sub": [
+            "sentinelas"
+          ],
+          "armor": [
+            {
+              "name": "Valhalla Knight armor",
+              "note": "dá para trocar capacete e calça por peças com lacaios e manter o peitoral"
+            }
+          ],
+          "weapons": [
+            "Ballista Staff",
+            "Explosive Trap Staff",
+            "Lightning Aura Staff"
+          ],
+          "extras": [
+            "Templar's Sling"
+          ],
+          "pros": [
+            "Regeneração altíssima com o peitoral.",
+            "Ótimo para eventos longos (luas)."
+          ],
+          "cons": [
+            "Menos lacaios.",
+            "Torres paradas sofrem contra chefes que voam."
+          ],
+          "next": [
+            "cult-dragon"
+          ]
+        }
+      ],
+      "next": {
+        "target": "Lunatic Cultist",
+        "optional": [
+          {
+            "key": "Martian Madness",
+            "why": "[[Xeno Staff]] (Disco Marciano)"
+          },
+          {
+            "key": "Empress of Light",
+            "why": "Terraprisma de dia"
+          },
+          {
+            "key": "Frost Moon",
+            "why": "boas recompensas para treinar antes do fim"
+          }
+        ],
+        "prep": [
+          "Depois do Golem, cultistas aparecem rezando na entrada da Masmorra. Ataque um deles para começar a luta.",
+          "Ele cria cópias: só a verdadeira se mexe de um jeito diferente. Lacaios de alvo único ajudam a achar."
+        ],
+        "arena": [
+          "Plataformas acima da entrada da Masmorra.",
+          "Espaço para desviar do dragão fantasma."
+        ]
+      }
+    },
+    {
+      "stage": "post-cultist",
+      "summary": "Derrote as quatro torres celestiais: a de **Pó das Estrelas** dá os fragmentos do invocador. O [[Stardust Dragon Staff]] é a arma principal contra o Senhor da Lua.",
+      "armor": {
+        "name": "Tiki armor",
+        "note": "a Pó das Estrelas só depois do Senhor da Lua"
+      },
+      "armorAlt": [
+        "Spooky armor",
+        "Valhalla Knight armor"
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": {
+            "name": "Stardust Dragon Staff",
+            "note": "18 fragmentos de Pó das Estrelas"
+          },
+          "alt": [
+            "Terraprisma",
+            "Stardust Cell Staff"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": {
+            "name": "Constellation",
+            "note": "mata rápido as sanguessugas do Senhor da Lua"
+          },
+          "alt": [
+            "Firecracker",
+            "Vulgar Display of Flower",
+            "Dark Harvest"
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "item": "Ballista Staff",
+          "alt": [
+            "Explosive Trap Staff",
+            "Staff of the Frost Hydra"
+          ]
+        }
+      ],
+      "accessories": [
+        "Papyrus Scarab",
+        "Necromantic Scroll",
+        "Pygmy Necklace",
+        {
+          "name": "Twilight Grasp",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Ouroboros Ring",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Templar's Sling",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        "Demon Heart",
+        "Empress Wings"
+      ],
+      "buffs": [
+        "Flask of Ichor",
+        "Flask of Venom",
+        "Summoning Potion",
+        "Super Healing Potion",
+        "Bewitching Table",
+        "War Table"
+      ],
+      "paths": [
+        {
+          "id": "cult-dragon",
+          "title": "Dragão com tudo",
+          "when": "Para a luta contra o Senhor da Lua: o dragão acerta ele sem problema.",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            "Tiki armor"
+          ],
+          "weapons": [
+            {
+              "name": "Stardust Dragon Staff",
+              "qty": "todos"
+            },
+            "Constellation"
+          ],
+          "pros": [
+            "O maior dano desta etapa.",
+            "A [[Constellation]] tem alcance longo e é constante."
+          ],
+          "cons": [
+            "O dragão perde força contra inimigos rápidos ou muitos ao mesmo tempo."
+          ],
+          "next": [
+            "ml-dragon"
+          ]
+        },
+        {
+          "id": "cult-firecracker",
+          "title": "Dragão + Firecracker",
+          "when": "Se você ainda usa a pilha do [[Firecracker]].",
+          "sub": [
+            "chicotes"
+          ],
+          "armor": [
+            "Tiki armor"
+          ],
+          "weapons": [
+            {
+              "name": "Stardust Dragon Staff",
+              "qty": "todos"
+            },
+            "Firecracker",
+            "Vulgar Display of Flower",
+            "Dark Harvest"
+          ],
+          "extras": [
+            "Twilight Grasp"
+          ],
+          "pros": [
+            "Pode passar a Constelação em dano por segundo."
+          ],
+          "cons": [
+            "Pede ficar colado no chefe.",
+            "Mesmo assim vale ter a Constelação para as sanguessugas."
+          ],
+          "next": [
+            "ml-firecracker"
+          ]
+        },
+        {
+          "id": "cult-cells",
+          "title": "Células e Terraprisma",
+          "when": "Para eventos e inimigos que se mexem muito (as torres, por exemplo).",
+          "sub": [
+            "lacaios"
+          ],
+          "armor": [
+            "Tiki armor"
+          ],
+          "weapons": [
+            {
+              "name": "Stardust Dragon Staff",
+              "qty": "1"
+            },
+            {
+              "name": "Terraprisma",
+              "qty": "resto",
+              "note": "ou [[Stardust Cell Staff]]"
+            },
+            "Constellation"
+          ],
+          "pros": [
+            "Acertam alvos rápidos e grupos melhor que o dragão.",
+            "Um dragão em um espaço ainda ajuda."
+          ],
+          "cons": [
+            "Menos dano contra o Senhor da Lua."
+          ],
+          "next": [
+            "ml-dragon"
+          ]
+        }
+      ],
+      "next": {
+        "target": "Moon Lord",
+        "optional": [
+          {
+            "key": "Lunar Events",
+            "why": "derrote as 4 torres para ele vir sozinho"
+          }
+        ],
+        "prep": [
+          "Derrotar as quatro torres chama o Senhor da Lua; depois ele pode ser invocado com o [[Celestial Sigil]].",
+          "Leve [[Super Healing Potion]], todas as poções de defesa e a [[Flask of Ichor]].",
+          "Mire o dragão no olho aberto e use a [[Constellation]] nas sanguessugas."
+        ],
+        "arena": [
+          "Muitas fileiras de plataformas, bem largas, de preferência com a Enfermeira por perto.",
+          "Fogueira, Lanterna de Coração, [[Star in a Bottle]] e uma piscina de mel."
+        ]
+      }
+    },
+    {
+      "stage": "post-moon-lord",
+      "summary": "Fim de jogo: armadura de Pó das Estrelas, o chicote [[Possession]] e as sentinelas do Senhor da Lua. Daqui pra frente, o invocador é ótimo para quem quer construir e explorar com proteção automática.",
+      "armor": {
+        "name": "Stardust armor",
+        "note": "com o [[Firecracker]], troque o capacete pela [[Tiki Mask]]"
+      },
+      "armorAlt": [
+        {
+          "name": "Valhalla Knight armor",
+          "note": "defesa"
+        }
+      ],
+      "weapons": [
+        {
+          "sub": "lacaios",
+          "item": {
+            "name": "Stardust Dragon Staff",
+            "qty": "3"
+          },
+          "alt": [
+            {
+              "name": "Terraprisma",
+              "qty": "8"
+            },
+            "Stardust Cell Staff"
+          ]
+        },
+        {
+          "sub": "chicotes",
+          "item": {
+            "name": "Possession",
+            "note": "do Senhor da Lua"
+          },
+          "alt": [
+            "Constellation",
+            "Dark Harvest",
+            "Firecracker"
+          ]
+        },
+        {
+          "sub": "sentinelas",
+          "item": {
+            "name": "Lunar Portal Staff",
+            "note": "do Senhor da Lua"
+          },
+          "alt": [
+            "Rainbow Crystal Staff"
+          ]
+        }
+      ],
+      "accessories": [
+        "Summoner Emblem",
+        "Hercules Beetle",
+        "Papyrus Scarab",
+        "Necromantic Scroll",
+        "Pygmy Necklace",
+        {
+          "name": "Twilight Grasp",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Ouroboros Ring",
+          "sub": [
+            "chicotes"
+          ]
+        },
+        {
+          "name": "Templar's Sling",
+          "sub": [
+            "sentinelas"
+          ]
+        },
+        "Stardust Wings"
+      ],
+      "buffs": [
+        "Flask of Venom",
+        "Flask of Ichor",
+        "Summoning Potion",
+        "Bewitching Table",
+        "War Table",
+        "Slice of Cake"
+      ],
+      "paths": [
+        {
+          "id": "ml-dragon",
+          "title": "Mistura final",
+          "when": "O jeito mais forte e fácil de jogar o fim de jogo.",
+          "sub": [
+            "lacaios",
+            "chicotes"
+          ],
+          "armor": [
+            "Stardust armor"
+          ],
+          "weapons": [
+            {
+              "name": "Stardust Dragon Staff",
+              "qty": "3"
+            },
+            {
+              "name": "Terraprisma",
+              "qty": "8"
+            },
+            "Possession",
+            "Constellation",
+            "Dark Harvest"
+          ],
+          "extras": [
+            "Twilight Grasp",
+            "Ouroboros Ring"
+          ],
+          "pros": [
+            "O [[Terraprisma]] ataca rápido e aproveita o dano de marcação alto da [[Possession]].",
+            "Funciona contra tudo."
+          ],
+          "cons": [
+            "Três chicotes para alternar."
+          ]
+        },
+        {
+          "id": "ml-firecracker",
+          "title": "Dragão + Firecracker",
+          "when": "Se você gosta do dano alto por golpe.",
+          "sub": [
+            "chicotes"
+          ],
+          "armor": [
+            {
+              "name": "Tiki Mask"
+            },
+            "Stardust Plate",
+            "Stardust Leggings"
+          ],
+          "weapons": [
+            {
+              "name": "Stardust Dragon Staff",
+              "qty": "todos"
+            },
+            "Firecracker"
+          ],
+          "pros": [
+            "O [[Firecracker]] multiplica o dano do dragão."
+          ],
+          "cons": [
+            "Alcance curto: a [[Tiki Mask]] aumenta o alcance."
+          ]
+        },
+        {
+          "id": "ml-sentry",
+          "title": "Portais lunares",
+          "when": "Se você ganhou as sentinelas do Senhor da Lua.",
+          "sub": [
+            "sentinelas"
+          ],
+          "armor": [
+            "Stardust armor"
+          ],
+          "weapons": [
+            "Lunar Portal Staff",
+            "Rainbow Crystal Staff",
+            {
+              "name": "Stardust Dragon Staff",
+              "qty": "resto"
+            }
+          ],
+          "extras": [
+            "Templar's Sling"
+          ],
+          "pros": [
+            "Os portais flutuam e varrem a tela com raios.",
+            "Ótimo para defender a base enquanto você constrói."
+          ],
+          "cons": [
+            "Não atravessam blocos."
+          ]
+        }
+      ],
+      "next": {
+        "prep": [
+          "Não há mais chefes obrigatórios. Os opcionais que faltarem (luas, Duque, Imperatriz) ficam bem mais fáceis.",
+          "O [[Zenith]] mata tudo, seja qual for a armadura: use se quiser.",
+          "Bom momento para construir, decorar e terminar o Bestiário."
+        ]
+      }
+    }
+  ],
+  "source": {
+    "page": "Guide:Class setups",
+    "revid": 1035055,
+    "date": "2026-10-20"
+  }
+}
