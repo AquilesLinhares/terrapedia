@@ -21,6 +21,7 @@ const ClassGuidePage = lazy(() => import('./pages/ClassGuidePage'))
 const ToolsPage = lazy(() => import('./pages/ToolsPage'))
 const MinionCalcPage = lazy(() => import('./pages/tools/MinionCalcPage'))
 const ModifierPage = lazy(() => import('./pages/tools/ModifierPage'))
+const BuffChecklistPage = lazy(() => import('./pages/tools/BuffChecklistPage'))
 
 installLinkPrefetch()
 
@@ -44,6 +45,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="ferramentas" element={<ToolsPage />} />
           <Route path="ferramentas/lacaios" element={<MinionCalcPage />} />
           <Route path="ferramentas/modificador" element={<ModifierPage />} />
+          <Route path="ferramentas/buffs" element={<BuffChecklistPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

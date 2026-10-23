@@ -23,6 +23,7 @@ begin
   wid := public.create_world('Mundo de teste', 'classic', 'Teste A');
   insert into ctx values ('wid', wid::text), ('code', (select invite_code from public.worlds where id = wid));
   insert into public.world_craft_checks (world_id, item, material) values (wid, 'Iron Pickaxe', 'Iron Bar');
+  insert into public.world_buff_checks (world_id, boss, item) values (wid, 'Skeletron', 'Ironskin Potion');
   insert into public.world_notes (world_id, page, body) values (wid, 'Gel', 'nota do mundo de A');
   insert into public.notes (page, body) values ('Gel', 'nota pessoal de A');
   update public.notes set body = 'nota pessoal de A (editada)', updated_at = now() where page = 'Gel';
@@ -37,6 +38,11 @@ declare wid uuid := (select v::uuid from ctx where k = 'wid'); n int;
 begin
   insert into r (k, v) values ('B entra pelo código (true)', (public.join_world(lower(replace((select v from ctx where k = 'code'), '-', ' ')), 'Teste B') = wid)::text);
   insert into r (k, v) values ('B vê o checklist de A (1)', (select count(*) from public.world_craft_checks where world_id = wid)::text);
+  insert into r (k, v) values ('B vê os buffs marcados por A (1)', (select count(*) from public.world_buff_checks where world_id = wid)::text);
+  delete from public.world_buff_checks where world_id = wid and item = 'Ironskin Potion';
+  get diagnostics n = row_count;
+  insert into r (k, v) values ('B desmarca o buff de A (1)', n::text);
+  insert into public.world_buff_checks (world_id, boss, item) values (wid, 'Skeletron', 'Campfire');
   insert into r (k, v) values ('B vê a nota do mundo (nota do mundo de A)', (select body from public.world_notes where world_id = wid and page = 'Gel'));
   insert into r (k, v) values ('B vê nota pessoal de A (0)', (select count(*) from public.notes)::text);
   update public.notes set body = 'hack' where page = 'Gel';
@@ -95,6 +101,15 @@ begin
   delete from public.world_craft_checks where world_id = wid;
   get diagnostics n = row_count;
   insert into r (k, v) values ('C apaga checklist (0)', n::text);
+  insert into r (k, v) values ('C vê buffs do mundo alheio (0)', (select count(*) from public.world_buff_checks)::text);
+  begin
+    insert into public.world_buff_checks (world_id, boss, item) values (wid, 'Skeletron', 'Gel');
+    insert into r (k, v) values ('C marca buff no mundo alheio (bloqueado)', 'ACEITOU (ruim)');
+  exception when others then insert into r (k, v) values ('C marca buff no mundo alheio (bloqueado)', 'bloqueado ' || sqlstate);
+  end;
+  delete from public.world_buff_checks where world_id = wid;
+  get diagnostics n = row_count;
+  insert into r (k, v) values ('C apaga buffs (0)', n::text);
   delete from public.world_notes where world_id = wid;
   get diagnostics n = row_count;
   insert into r (k, v) values ('C apaga nota do mundo (0)', n::text);
@@ -103,6 +118,7 @@ end $$;
 -- ===== A confere o resultado; B sai do mundo =====
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000a","role":"authenticated"}', true);
 insert into r (k, v) select 'A vê checklist (Wood)', string_agg(material, ',') from public.world_craft_checks;
+insert into r (k, v) select 'A vê buffs (Campfire)', string_agg(item, ',') from public.world_buff_checks;
 insert into r (k, v) select 'A vê nota do mundo / editor é B (editada por B / true)', body || ' / ' || (updated_by = '00000000-0000-4000-a000-00000000000b') from public.world_notes;
 insert into r (k, v) select 'A vê a própria nota (nota pessoal de A (editada))', body from public.notes;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000b","role":"authenticated"}', true);

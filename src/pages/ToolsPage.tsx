@@ -25,7 +25,7 @@ export const TOOLS = [
     title: 'Checklist de buffs',
     text: 'Poções, comidas e estações para cada chefe, com caixinhas salvas no mundo.',
     icon: 'Ironskin Potion',
-    ready: false,
+    ready: true,
   },
   {
     slug: 'arena',

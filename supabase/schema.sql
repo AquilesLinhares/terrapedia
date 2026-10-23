@@ -469,3 +469,26 @@ grant select, insert, update, delete on public.quick_access to authenticated;
 -- transação desfeita (relrowsecurity = true).
 -- ============================================================
 revoke execute on function public.rls_auto_enable() from public, anon, authenticated;
+
+-- ============================================================
+-- Checklist de buffs (Ferramentas): o que já está pronto para cada chefe, no mundo ativo.
+-- Aplicado em 2026-10-23 (migração "world_buff_checks"). Mesmas regras de world_craft_checks:
+-- membros veem, marcam e desmarcam; ninguém muda uma marcação (só apaga). Sem mundo, fica no aparelho.
+-- ============================================================
+create table public.world_buff_checks (
+  world_id uuid not null references public.worlds (id) on delete cascade,
+  boss text not null check (char_length(boss) between 1 and 80),
+  item text not null check (char_length(item) between 1 and 120),
+  checked_by uuid default auth.uid() references auth.users (id) on delete set null,
+  checked_at timestamptz not null default now(),
+  primary key (world_id, boss, item)
+);
+create index world_buff_checks_checked_by_idx on public.world_buff_checks (checked_by);
+
+alter table public.world_buff_checks enable row level security;
+create policy "membros veem" on public.world_buff_checks for select to authenticated using (private.is_world_member(world_id));
+create policy "membros marcam" on public.world_buff_checks for insert to authenticated
+  with check (private.is_world_member(world_id) and (select auth.uid()) = checked_by);
+create policy "membros desmarcam" on public.world_buff_checks for delete to authenticated using (private.is_world_member(world_id));
+revoke all on public.world_buff_checks from anon, authenticated;
+grant select, insert, delete on public.world_buff_checks to authenticated;
