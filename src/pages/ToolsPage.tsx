@@ -39,7 +39,7 @@ export const TOOLS = [
     title: 'Comparador de itens',
     text: 'Dois ou três itens lado a lado: dano, velocidade, efeitos e como conseguir.',
     icon: 'Terra Blade',
-    ready: false,
+    ready: true,
   },
 ]
 
