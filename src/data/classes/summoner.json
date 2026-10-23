@@ -239,7 +239,7 @@
         },
         {
           "sub": "sentinelas",
-          "note": "Ainda sem sentinela boa. Depois do Devorador/Cérebro chegam o Taverneiro e as sentinelas do [[Old One's Army]]."
+          "note": "Ainda sem sentinela boa. Depois do Devorador/Cérebro chegam o Taberneiro e as sentinelas do [[Old One's Army]]."
         }
       ],
       "accessories": [
@@ -345,7 +345,7 @@
         "optional": [
           {
             "key": "Goblin Army",
-            "why": "libera o Funileiro Goblin (junta acessórios) e os Pals"
+            "why": "libera o Inventor Goblin (junta acessórios) e os Pals"
           }
         ],
         "prep": [
@@ -361,7 +361,7 @@
     },
     {
       "stage": "post-evil",
-      "summary": "Agora dá para fazer a primeira armadura de invocador de verdade e o [[Imp Staff]] (pedra infernal). O Taverneiro chega e traz as sentinelas do [[Old One's Army]].",
+      "summary": "Agora dá para fazer a primeira armadura de invocador de verdade e o [[Imp Staff]] (pedra infernal). O Taberneiro chega e traz as sentinelas do [[Old One's Army]].",
       "armor": {
         "name": "Obsidian armor",
         "note": "+31% de dano de invocação e chicotes mais rápidos"
@@ -404,7 +404,7 @@
           "alt": [
             {
               "name": "Ballista Rod",
-              "note": "Taverneiro"
+              "note": "Taberneiro"
             },
             "Explosive Trap Rod"
           ]
@@ -419,7 +419,7 @@
         },
         {
           "name": "Pygmy Necklace",
-          "note": "+1 lacaio; Doutor Bruxo, de noite"
+          "note": "+1 lacaio; Médico Bruxo, de noite"
         },
         {
           "name": "Apprentice's Scarf",
@@ -545,7 +545,7 @@
         },
         {
           "id": "evil-sentry",
-          "title": "Torres do Taverneiro",
+          "title": "Torres do Taberneiro",
           "when": "Se você gosta de preparar o lugar da luta e quer o máximo de sentinelas.",
           "sub": [
             "sentinelas"
@@ -1048,7 +1048,7 @@
         "Spider armor",
         {
           "name": "Squire armor",
-          "note": "defesa (Taverneiro)"
+          "note": "defesa (Taberneiro)"
         }
       ],
       "weapons": [
@@ -1487,7 +1487,7 @@
     },
     {
       "stage": "post-plantera",
-      "summary": "Grande salto: a armadura Tiki (Doutor Bruxo), o chicote da Plantera e os baús de bioma com as chaves. O [[Firecracker]] volta a brilhar com o [[Desert Tiger Staff]].",
+      "summary": "Grande salto: a armadura Tiki (Médico Bruxo), o chicote da Plantera e os baús de bioma com as chaves. O [[Firecracker]] volta a brilhar com o [[Desert Tiger Staff]].",
       "armor": {
         "name": "Tiki armor",
         "note": "+30% de dano, +4 lacaios e mais alcance de chicote"
@@ -1544,7 +1544,7 @@
         "Summoner Emblem",
         {
           "name": "Hercules Beetle",
-          "note": "+15% de dano; Doutor Bruxo"
+          "note": "+15% de dano; Médico Bruxo"
         },
         "Pygmy Necklace",
         {
@@ -1728,7 +1728,7 @@
     },
     {
       "stage": "post-golem",
-      "summary": "Agora vem o melhor lacaio antes do fim: o [[Terraprisma]], se você vencer a Imperatriz de dia. Sem ele, o [[Xeno Staff]] da Invasão Marciana segura bem. Armaduras novas no Taverneiro (nível 3).",
+      "summary": "Agora vem o melhor lacaio antes do fim: o [[Terraprisma]], se você vencer a Imperatriz de dia. Sem ele, o [[Xeno Staff]] da Invasão Marciana segura bem. Armaduras novas no Taberneiro (nível 3).",
       "armor": {
         "name": "Tiki armor",
         "note": "o melhor no geral"
@@ -1774,7 +1774,7 @@
           "sub": "sentinelas",
           "item": {
             "name": "Ballista Staff",
-            "note": "Taverneiro, nível 3"
+            "note": "Taberneiro, nível 3"
           },
           "alt": [
             "Explosive Trap Staff",

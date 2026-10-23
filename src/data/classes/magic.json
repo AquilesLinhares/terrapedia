@@ -38,14 +38,14 @@
       "summary": "Já dá para começar de mago: varinhas de pedras preciosas com minério e gemas, e armaduras que aumentam a mana. Junte [[Mana Crystal|Cristais de Mana]] (estrelas caídas à noite).",
       "armor": { "name": "Jungle armor", "note": "esporos da Selva; mais mana e acerto crítico" },
       "armorAlt": [
-        { "name": "Magic Hat", "note": "Mercador Viajante; com um robe de gema" },
+        { "name": "Magic Hat", "note": "Caixeiro-viajante; com um robe de gema" },
         { "name": "Diamond Robe", "note": "robe de gema: mais mana e feitiços de gema mais fortes" },
         { "name": "Wizard Hat", "note": "com o [[Mystic Robe]]: dano máximo, defesa mínima" }
       ],
       "weapons": [
         { "sub": "cajados", "item": { "name": "Thunder Zapper", "note": "baús de arenito do Deserto Subterrâneo" }, "alt": ["Ruby Staff", "Diamond Staff", "Glacier Fang", "Wand of Sparking"] },
         { "sub": "livros", "item": { "name": "Demon Scythe", "note": "cai dos Demônios no Submundo: perigoso tão cedo" } },
-        { "sub": "armas-magicas", "item": { "name": "Mystic Bloom", "note": "feito com o [[Nature's Gift]] da Selva" }, "alt": [{ "name": "Gray Zapinator", "note": "Mercador Viajante, quando aparecer" }] }
+        { "sub": "armas-magicas", "item": { "name": "Mystic Bloom", "note": "feito com o [[Nature's Gift]] da Selva" }, "alt": [{ "name": "Gray Zapinator", "note": "Caixeiro-viajante, quando aparecer" }] }
       ],
       "accessories": [
         { "name": "Band of Starpower", "note": "+40 de mana" },
@@ -65,7 +65,7 @@
           "weapons": [{ "name": "Ruby Staff", "note": "com o [[Sapphire Robe]] atira muito rápido" }, "Diamond Staff"],
           "extras": ["Band of Starpower"],
           "pros": ["Sai cedo, só com minério e gemas.", "Robes de gema dão muita mana."],
-          "cons": ["Defesa muito baixa.", "O [[Magic Hat]] depende do Mercador Viajante."],
+          "cons": ["Defesa muito baixa.", "O [[Magic Hat]] depende do Caixeiro-viajante."],
           "next": ["m-eye-jungle"]
         },
         {
@@ -97,7 +97,7 @@
     },
     {
       "stage": "post-eye",
-      "summary": "Com o minério do Olho e a chance do [[Goblin Army|Exército Goblin]], vêm o Funileiro e os primeiros acessórios combinados de mana. Quebrar orbes/corações também dá armas de mago.",
+      "summary": "Com o minério do Olho e a chance do [[Goblin Army|Exército Goblin]], vêm o Inventor Goblin e os primeiros acessórios combinados de mana. Quebrar orbes/corações também dá armas de mago.",
       "armor": "Jungle armor",
       "armorAlt": [{ "name": "Magic Hat", "note": "+ [[Diamond Robe]]" }, { "name": "Wizard Hat", "note": "+ [[Mystic Robe]]" }],
       "weapons": [
@@ -117,7 +117,7 @@
         {
           "id": "m-eye-jungle",
           "title": "Selva + mana sem fim",
-          "when": "Se o Exército Goblin já veio e você tem o Funileiro.",
+          "when": "Se o Exército Goblin já veio e você tem o Inventor Goblin.",
           "sub": ["cajados", "livros"],
           "armor": ["Jungle armor"],
           "weapons": ["Thunder Zapper", { "name": "Demon Scythe", "note": "se tiver coragem de ir ao Submundo" }],
@@ -129,7 +129,7 @@
         {
           "id": "m-eye-zap",
           "title": "Tiro rápido",
-          "when": "Se você encontrou um meteorito ou o Mercador Viajante vende o [[Gray Zapinator]].",
+          "when": "Se você encontrou um meteorito ou o Caixeiro-viajante vende o [[Gray Zapinator]].",
           "sub": ["armas-magicas"],
           "armor": ["Jungle armor"],
           "weapons": ["Space Gun", "Gray Zapinator"],
@@ -140,7 +140,7 @@
       ],
       "next": {
         "target": "Eater of Worlds",
-        "optional": [{ "key": "Goblin Army", "why": "libera o Funileiro Goblin para juntar acessórios de mana" }],
+        "optional": [{ "key": "Goblin Army", "why": "libera o Inventor Goblin para juntar acessórios de mana" }],
         "prep": [
           "O chefe depende do mundo: [[Eater of Worlds]] na Corrupção, [[Brain of Cthulhu]] no Carmesim. Os dois contam como a mesma etapa.",
           "Feitiços que atravessam inimigos ([[Vilethorn]], [[Demon Scythe]]) rendem muito contra os segmentos do Devorador.",
@@ -160,7 +160,7 @@
       "weapons": [
         { "sub": "cajados", "item": "Thunder Zapper", "alt": [{ "name": "Weather Pain", "note": "do [[Deerclops|Cervídeo]]" }, "Crimson Rod", "Vilethorn"] },
         { "sub": "livros", "item": "Demon Scythe" },
-        { "sub": "armas-magicas", "item": { "name": "Gray Zapinator", "note": "Mercador Viajante" }, "alt": ["Space Gun", { "name": "Bee Gun", "note": "da Abelha Rainha" }] }
+        { "sub": "armas-magicas", "item": { "name": "Gray Zapinator", "note": "Caixeiro-viajante" }, "alt": ["Space Gun", { "name": "Bee Gun", "note": "da Abelha Rainha" }] }
       ],
       "accessories": [
         "Celestial Cuffs",
@@ -287,7 +287,7 @@
     },
     {
       "stage": "hardmode",
-      "summary": "O mago fica bom para limpar grupos no começo do Modo Difícil. A [[Orange Zapinator]] (Mercador Viajante) é a melhor contra chefes, e o [[Sorcerer Emblem]] cai da Parede de Carne.",
+      "summary": "O mago fica bom para limpar grupos no começo do Modo Difícil. A [[Orange Zapinator]] (Caixeiro-viajante) é a melhor contra chefes, e o [[Sorcerer Emblem]] cai da Parede de Carne.",
       "armor": { "name": "Adamantite Headgear", "note": "+ [[Adamantite Breastplate]] e [[Forbidden Treads]]" },
       "armorAlt": [
         { "name": "Adamantite armor", "image": "Adamantite armor Headgear.png", "note": "conjunto completo" },
@@ -297,7 +297,7 @@
       "weapons": [
         { "sub": "cajados", "item": { "name": "Life Drain", "note": "Mímico Carmesim; rouba vida" }, "alt": ["Meteor Staff", "Sky Fracture", { "name": "Crystal Serpent", "note": "pescado no Sagrado" }, "Nimbus Rod"] },
         { "sub": "livros", "item": { "name": "Golden Shower", "note": "icor: baixa a defesa dos inimigos" }, "alt": ["Cursed Flames", "Crystal Storm"] },
-        { "sub": "armas-magicas", "item": { "name": "Orange Zapinator", "note": "Mercador Viajante" }, "alt": ["Spirit Flame", { "name": "Blood Thorn", "note": "Tubarão Hemogoblin (Lua de Sangue)" }, "Shadowflame Hex Doll", "Killing Deck"] }
+        { "sub": "armas-magicas", "item": { "name": "Orange Zapinator", "note": "Caixeiro-viajante" }, "alt": ["Spirit Flame", { "name": "Blood Thorn", "note": "Tubarão Hemogoblin (Lua de Sangue)" }, "Shadowflame Hex Doll", "Killing Deck"] }
       ],
       "accessories": [
         { "name": "Sorcerer Emblem", "note": "+15% de dano mágico" },
@@ -323,12 +323,12 @@
         {
           "id": "m-hm-zap",
           "title": "Zapinator laranja",
-          "when": "Se o Mercador Viajante trouxer a [[Orange Zapinator]].",
+          "when": "Se o Caixeiro-viajante trouxer a [[Orange Zapinator]].",
           "sub": ["armas-magicas"],
           "armor": [{ "name": "Adamantite Headgear", "note": "+ [[Adamantite Breastplate]] e [[Forbidden Treads]]" }],
           "weapons": ["Orange Zapinator", "Spirit Flame"],
           "pros": ["Ótima contra chefes; o laser ganha efeitos aleatórios a cada acerto."],
-          "cons": ["Depende da sorte com o Mercador Viajante.", "Fraca contra grupos."],
+          "cons": ["Depende da sorte com o Caixeiro-viajante.", "Fraca contra grupos."],
           "next": ["m-mech-zap"]
         },
         {

@@ -32,7 +32,7 @@ const translated = new Set(dict.entries.filter(([pt, en]) => pt.toLowerCase() !=
 
 const KEYS = {
   guide: { required: ['class', 'slug', 'title', 'emblem', 'intro', 'basics', 'subclasses', 'stages', 'source'], optional: ['names'] },
-  stage: { required: ['stage', 'summary', 'armor', 'weapons', 'accessories', 'buffs', 'paths', 'next'], optional: ['armorAlt'] },
+  stage: { required: ['stage', 'summary', 'armor', 'weapons', 'accessories', 'buffs', 'paths', 'next'], optional: ['armorAlt', 'ammo'] },
   path: { required: ['id', 'title', 'when', 'sub', 'armor', 'weapons', 'pros', 'cons'], optional: ['extras', 'next'] },
   item: { required: ['name'], optional: ['note', 'qty', 'image', 'sub'] },
   weapon: { required: ['sub'], optional: ['item', 'alt', 'note'] },
@@ -108,6 +108,7 @@ for (const file of readdirSync(CLASSES).filter((f) => f.endsWith('.json')).sort(
     }
     for (const it of st.accessories ?? []) item(it, `${where}.accessories`)
     for (const it of st.buffs ?? []) item(it, `${where}.buffs`)
+    for (const it of st.ammo ?? []) item(it, `${where}.ammo`)
 
     const nextIds = new Set((stages[i + 1]?.paths ?? []).map((p) => p.id))
     for (const p of st.paths ?? []) {

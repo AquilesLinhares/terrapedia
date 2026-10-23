@@ -55,9 +55,9 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Acesso rápido flutuante (feito, 2026-10-22)**: janelinha "glass" que fica por cima do jogo (Document
   Picture-in-Picture, Chrome/Edge no PC) com itens fixados, favoritos, buscar depois e etapa do mundo.
   Veja "Acesso rápido flutuante" abaixo.
-- **Guias de classe (Invocador e Mago feitos, 2026-10-22)**: uma página por classe em `/classes/<classe>`, etapas iguais às do
-  mundo compartilhado, abas Resumo e Detalhado (mapa de caminhos), filtro de subclasse e selos Expert/Mestre. Faltam
-  Corpo a corpo e À distância. Veja "Guias de classe" abaixo.
+- **Guias de classe (Invocador e Mago feitos em 2026-10-22, À distância em 2026-10-23)**: uma página por classe em
+  `/classes/<classe>`, etapas iguais às do mundo compartilhado, abas Resumo e Detalhado (mapa de caminhos), filtro de
+  subclasse e selos Expert/Mestre. Falta Corpo a corpo. Veja "Guias de classe" abaixo.
 
 ## Stack
 
@@ -198,14 +198,17 @@ Um arquivo por classe em `src/data/classes/` com o nome do `PlayerClass` (`summo
 `ranged.json`). Classe sem arquivo aparece como "em breve" em `/classes`. Fonte: "Guide:Class setups" da wiki (só a parte da
 classe) + páginas dos itens, organizados com nossas palavras e na versão atual do jogo (1.4.5). As armas vão na subclasse pela
 categoria da wiki (campo `listcat` da tabela Cargo `Items`): no Mago, "wands" → Cajados, "spell books" → Livros de magia, o resto
-(armas de fogo mágicas, instrumentos...) → Armas mágicas. Formato em `src/lib/classGuides.ts`:
+(armas de fogo mágicas, instrumentos...) → Armas mágicas. Em À distância, "bows"/"repeaters" → Arcos, "guns" → Armas de fogo,
+"launchers" e as armas especiais (estrelas, gel, dardos — as que o Shroomite Helmet reforça) → Lançadores, itens jogados → Arremesso
+(sem armas no Modo Difícil: a etapa tem só um `note` mandando para os lançadores). Nomes de NPCs nos textos seguem o dicionário
+(Taberneiro, Inventor Goblin, Caixeiro-viajante, Médico Bruxo, Feiticeiro). Formato em `src/lib/classGuides.ts`:
 
 - **Guia**: `intro`, `basics` (como a classe funciona), `subclasses` (`id` na URL, `label` igual às sugestões da ficha do mundo,
   `icon`), `names` (nomes PT que faltam no dicionário, ex.: conjuntos de armadura — também vão em `scripts/manual-names.json`),
   `stages`, `source`.
 - **Etapa** (`stage` = id de `STAGES` em `progression.ts`, em ordem): `summary`, `armor` + `armorAlt` (melhor no geral),
   `weapons` (um por subclasse: `{ sub, item?, alt?, note? }`; sem `item` = nada bom nessa etapa), `accessories`, `buffs`,
-  `paths` (mapa) e `next` (`target` = `key` de `MILESTONES`, `optional`, `prep`, `arena`).
+  `ammo` (opcional; cartão "Munição", usado em À distância), `paths` (mapa) e `next` (`target` = `key` de `MILESTONES`, `optional`, `prep`, `arena`).
 - **Caminho** (`paths`): `id` único no guia, `title`, `when` ("se você usa X..."), `sub`, `armor`, `weapons`, `extras`, `pros`,
   `cons`, `next` (ids de caminhos da etapa seguinte).
 - **Itens**: `"Nome EN"` ou `{ name, note?, qty?, image?, sub? }`. `image` troca o sprite (ex.: `"Hallowed armor Hood.png"`);

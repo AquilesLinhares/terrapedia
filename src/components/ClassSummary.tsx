@@ -30,6 +30,7 @@ export default function ClassSummary({
   const weapons = stage.weapons.filter((w) => !sub || w.sub === sub)
   const accessories = stage.accessories.filter((a) => matchesSub(a, sub))
   const buffs = stage.buffs.filter((b) => matchesSub(b, sub))
+  const ammo = stage.ammo?.filter((a) => matchesSub(a, sub))
 
   return (
     <div className="space-y-4">
@@ -72,6 +73,13 @@ export default function ClassSummary({
           <h3 className={cardTitle}>Poções e buffs</h3>
           <ItemGrid items={buffs} />
         </section>
+
+        {ammo && (
+          <section className={`${card} lg:col-span-2`}>
+            <h3 className={cardTitle}>Munição</h3>
+            <ItemGrid items={ammo} wide />
+          </section>
+        )}
       </div>
 
       <NextStep stage={stage} />
@@ -111,10 +119,10 @@ function Alternatives({ items }: { items: ClassItem[] }) {
   )
 }
 
-function ItemGrid({ items }: { items: ClassItem[] }) {
+function ItemGrid({ items, wide }: { items: ClassItem[]; wide?: boolean }) {
   if (!items.length) return <p className="text-sm text-muted">Nada específico para este filtro.</p>
   return (
-    <ul className="grid grid-cols-1 gap-x-3 gap-y-2 text-sm min-[420px]:grid-cols-2">
+    <ul className={`grid grid-cols-1 gap-x-3 gap-y-2 text-sm min-[420px]:grid-cols-2 ${wide ? 'lg:grid-cols-4' : ''}`}>
       {items.map((item, i) => (
         <li key={itemKey(item, i)} className="min-w-0">
           <SmallItem item={item} />

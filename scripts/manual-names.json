@@ -81,5 +81,8 @@
   { "pt": "Armadura da Selva", "en": "Jungle armor", "type": "página" },
   { "pt": "Armadura de Adamantina", "en": "Adamantite armor", "type": "página" },
   { "pt": "Armadura do Artista Sombrio", "en": "Dark Artist armor", "type": "página" },
-  { "pt": "Armadura de Nébula", "en": "Nebula armor", "type": "página" }
+  { "pt": "Armadura de Nébula", "en": "Nebula armor", "type": "página" },
+  { "pt": "Armadura de Cogumelita", "en": "Shroomite armor", "type": "página" },
+  { "pt": "Armadura da Chapeuzinho Vermelho", "en": "Red Riding armor", "type": "página" },
+  { "pt": "Armadura do Vórtice", "en": "Vortex armor", "type": "página" }
 ]

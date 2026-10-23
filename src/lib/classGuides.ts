@@ -66,6 +66,8 @@ export interface ClassStage {
   weapons: WeaponPick[]
   accessories: ClassItem[]
   buffs: ClassItem[]
+  /** Munição recomendada (só para classes que usam: À distância) */
+  ammo?: ClassItem[]
   paths: ClassPath[]
   next: {
     /** `key` de um marco de MILESTONES (título EN da wiki); vazio no fim do jogo */

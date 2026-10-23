@@ -1,0 +1,884 @@
+{
+  "class": "ranged",
+  "slug": "a-distancia",
+  "title": "À distância",
+  "emblem": "Ranger Emblem",
+  "intro": "O atirador ataca de longe com arcos, armas de fogo e lançadores. Tem o maior dano à distância do jogo, mas gasta **munição**: flechas, balas, foguetes. A munição certa muda muito o resultado, então leve sempre bastante e da melhor que você conseguir fazer.",
+  "basics": [
+    "A arma dá o dano base e a **munição** soma dano e efeitos (fogo, perseguir, atravessar). Troque a munição conforme o inimigo: uma para chefes, outra para grupos.",
+    "Arcos usam **flechas**, armas de fogo usam **balas** e lançadores usam **foguetes** ou granadas. Algumas armas especiais usam [[Fallen Star]], [[Gel]] ou dardos.",
+    "Para gastar menos: [[Ammo Reservation Potion]], a [[Ammo Box]] e várias armaduras dão chance de não gastar munição. Mais tarde, a [[Endless Quiver]] e a [[Endless Musket Pouch]] dão flechas e balas comuns sem fim.",
+    "O [[Chaos Cylinder]] alterna sozinho entre os tipos de munição que você carrega: dá para misturar efeitos (ex.: uma flecha que baixa a defesa e outra que envenena).",
+    "Mesmo jogando de atirador, use lacaios e sentinelas extras: a [[Bewitching Table]] e a [[War Table]] dão um a mais de graça."
+  ],
+  "subclasses": [
+    {
+      "id": "arcos",
+      "label": "Arcos",
+      "icon": "Hellwing Bow",
+      "text": "Arcos e bestas de repetição. Usam flechas, que são baratas e têm muitos efeitos."
+    },
+    {
+      "id": "armas-de-fogo",
+      "label": "Armas de fogo",
+      "icon": "Minishark",
+      "text": "Pistolas, escopetas e metralhadoras. Atiram rápido; as balas de cristal e de clorofita são as melhores por boa parte do jogo."
+    },
+    {
+      "id": "lancadores",
+      "label": "Lançadores",
+      "icon": "Rocket Launcher",
+      "text": "Lançadores de foguetes e granadas e as armas especiais (estrelas, gel, dardos). Explosões que acertam grupos inteiros."
+    },
+    {
+      "id": "arremesso",
+      "label": "Arremesso",
+      "icon": "Shuriken",
+      "text": "Facas, granadas e lanças jogadas com a mão. Fortes no começo; no Modo Difícil quase não há armas de arremesso, e quem gosta de explosões passa para os lançadores."
+    }
+  ],
+  "names": {
+    "Shroomite armor": "Armadura de Cogumelita",
+    "Red Riding armor": "Armadura da Chapeuzinho Vermelho",
+    "Vortex armor": "Armadura do Vórtice",
+    "Adamantite armor": "Armadura de Adamantina",
+    "Hallowed armor": "Armadura Consagrada",
+    "Chlorophyte armor": "Armadura de Clorofita"
+  },
+  "stages": [
+    {
+      "stage": "start",
+      "summary": "O começo é de arco com flechas de minério ou da [[Minishark]], comprada do Comerciante de Armas. Granadas e facas de arremesso também são boas no comecinho.",
+      "armor": { "name": "Fossil armor", "note": "fósseis do Deserto Subterrâneo; chance de não gastar munição" },
+      "armorAlt": ["Platinum armor"],
+      "weapons": [
+        { "sub": "arcos", "item": { "name": "Platinum Bow", "note": "ou o arco do minério que você tiver" }, "alt": ["Wooden Bow", { "name": "Blood Rain Bow", "note": "pescando na Lua de Sangue" }] },
+        { "sub": "armas-de-fogo", "item": { "name": "Minishark", "note": "[[Arms Dealer]]" }, "alt": [{ "name": "Boomstick", "note": "baús de hera da Selva" }] },
+        { "sub": "lancadores", "item": { "name": "Blowpipe", "note": "atira sementes" } },
+        { "sub": "arremesso", "item": { "name": "Grenade", "note": "[[Demolitionist]]" }, "alt": ["Throwing Knife", "Shuriken", "Snowball"] }
+      ],
+      "accessories": [
+        { "name": "Poison Barb", "note": "flechas envenenam; baús da superfície", "sub": ["arcos"] },
+        { "name": "Harpy Charm", "note": "puxa as flechas para o inimigo", "sub": ["arcos"] },
+        { "name": "Snapping Stone", "note": "pulso de dano nos acertos (Granito)" },
+        "Shark Tooth Necklace",
+        "Hermes Boots",
+        "Cloud in a Bottle"
+      ],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ironskin Potion", "Regeneration Potion", "Swiftness Potion", "Well Fed", { "name": "Life Crystal", "qty": "10–15" }],
+      "ammo": [
+        { "name": "Frostburn Arrow", "sub": ["arcos"] },
+        { "name": "Flaming Arrow", "sub": ["arcos"] },
+        { "name": "Silver Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Musket Ball", "sub": ["armas-de-fogo"] },
+        { "name": "Seed", "sub": ["lancadores"] }
+      ],
+      "paths": [
+        {
+          "id": "r-start-bow",
+          "title": "Arco e flecha",
+          "when": "Se você quer gastar pouco: flechas de madeira são quase de graça.",
+          "sub": ["arcos"],
+          "armor": ["Fossil armor"],
+          "weapons": ["Platinum Bow", { "name": "Frostburn Arrow", "note": "flecha de madeira + tocha de gelo" }],
+          "extras": ["Harpy Charm"],
+          "pros": ["Munição barata e fácil.", "Os arcos melhoram a cada minério novo."],
+          "cons": ["Dano baixo antes das flechas especiais."],
+          "next": ["r-eye-bow"]
+        },
+        {
+          "id": "r-start-gun",
+          "title": "Minishark",
+          "when": "Se você juntou dinheiro e o [[Arms Dealer]] já mora no seu mundo.",
+          "sub": ["armas-de-fogo"],
+          "armor": ["Fossil armor"],
+          "weapons": ["Minishark", "Musket Ball"],
+          "pros": ["Atira muito rápido: ótima contra o Olho.", "Segue útil até virar o [[Megashark]] no Modo Difícil."],
+          "cons": ["Custa caro no começo.", "Balas também custam dinheiro."],
+          "next": ["r-eye-gun"]
+        },
+        {
+          "id": "r-start-throw",
+          "title": "Arremesso",
+          "when": "Se você gosta de explosões e de jogar coisas.",
+          "sub": ["arremesso"],
+          "armor": ["Fossil armor"],
+          "weapons": ["Grenade", "Throwing Knife"],
+          "pros": ["Granadas têm dano alto e acertam vários inimigos."],
+          "cons": ["Cada arremesso gasta o item.", "Granadas são caras no começo."],
+          "next": ["r-eye-throw"]
+        }
+      ],
+      "next": {
+        "target": "Eye of Cthulhu",
+        "optional": [{ "key": "King Slime", "why": "fácil para testar a mira" }],
+        "prep": [
+          "Use [[Life Crystal]] (vários) até ter pelo menos 200 de vida.",
+          "Invoque de noite com o [[Suspicious Looking Eye]].",
+          "Leve muita munição: centenas de flechas ou balas."
+        ],
+        "arena": ["Uma ou duas fileiras compridas de plataformas no céu.", "Atire enquanto corre na direção contrária ao Olho."]
+      }
+    },
+    {
+      "stage": "post-eye",
+      "summary": "O minério do Olho faz um arco melhor, e quebrar orbes/corações dá a [[Musket]] ou o [[The Undertaker]]. Depois do [[Goblin Army|Exército Goblin]], o Inventor Goblin junta acessórios.",
+      "armor": "Fossil armor",
+      "armorAlt": ["Platinum armor"],
+      "weapons": [
+        { "sub": "arcos", "item": { "name": "Demon Bow", "note": "ou o [[Tendon Bow]] no Carmesim" }, "alt": [{ "name": "Blood Rain Bow", "note": "com [[Shimmer Arrow]]" }, "Platinum Bow"] },
+        { "sub": "armas-de-fogo", "item": { "name": "Boomstick", "note": "baús de hera da Selva" }, "alt": [{ "name": "Musket", "note": "orbe da Corrupção" }, { "name": "The Undertaker", "note": "coração do Carmesim" }, "Minishark"] },
+        { "sub": "lancadores", "item": "Blowpipe", "note": "O [[Star Cannon]] vem depois, com o meteorito." },
+        { "sub": "arremesso", "item": "Grenade", "alt": [{ "name": "Spiky Ball", "note": "o [[Goblin Tinkerer]] vende" }, "Throwing Knife"] }
+      ],
+      "accessories": [
+        { "name": "Harpy Charm", "sub": ["arcos"] },
+        { "name": "Pyroclastic Stone", "note": "pedra de pulso + [[Magma Stone]]" },
+        "Shield of Cthulhu",
+        "Shark Tooth Necklace",
+        "Hermes Boots"
+      ],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ironskin Potion", "Regeneration Potion", "Swiftness Potion", "Well Fed"],
+      "ammo": [
+        { "name": "Jester's Arrow", "note": "atravessa: bom contra grupos", "sub": ["arcos"] },
+        { "name": "Unholy Arrow", "sub": ["arcos"] },
+        { "name": "Shimmer Arrow", "sub": ["arcos"] },
+        { "name": "Tungsten Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Musket Ball", "sub": ["armas-de-fogo"] }
+      ],
+      "paths": [
+        {
+          "id": "r-eye-bow",
+          "title": "Arco do mal",
+          "when": "Se você já tem as barras do minério que o Olho deixa.",
+          "sub": ["arcos"],
+          "armor": ["Fossil armor"],
+          "weapons": [{ "name": "Demon Bow", "note": "ou [[Tendon Bow]]" }, "Jester's Arrow"],
+          "extras": ["Harpy Charm"],
+          "pros": ["Sai na hora, com o minério do Olho.", "As flechas de bobo atravessam vários inimigos."],
+          "cons": ["Ainda é um arco simples."],
+          "next": ["r-evil-bee"]
+        },
+        {
+          "id": "r-eye-gun",
+          "title": "Escopeta da Selva",
+          "when": "Se você explorou a Selva ou quebrou orbes/corações.",
+          "sub": ["armas-de-fogo"],
+          "armor": ["Fossil armor"],
+          "weapons": ["Boomstick", { "name": "Musket", "note": "ou [[The Undertaker]]" }],
+          "pros": ["A [[Boomstick]] atira várias balas de uma vez: forte de perto.", "Mosquete/Coveiro acertam forte de longe."],
+          "cons": ["Escopeta gasta muita munição."],
+          "next": ["r-evil-gun"]
+        },
+        {
+          "id": "r-eye-throw",
+          "title": "Bolas e granadas",
+          "when": "Se você continua no arremesso.",
+          "sub": ["arremesso"],
+          "armor": ["Fossil armor"],
+          "weapons": ["Grenade", "Spiky Ball"],
+          "pros": ["As bolas com espinhos ficam no chão machucando quem passa."],
+          "cons": ["Gasta muito dinheiro em itens."],
+          "next": ["r-evil-throw"]
+        }
+      ],
+      "next": {
+        "target": "Eater of Worlds",
+        "optional": [{ "key": "Goblin Army", "why": "libera o Inventor Goblin para juntar acessórios" }],
+        "prep": [
+          "O chefe depende do mundo: [[Eater of Worlds]] na Corrupção, [[Brain of Cthulhu]] no Carmesim. Os dois contam como a mesma etapa.",
+          "Contra o Devorador, munição que atravessa ([[Jester's Arrow]]) acerta vários segmentos.",
+          "Contra o Cérebro, tiros rápidos estouram os Creepers."
+        ],
+        "arena": ["Cave um espaço aberto perto da superfície do bioma, com plataformas."]
+      }
+    },
+    {
+      "stage": "post-evil",
+      "summary": "O meteorito libera o [[Star Cannon]] e as balas de meteoro; a pedra infernal, o [[Molten Fury]]. A armadura das Sombras/Carmim é a melhor para atiradores agora.",
+      "armor": { "name": "Shadow armor", "note": "Corrupção; no Carmesim, a [[Crimson armor]]" },
+      "armorAlt": ["Crimson armor", { "name": "Fossil armor", "note": "para economizar munição cara" }],
+      "weapons": [
+        { "sub": "arcos", "item": { "name": "The Bee's Knees", "note": "da Abelha Rainha; com flechas de madeira" }, "alt": ["Molten Fury", "Demon Bow"] },
+        { "sub": "armas-de-fogo", "item": "Boomstick", "alt": [{ "name": "Pew-matic Horn", "note": "do [[Deerclops|Cervídeo]]" }, "Musket", "Minishark"] },
+        { "sub": "lancadores", "item": { "name": "Star Cannon", "note": "[[Minishark]] + meteorito; atira estrelas caídas" } },
+        { "sub": "arremesso", "item": { "name": "Beenade", "note": "da Abelha Rainha" }, "alt": ["Grenade", "Spiky Ball"] }
+      ],
+      "accessories": [
+        { "name": "Sweet Barb", "note": "flechas envenenam e soltam abelhas", "sub": ["arcos"] },
+        { "name": "Harpy Charm", "sub": ["arcos"] },
+        "Pyroclastic Stone",
+        "Shield of Cthulhu",
+        { "name": "Worm Scarf", "note": "-17% de dano recebido (Devorador)" },
+        { "name": "Brain of Confusion", "note": "esquiva (Cérebro)" }
+      ],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ironskin Potion", "Regeneration Potion", "Swiftness Potion", "Endurance Potion", "Well Fed"],
+      "ammo": [
+        { "name": "Hellfire Arrow", "sub": ["arcos"] },
+        { "name": "Jester's Arrow", "sub": ["arcos"] },
+        { "name": "Meteor Shot", "note": "quica nas paredes", "sub": ["armas-de-fogo"] },
+        { "name": "Party Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Fallen Star", "sub": ["lancadores"] }
+      ],
+      "paths": [
+        {
+          "id": "r-evil-bee",
+          "title": "Arco das abelhas",
+          "when": "Se você derrotou a [[Queen Bee|Abelha Rainha]] (ou use o [[Molten Fury]], de pedra infernal).",
+          "sub": ["arcos"],
+          "armor": ["Shadow armor"],
+          "weapons": [{ "name": "The Bee's Knees", "note": "flechas de madeira viram abelhas" }, "Molten Fury"],
+          "extras": ["Sweet Barb"],
+          "pros": ["Funciona com a flecha mais barata do jogo.", "Acerta grupos e chefes."],
+          "cons": ["A Abelha Rainha é opcional e às vezes difícil."],
+          "next": ["r-skel-hellwing"]
+        },
+        {
+          "id": "r-evil-gun",
+          "title": "Escopeta + meteoro",
+          "when": "Se você usa armas de fogo.",
+          "sub": ["armas-de-fogo"],
+          "armor": ["Shadow armor"],
+          "weapons": ["Boomstick", { "name": "Meteor Shot", "note": "quica nas paredes" }],
+          "pros": ["Muito dano de perto.", "Balas de meteoro saem do mesmo meteorito."],
+          "cons": ["Alcance curto da escopeta."],
+          "next": ["r-skel-quad"]
+        },
+        {
+          "id": "r-evil-star",
+          "title": "Canhão estelar",
+          "when": "Se você junta estrelas caídas à noite.",
+          "sub": ["lancadores"],
+          "armor": [{ "name": "Fossil armor", "note": "economiza as estrelas" }],
+          "weapons": ["Star Cannon", "Fallen Star"],
+          "pros": ["Dano altíssimo para esta etapa.", "As estrelas atravessam inimigos."],
+          "cons": ["Cada tiro gasta uma estrela caída."],
+          "next": ["r-skel-star"]
+        },
+        {
+          "id": "r-evil-throw",
+          "title": "Granadas de abelha",
+          "when": "Se você continua no arremesso e venceu a Abelha Rainha.",
+          "sub": ["arremesso"],
+          "armor": ["Shadow armor"],
+          "weapons": ["Beenade", "Grenade"],
+          "pros": ["As abelhas perseguem os inimigos sozinhas."],
+          "cons": ["Fraco contra chefes com muita defesa."],
+          "next": ["r-skel-throw"]
+        }
+      ],
+      "next": {
+        "target": "Skeletron",
+        "optional": [
+          { "key": "Queen Bee", "why": "dá o [[The Bee's Knees]] e as [[Beenade]]" },
+          { "key": "Deerclops", "why": "dá o [[Pew-matic Horn]]" }
+        ],
+        "prep": [
+          "Fale com o Velho na entrada da Masmorra, de noite, e lute ali mesmo.",
+          "Mire na cabeça; as mãos atrapalham mas não precisam morrer."
+        ],
+        "arena": ["Plataformas no céu acima da entrada da Masmorra.", "Fogueira, Lanterna de Coração e uma [[Ironskin Potion]]."]
+      }
+    },
+    {
+      "stage": "post-skeletron",
+      "summary": "A Masmorra e o Submundo trazem o [[Phoenix Blaster]] (pistola da Masmorra + pedra infernal), o [[Hellwing Bow]] dos Baús das Sombras e a armadura Necrosada, feita de ossos.",
+      "armor": { "name": "Necro armor", "note": "ossos da Masmorra" },
+      "armorAlt": ["Shadow armor", "Fossil armor"],
+      "weapons": [
+        { "sub": "arcos", "item": { "name": "Hellwing Bow", "note": "Baús das Sombras do Submundo" }, "alt": ["The Bee's Knees", "Molten Fury"] },
+        { "sub": "armas-de-fogo", "item": { "name": "Phoenix Blaster", "note": "[[Handgun]] da Masmorra + pedra infernal" }, "alt": [{ "name": "Quad-Barrel Shotgun", "note": "[[Arms Dealer]] num Cemitério" }, "Boomstick"] },
+        { "sub": "lancadores", "item": "Star Cannon" },
+        { "sub": "arremesso", "item": "Beenade", "alt": ["Grenade", "Spiky Ball"] }
+      ],
+      "accessories": [
+        { "name": "Sweet Barb", "sub": ["arcos"] },
+        { "name": "Harpy Charm", "sub": ["arcos"] },
+        "Pyroclastic Stone",
+        { "name": "Bone Glove", "note": "atira ossos junto (Esqueletron)" },
+        "Shield of Cthulhu",
+        "Worm Scarf"
+      ],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ammo Reservation Potion", "Bewitching Table", "Ironskin Potion", "Endurance Potion", "Water Walking Potion"],
+      "ammo": [
+        { "name": "Hellfire Arrow", "sub": ["arcos"] },
+        { "name": "Unholy Arrow", "sub": ["arcos"] },
+        { "name": "Party Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Meteor Shot", "sub": ["armas-de-fogo"] },
+        { "name": "Fallen Star", "sub": ["lancadores"] }
+      ],
+      "paths": [
+        {
+          "id": "r-skel-hellwing",
+          "title": "Morcegos de fogo",
+          "when": "Se você achou o [[Hellwing Bow]] num Baú das Sombras.",
+          "sub": ["arcos"],
+          "armor": ["Necro armor"],
+          "weapons": [{ "name": "Hellwing Bow", "note": "flechas de madeira viram morcegos" }, "Unholy Arrow"],
+          "pros": ["Ótimo contra os Famintos da Parede de Carne.", "Funciona com flechas baratas."],
+          "cons": ["Pouco preciso de longe."],
+          "next": ["r-hm-storm"]
+        },
+        {
+          "id": "r-skel-quad",
+          "title": "Pistola fênix",
+          "when": "Se você usa armas de fogo.",
+          "sub": ["armas-de-fogo"],
+          "armor": ["Necro armor"],
+          "weapons": ["Phoenix Blaster", { "name": "Quad-Barrel Shotgun", "note": "para grupos" }],
+          "pros": ["A [[Phoenix Blaster]] é rápida e precisa.", "A escopeta de quatro canos limpa grupos."],
+          "cons": ["A pistola da Masmorra depende de sorte nos baús."],
+          "next": ["r-hm-gun"]
+        },
+        {
+          "id": "r-skel-star",
+          "title": "Estrelas contra a Parede",
+          "when": "Se você juntou muitas estrelas caídas.",
+          "sub": ["lancadores"],
+          "armor": [{ "name": "Fossil armor", "note": "economiza as estrelas" }],
+          "weapons": ["Star Cannon"],
+          "pros": ["Um dos maiores danos antes do Modo Difícil."],
+          "cons": ["Gasta estrelas depressa: junte várias noites."],
+          "next": ["r-hm-dart"]
+        },
+        {
+          "id": "r-skel-throw",
+          "title": "Fim do arremesso",
+          "when": "No Modo Difícil quase não há armas de arremesso: use as granadas na Parede e passe para os lançadores.",
+          "sub": ["arremesso", "lancadores"],
+          "armor": ["Necro armor"],
+          "weapons": ["Beenade", "Star Cannon"],
+          "pros": ["As explosões continuam nos lançadores."],
+          "cons": ["Precisa trocar de estilo depois da Parede."],
+          "next": ["r-hm-dart"]
+        }
+      ],
+      "next": {
+        "target": "Wall of Flesh",
+        "prep": [
+          "Jogue uma [[Guide Voodoo Doll]] na lava do Submundo (mata o Guia, que volta depois).",
+          "Leve muita munição: a luta é longa e os Famintos absorvem tiros.",
+          "**Atenção:** derrotar a Parede muda o mundo para o Modo Difícil (inimigos mais fortes e biomas se espalhando)."
+        ],
+        "arena": ["Ponte de plataformas no Submundo, de preferência de ponta a ponta.", "Sem ponte: [[Water Walking Potion]] ou botas que andam na lava."]
+      }
+    },
+    {
+      "stage": "hardmode",
+      "summary": "O atirador é o mais forte do começo do Modo Difícil. A Parede solta o [[Clockwork Assault Rifle]] e o [[Ranger Emblem]], e os Mímicos dão o [[Daedalus Stormbow]], o [[Dart Rifle]] e o [[Chaos Cylinder]].",
+      "armor": { "name": "Adamantite Mask", "note": "+ [[Frost Breastplate]] e [[Mythril Greaves]]" },
+      "armorAlt": [
+        { "name": "Adamantite armor", "image": "Adamantite armor Mask.png", "note": "conjunto completo" },
+        { "name": "Frost armor", "note": "defesa (Golem de Gelo)" }
+      ],
+      "weapons": [
+        { "sub": "arcos", "item": { "name": "Daedalus Stormbow", "note": "Mímico Consagrado; chove flechas do céu" }, "alt": ["Adamantite Repeater", "Molten Fury"] },
+        { "sub": "armas-de-fogo", "item": { "name": "Onyx Blaster", "note": "[[Shotgun]] do Comerciante de Armas + materiais" }, "alt": ["Clockwork Assault Rifle", { "name": "Gatligator", "note": "Caixeiro-viajante" }, { "name": "Uzi", "note": "rara" }] },
+        { "sub": "lancadores", "item": { "name": "Dart Rifle", "note": "Mímico Corrompido; no Carmesim, a [[Dart Pistol]]" }, "alt": ["Star Cannon", { "name": "Barrel Launcher", "note": "piratas, bem raro" }] },
+        { "sub": "arremesso", "note": "Não há armas de arremesso boas no Modo Difícil. Quem gostava de granadas segue pelos **lançadores** (dardos agora, e o [[Grenade Launcher]] depois da Plantera)." }
+      ],
+      "accessories": [
+        { "name": "Ranger Emblem", "note": "+15% de dano à distância" },
+        { "name": "Chaos Cylinder", "note": "alterna as munições; Mímico Consagrado" },
+        { "name": "Magic Quiver", "note": "Arqueiros Esqueletos", "sub": ["arcos"] },
+        { "name": "Demon Heart", "note": "+1 espaço de acessório" },
+        { "name": "Wings", "image": "Angel Wings.png", "note": "qualquer asa; as primeiras usam Almas do Voo" }
+      ],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ammo Reservation Potion", "Ammo Box", "Ironskin Potion", "Endurance Potion", "Wrath Potion"],
+      "ammo": [
+        { "name": "Ichor Arrow", "note": "baixa a defesa", "sub": ["arcos"] },
+        { "name": "Holy Arrow", "sub": ["arcos"] },
+        { "name": "Cursed Arrow", "sub": ["arcos"] },
+        { "name": "Crystal Bullet", "note": "o maior dano em alvo único", "sub": ["armas-de-fogo"] },
+        { "name": "Ichor Dart", "sub": ["lancadores"] },
+        { "name": "Cursed Dart", "sub": ["lancadores"] },
+        { "name": "Crystal Dart", "sub": ["lancadores"] }
+      ],
+      "paths": [
+        {
+          "id": "r-hm-storm",
+          "title": "Chuva de flechas",
+          "when": "Se você derrotou um Mímico Consagrado (no Sagrado subterrâneo).",
+          "sub": ["arcos"],
+          "armor": [{ "name": "Adamantite Mask", "note": "+ [[Frost Breastplate]] e [[Mythril Greaves]]" }],
+          "weapons": ["Daedalus Stormbow", { "name": "Holy Arrow", "note": "ou [[Ichor Arrow]]" }],
+          "extras": ["Magic Quiver"],
+          "pros": ["As flechas caem do céu: ótimo contra o Destruidor.", "Muito forte com flechas sagradas."],
+          "cons": ["Depende de sorte com o Mímico."],
+          "next": ["r-mech-repeater"]
+        },
+        {
+          "id": "r-hm-gun",
+          "title": "Balas de cristal",
+          "when": "Se você usa armas de fogo: o [[Shotgun]] do Comerciante de Armas vira o [[Onyx Blaster]].",
+          "sub": ["armas-de-fogo"],
+          "armor": [{ "name": "Adamantite Mask", "note": "+ [[Frost Breastplate]] e [[Mythril Greaves]]" }],
+          "weapons": ["Onyx Blaster", { "name": "Clockwork Assault Rifle", "note": "da Parede" }, "Crystal Bullet"],
+          "pros": ["Não depende de sorte: tudo é feito ou comprado.", "As balas de cristal se partem em estilhaços."],
+          "cons": ["Escopeta: melhor de perto."],
+          "next": ["r-mech-mega"]
+        },
+        {
+          "id": "r-hm-dart",
+          "title": "Dardos",
+          "when": "Se você derrotou um Mímico do bioma do mal (ou quer explosões depois do arremesso).",
+          "sub": ["lancadores", "arremesso"],
+          "armor": [{ "name": "Adamantite Mask", "note": "+ [[Frost Breastplate]] e [[Mythril Greaves]]" }],
+          "weapons": [{ "name": "Dart Rifle", "note": "ou [[Dart Pistol]]" }, "Ichor Dart", "Cursed Dart"],
+          "pros": ["Dardos amaldiçoados deixam fogo no chão; os de icor se dividem.", "Atravessam vários inimigos."],
+          "cons": ["Precisa de dardos especiais feitos no Modo Difícil."],
+          "next": ["r-mech-flame"]
+        }
+      ],
+      "next": {
+        "target": "The Destroyer",
+        "optional": [
+          { "key": "Queen Slime", "why": "bom treino de esquiva antes dos mecânicos" },
+          { "key": "Pirate Invasion", "why": "moedas e o [[Coin Gun]]" }
+        ],
+        "prep": [
+          "Qualquer chefe mecânico serve para esta etapa. Muitos atiradores começam pelo [[The Destroyer|Destruidor]]: as Almas da Força dele fazem o [[Megashark]].",
+          "Contra o Destruidor, flechas que caem do céu e munição que atravessa acertam vários segmentos.",
+          "Asas são quase obrigatórias daqui em diante."
+        ],
+        "arena": ["Várias fileiras de plataformas no céu, bem compridas.", "Fogueira, Lanterna de Coração e uma piscina de [[Honey]] por perto."]
+      }
+    },
+    {
+      "stage": "post-mech",
+      "summary": "Barras Consagradas fazem o [[Hallowed Repeater]] e a armadura consagrada. As Almas da Força (Destruidor) fazem o [[Megashark]]; as Almas do Medo (Esqueletron Alfa), o [[Flamethrower]].",
+      "armor": { "name": "Hallowed armor", "image": "Hallowed armor Helmet.png", "note": "com o elmo de atirador; esquiva de vez em quando" },
+      "armorAlt": [{ "name": "Huntress's Jerkin", "note": "dano: com [[Adamantite Mask]] e [[Mythril Greaves]] (Taberneiro)" }, "Adamantite armor"],
+      "weapons": [
+        { "sub": "arcos", "item": "Hallowed Repeater", "alt": ["Daedalus Stormbow", { "name": "Phantom Phoenix", "note": "Ogro do Exército do Ancião" }] },
+        { "sub": "armas-de-fogo", "item": { "name": "Megashark", "note": "pede Almas da Força (Destruidor)" }, "alt": ["Onyx Blaster", "Clockwork Assault Rifle"] },
+        { "sub": "lancadores", "item": { "name": "Flamethrower", "note": "pede Almas do Medo (Esqueletron Alfa); usa gel" }, "alt": [{ "name": "Super Star Shooter", "note": "[[Star Cannon]] + barras consagradas" }, "Dart Rifle"] },
+        { "sub": "arremesso", "note": "Sem armas de arremesso no Modo Difícil: siga pelos **lançadores**." }
+      ],
+      "accessories": [
+        "Ranger Emblem",
+        "Chaos Cylinder",
+        { "name": "Magic Quiver", "sub": ["arcos"] },
+        { "name": "Seraph Necklace", "note": "puxa flechas + mais tempo invencível", "sub": ["arcos"] },
+        "Demon Heart",
+        { "name": "Wings", "image": "Angel Wings.png" }
+      ],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ammo Reservation Potion", "Ammo Box", "Lifeforce Potion", "Endurance Potion", "Wrath Potion"],
+      "ammo": [
+        { "name": "Holy Arrow", "sub": ["arcos"] },
+        { "name": "Ichor Arrow", "sub": ["arcos"] },
+        { "name": "Crystal Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Gel", "note": "para o lança-chamas", "sub": ["lancadores"] },
+        { "name": "Cursed Dart", "sub": ["lancadores"] }
+      ],
+      "paths": [
+        {
+          "id": "r-mech-repeater",
+          "title": "Repetidora consagrada",
+          "when": "Se você usa arcos.",
+          "sub": ["arcos"],
+          "armor": [{ "name": "Hallowed armor", "image": "Hallowed armor Helmet.png" }],
+          "weapons": ["Hallowed Repeater", "Daedalus Stormbow", "Holy Arrow"],
+          "extras": ["Magic Quiver"],
+          "pros": ["Tudo feito com barras consagradas, sem sorte.", "Dois arcos: um para chefe, um para grupo."],
+          "cons": ["Flechas sagradas precisam de Chifres de Unicórnio."],
+          "next": ["r-mechs-shotbow"]
+        },
+        {
+          "id": "r-mech-mega",
+          "title": "Megashark",
+          "when": "Se você derrotou o [[The Destroyer|Destruidor]] e usa armas de fogo.",
+          "sub": ["armas-de-fogo"],
+          "armor": [{ "name": "Hallowed armor", "image": "Hallowed armor Helmet.png" }],
+          "weapons": ["Megashark", "Crystal Bullet"],
+          "pros": ["Atira muito rápido e metade das vezes não gasta bala.", "Fica boa até depois da Plantera."],
+          "cons": ["Pede a [[Minishark]] e [[Illegal Gun Parts]] (Comerciante de Armas, de noite)."],
+          "next": ["r-mechs-mega"]
+        },
+        {
+          "id": "r-mech-flame",
+          "title": "Lança-chamas",
+          "when": "Se você derrotou o [[Skeletron Prime|Esqueletron Alfa]].",
+          "sub": ["lancadores"],
+          "armor": [{ "name": "Hallowed armor", "image": "Hallowed armor Helmet.png" }],
+          "weapons": [{ "name": "Flamethrower", "note": "usa gel" }],
+          "pros": ["Ignora parte da defesa e atravessa grupos.", "Gel é barato (geleias)."],
+          "cons": ["Alcance curto."],
+          "next": ["r-mechs-flame"]
+        }
+      ],
+      "next": {
+        "target": "The Twins",
+        "prep": [
+          "Faltam os outros mecânicos: [[The Twins]] e o [[Skeletron Prime]] (ou o Destruidor, se ainda não foi). Os três juntos liberam a Clorofita.",
+          "Contra os Gêmeos, balas rápidas e flechas que perseguem ajudam a acertar o olho que se mexe muito.",
+          "Contra o Esqueletron Alfa, mire na cabeça."
+        ],
+        "arena": ["As mesmas plataformas no céu; para o Destruidor, uma área bem larga."]
+      }
+    },
+    {
+      "stage": "post-all-mechs",
+      "summary": "Com os três mecânicos, a Clorofita aparece: o [[Chlorophyte Shotbow]], a armadura de clorofita e balas e flechas que perseguem. O [[Pulse Bow]] aparece no Caixeiro-viajante.",
+      "armor": { "name": "Chlorophyte armor", "image": "Chlorophyte armor Helmet.png", "note": "com o elmo de atirador" },
+      "armorAlt": [
+        { "name": "Hallowed armor", "image": "Hallowed armor Helmet.png" },
+        { "name": "Huntress's Jerkin", "note": "dano: com [[Adamantite Mask]] e [[Mythril Greaves]]" }
+      ],
+      "weapons": [
+        { "sub": "arcos", "item": "Chlorophyte Shotbow", "alt": [{ "name": "Pulse Bow", "note": "Caixeiro-viajante" }, "Phantom Phoenix", "Daedalus Stormbow"] },
+        { "sub": "armas-de-fogo", "item": "Megashark", "alt": ["Onyx Blaster"] },
+        { "sub": "lancadores", "item": "Flamethrower", "alt": ["Super Star Shooter", "Dart Rifle"] },
+        { "sub": "arremesso", "note": "Sem armas de arremesso no Modo Difícil: siga pelos **lançadores**." }
+      ],
+      "accessories": [
+        "Ranger Emblem",
+        { "name": "Phoenix Quiver", "note": "puxa flechas + mais dano de flecha", "sub": ["arcos"] },
+        "Chaos Cylinder",
+        "Demon Heart",
+        { "name": "Wings", "image": "Angel Wings.png" }
+      ],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ammo Reservation Potion", "Ammo Box", "Lifeforce Potion", "Endurance Potion", "Wrath Potion"],
+      "ammo": [
+        { "name": "Chlorophyte Arrow", "sub": ["arcos"] },
+        { "name": "Holy Arrow", "sub": ["arcos"] },
+        { "name": "Ichor Arrow", "sub": ["arcos"] },
+        { "name": "Crystal Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Chlorophyte Bullet", "note": "persegue o inimigo", "sub": ["armas-de-fogo"] },
+        { "name": "Gel", "sub": ["lancadores"] }
+      ],
+      "paths": [
+        {
+          "id": "r-mechs-shotbow",
+          "title": "Arco de clorofita",
+          "when": "Se você usa arcos.",
+          "sub": ["arcos"],
+          "armor": [{ "name": "Chlorophyte armor", "image": "Chlorophyte armor Helmet.png" }],
+          "weapons": ["Chlorophyte Shotbow", "Holy Arrow"],
+          "extras": ["Phoenix Quiver", "Chaos Cylinder"],
+          "pros": ["Atira várias flechas de uma vez.", "Com o [[Chaos Cylinder]], alterna flechas sagradas, de icor e amaldiçoadas."],
+          "cons": ["Espalha os tiros: melhor de perto."],
+          "next": ["r-plant-pulse"]
+        },
+        {
+          "id": "r-mechs-mega",
+          "title": "Megashark + clorofita",
+          "when": "Se você usa armas de fogo.",
+          "sub": ["armas-de-fogo"],
+          "armor": [{ "name": "Chlorophyte armor", "image": "Chlorophyte armor Helmet.png" }],
+          "weapons": ["Megashark", "Chlorophyte Bullet"],
+          "pros": ["Balas de clorofita perseguem: ótimas contra a Plantera nos túneis."],
+          "cons": ["Menos dano que as de cristal em alvo parado."],
+          "next": ["r-plant-sniper"]
+        },
+        {
+          "id": "r-mechs-flame",
+          "title": "Fogo na Selva",
+          "when": "Se você usa o lança-chamas.",
+          "sub": ["lancadores"],
+          "armor": [{ "name": "Chlorophyte armor", "image": "Chlorophyte armor Helmet.png" }],
+          "weapons": ["Flamethrower", "Super Star Shooter"],
+          "pros": ["Derrete os tentáculos e as fases de perto da Plantera."],
+          "cons": ["Precisa ficar perto, o que é perigoso na segunda fase."],
+          "next": ["r-plant-launcher"]
+        }
+      ],
+      "next": {
+        "target": "Plantera",
+        "optional": [{ "key": "Frost Legion", "why": "fácil, para treinar o grupo" }],
+        "prep": [
+          "Ache e quebre o Bulbo da Plantera (rosa) na Selva subterrânea.",
+          "Munição que persegue ([[Chlorophyte Bullet]], [[Chlorophyte Arrow]]) facilita muito nos túneis.",
+          "[[Ichor Arrow]] baixa a defesa dela."
+        ],
+        "arena": ["Cave um túnel largo e comprido na Selva subterrânea (ou várias plataformas).", "Não saia da Selva: ela fica furiosa e muito mais forte."]
+      }
+    },
+    {
+      "stage": "post-plantera",
+      "summary": "A cogumelita (clorofita + cogumelo brilhante) faz a armadura mais forte do atirador antes do fim. A Plantera solta o [[Grenade Launcher]] e o [[Venus Magnum]], e a Masmorra o [[Sniper Rifle]].",
+      "armor": { "name": "Shroomite armor", "note": "o capacete muda conforme a arma: [[Shroomite Headgear]] (arcos), [[Shroomite Mask]] (armas de fogo), [[Shroomite Helmet]] (lançadores)" },
+      "armorAlt": [{ "name": "Chlorophyte armor", "image": "Chlorophyte armor Helmet.png" }],
+      "weapons": [
+        { "sub": "arcos", "item": { "name": "Pulse Bow", "note": "Caixeiro-viajante" }, "alt": ["Chlorophyte Shotbow"] },
+        { "sub": "armas-de-fogo", "item": { "name": "Sniper Rifle", "note": "Esqueleto Sniper da Masmorra" }, "alt": [{ "name": "Venus Magnum", "note": "da Plantera" }, "Megashark"] },
+        { "sub": "lancadores", "item": { "name": "Nail Gun", "note": "Cabeça de Pregos (Eclipse Solar)" }, "alt": [{ "name": "Grenade Launcher", "note": "da Plantera" }, { "name": "Piranha Gun", "note": "baú da Selva na Masmorra" }, "Rocket Launcher"] },
+        { "sub": "arremesso", "note": "Sem armas de arremesso no Modo Difícil: o [[Grenade Launcher]] da Plantera é o substituto natural." }
+      ],
+      "accessories": [
+        "Ranger Emblem",
+        { "name": "Phoenix Quiver", "sub": ["arcos"] },
+        "Chaos Cylinder",
+        { "name": "Spore Sac", "note": "esporos que atacam sozinhos (Plantera)" },
+        "Demon Heart",
+        { "name": "Wings", "image": "Angel Wings.png" }
+      ],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ammo Reservation Potion", "Ammo Box", "Lifeforce Potion", "Endurance Potion", "Wrath Potion"],
+      "ammo": [
+        { "name": "Venom Arrow", "sub": ["arcos"] },
+        { "name": "Ichor Arrow", "sub": ["arcos"] },
+        { "name": "Chlorophyte Arrow", "sub": ["arcos"] },
+        { "name": "Crystal Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Chlorophyte Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Mini Nuke I", "note": "explosão enorme", "sub": ["lancadores"] }
+      ],
+      "paths": [
+        {
+          "id": "r-plant-pulse",
+          "title": "Arco de pulso",
+          "when": "Se o Caixeiro-viajante trouxer o [[Pulse Bow]].",
+          "sub": ["arcos"],
+          "armor": [{ "name": "Shroomite Headgear", "note": "+ resto da cogumelita" }],
+          "weapons": ["Pulse Bow", "Venom Arrow"],
+          "pros": ["Flechas carregadas atravessam tudo.", "Com flechas de veneno, bom contra grupos."],
+          "cons": ["Depende de sorte com o Caixeiro-viajante."],
+          "next": ["r-golem-tsunami"]
+        },
+        {
+          "id": "r-plant-sniper",
+          "title": "Atirador de elite",
+          "when": "Se você caça na Masmorra do Modo Difícil.",
+          "sub": ["armas-de-fogo"],
+          "armor": [{ "name": "Shroomite Mask", "note": "+ resto da cogumelita" }],
+          "weapons": [{ "name": "Sniper Rifle", "note": "clique direito: mira de longe" }, "Megashark"],
+          "pros": ["Um tiro muito forte de muito longe.", "A [[Megashark]] cobre os grupos."],
+          "cons": ["Lento: ruim contra muitos inimigos."],
+          "next": ["r-golem-xeno"]
+        },
+        {
+          "id": "r-plant-launcher",
+          "title": "Pregos e granadas",
+          "when": "Se você gosta de explosões (e foi o caminho de quem jogava com arremesso).",
+          "sub": ["lancadores", "arremesso"],
+          "armor": [{ "name": "Shroomite Helmet", "note": "+ resto da cogumelita" }],
+          "weapons": ["Nail Gun", "Grenade Launcher", "Mini Nuke I"],
+          "pros": ["Explosões que limpam a tela.", "A [[Nail Gun]] não gasta munição."],
+          "cons": ["Explosões podem atrapalhar a visão."],
+          "next": ["r-golem-snowman"]
+        }
+      ],
+      "next": {
+        "target": "Golem",
+        "optional": [
+          { "key": "Frost Moon", "why": "[[Snowman Cannon]], [[Chain Gun]] e [[Elf Melter]]" },
+          { "key": "Duke Fishron", "why": "o arco [[Tsunami]]" },
+          { "key": "Empress of Light", "why": "o arco [[Eventide]]" }
+        ],
+        "prep": [
+          "A Plantera deixa a [[Temple Key]]: abra o Templo Lihzahrd na Selva.",
+          "Chegue ao altar e use uma [[Lihzahrd Power Cell]].",
+          "Cuidado com as armadilhas do templo no caminho (dardos, bolas de espinho, lanças)."
+        ],
+        "arena": ["Limpe e aumente a sala do altar.", "Plataformas ajudam a desviar dos punhos."]
+      }
+    },
+    {
+      "stage": "post-golem",
+      "summary": "O Taberneiro (nível 3) vende a armadura da Chapeuzinho Vermelho; o Duque, a Imperatriz e a Lua Congelada dão os arcos e lançadores mais fortes antes do fim.",
+      "armor": { "name": "Shroomite Headgear", "note": "(ou [[Shroomite Mask]] / [[Shroomite Helmet]] conforme a arma) + [[Red Riding Dress]] e [[Red Riding Leggings]]" },
+      "armorAlt": ["Shroomite armor", { "name": "Chlorophyte Helmet", "note": "defesa: com [[Valhalla Knight's Breastplate]] e [[Valhalla Knight's Greaves]]" }],
+      "weapons": [
+        { "sub": "arcos", "item": { "name": "Tsunami", "note": "do Duque Peixe-dragão" }, "alt": [{ "name": "Eventide", "note": "da Imperatriz" }, { "name": "Aerial Bane", "note": "da Betsy" }, "Pulse Bow"] },
+        { "sub": "armas-de-fogo", "item": { "name": "Xenopopper", "note": "Disco Voador de Marte" }, "alt": [{ "name": "Chain Gun", "note": "Papai-Noel-NK1 (Lua Congelada)" }, "Sniper Rifle"] },
+        { "sub": "lancadores", "item": { "name": "Snowman Cannon", "note": "Rainha do Gelo (Lua Congelada)" }, "alt": [{ "name": "Stynger", "note": "do Golem" }, { "name": "Elf Melter", "note": "Papai-Noel-NK1" }, "Nail Gun"] },
+        { "sub": "arremesso", "note": "Sem armas de arremesso no Modo Difícil: siga pelos **lançadores**." }
+      ],
+      "accessories": [
+        { "name": "Recon Scope", "note": "+10% de dano e acerto crítico" },
+        "Ranger Emblem",
+        "Chaos Cylinder",
+        { "name": "Phoenix Quiver", "sub": ["arcos"] },
+        "Demon Heart",
+        { "name": "Soaring Insignia", "note": "voo sem fim (Imperatriz)" }
+      ],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ammo Reservation Potion", "Ammo Box", "Swiftness Potion", "Lifeforce Potion", "Wrath Potion"],
+      "ammo": [
+        { "name": "Venom Arrow", "sub": ["arcos"] },
+        { "name": "Ichor Arrow", "sub": ["arcos"] },
+        { "name": "Crystal Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Chlorophyte Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Mini Nuke I", "sub": ["lancadores"] },
+        { "name": "Rocket III", "sub": ["lancadores"] }
+      ],
+      "paths": [
+        {
+          "id": "r-golem-tsunami",
+          "title": "Tsunami",
+          "when": "Se você venceu o [[Duke Fishron|Duque Peixe-dragão]] (ou a Imperatriz, pelo [[Eventide]]).",
+          "sub": ["arcos"],
+          "armor": ["Shroomite Headgear", "Red Riding Dress", "Red Riding Leggings"],
+          "weapons": [{ "name": "Tsunami", "note": "5 flechas por tiro" }, "Venom Arrow"],
+          "extras": ["Phoenix Quiver"],
+          "pros": ["Muito dano com flechas especiais.", "O [[Eventide]] atravessa paredes."],
+          "cons": ["Duque e Imperatriz são chefes difíceis para esta etapa."],
+          "next": ["r-cult-phantasm"]
+        },
+        {
+          "id": "r-golem-xeno",
+          "title": "Arma marciana",
+          "when": "Se você enfrenta a [[Martian Madness|Invasão Marciana]] ou a Lua Congelada.",
+          "sub": ["armas-de-fogo"],
+          "armor": ["Shroomite Mask", "Red Riding Dress", "Red Riding Leggings"],
+          "weapons": [{ "name": "Xenopopper", "note": "com balas de cristal" }, "Chain Gun"],
+          "pros": ["As bolhas se multiplicam: ótimo em alvo único.", "A [[Chain Gun]] quase não gasta balas."],
+          "cons": ["Os dois dependem de eventos difíceis."],
+          "next": ["r-cult-vortex"]
+        },
+        {
+          "id": "r-golem-snowman",
+          "title": "Canhão de neve",
+          "when": "Se você jogou a Lua Congelada e gosta de explosões.",
+          "sub": ["lancadores"],
+          "armor": ["Shroomite Helmet", "Red Riding Dress", "Red Riding Leggings"],
+          "weapons": [{ "name": "Snowman Cannon", "note": "mísseis que perseguem" }, "Stynger"],
+          "pros": ["Os mísseis perseguem: ótimo contra grupos e chefes.", "Segue forte até o fim do jogo."],
+          "cons": ["A Rainha do Gelo aparece só nas ondas mais altas."],
+          "next": ["r-cult-snowman"]
+        }
+      ],
+      "next": {
+        "target": "Lunatic Cultist",
+        "optional": [
+          { "key": "Martian Madness", "why": "[[Xenopopper]]" },
+          { "key": "Frost Moon", "why": "[[Snowman Cannon]] e [[Chain Gun]]" },
+          { "key": "Duke Fishron", "why": "[[Tsunami]]" }
+        ],
+        "prep": [
+          "Depois do Golem, cultistas aparecem rezando na entrada da Masmorra. Ataque um deles para começar a luta.",
+          "Ele cria cópias: o verdadeiro se mexe de um jeito um pouco diferente. Munição que persegue ajuda."
+        ],
+        "arena": ["Plataformas acima da entrada da Masmorra.", "Espaço para desviar do dragão fantasma."]
+      }
+    },
+    {
+      "stage": "post-cultist",
+      "summary": "Derrote as quatro torres celestiais: a **Coluna do Vórtice** dá os fragmentos do atirador. [[Phantasm]] e [[Vortex Beater]] são as armas contra o Senhor da Lua.",
+      "armor": { "name": "Shroomite Headgear", "note": "(ou Mask / Helmet) + [[Red Riding Dress]] e [[Red Riding Leggings]]" },
+      "armorAlt": ["Shroomite armor", { "name": "Red Riding armor", "note": "em time com um invocador, ou jogando híbrido" }],
+      "weapons": [
+        { "sub": "arcos", "item": { "name": "Phantasm", "note": "18 [[Vortex Fragment]]" }, "alt": ["Tsunami", "Aerial Bane", "Eventide"] },
+        { "sub": "armas-de-fogo", "item": { "name": "Vortex Beater", "note": "18 [[Vortex Fragment]]" }, "alt": ["Xenopopper", "Chain Gun"] },
+        { "sub": "lancadores", "item": "Snowman Cannon", "alt": ["Stynger", "Nail Gun"] },
+        { "sub": "arremesso", "note": "Sem armas de arremesso no Modo Difícil: siga pelos **lançadores**." }
+      ],
+      "accessories": ["Recon Scope", "Ranger Emblem", "Chaos Cylinder", { "name": "Phoenix Quiver", "sub": ["arcos"] }, "Demon Heart", "Soaring Insignia"],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ammo Reservation Potion", "Ammo Box", "Super Healing Potion", "Lifeforce Potion", "Wrath Potion"],
+      "ammo": [
+        { "name": "Ichor Arrow", "sub": ["arcos"] },
+        { "name": "Venom Arrow", "sub": ["arcos"] },
+        { "name": "Crystal Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Chlorophyte Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Mini Nuke I", "sub": ["lancadores"] }
+      ],
+      "paths": [
+        {
+          "id": "r-cult-phantasm",
+          "title": "Phantasm",
+          "when": "Se você usa arcos.",
+          "sub": ["arcos"],
+          "armor": ["Shroomite Headgear", "Red Riding Dress", "Red Riding Leggings"],
+          "weapons": ["Phantasm", { "name": "Ichor Arrow", "note": "alternando com [[Venom Arrow]] no [[Chaos Cylinder]]" }],
+          "extras": ["Chaos Cylinder"],
+          "pros": ["Dispara rajadas de flechas; dois terços não gastam munição."],
+          "cons": ["Precisa derrotar a Coluna do Vórtice, que é chata."],
+          "next": ["r-ml-phantasm"]
+        },
+        {
+          "id": "r-cult-vortex",
+          "title": "Vortex Beater",
+          "when": "Se você usa armas de fogo.",
+          "sub": ["armas-de-fogo"],
+          "armor": ["Shroomite Mask", "Red Riding Dress", "Red Riding Leggings"],
+          "weapons": ["Vortex Beater", "Chlorophyte Bullet"],
+          "pros": ["Metralhadora que também solta foguetes.", "Boa contra chefes e grupos."],
+          "cons": ["Precisa dos fragmentos do Vórtice."],
+          "next": ["r-ml-sdmg"]
+        },
+        {
+          "id": "r-cult-snowman",
+          "title": "Mísseis de neve",
+          "when": "Se você usa lançadores.",
+          "sub": ["lancadores"],
+          "armor": ["Shroomite Helmet", "Red Riding Dress", "Red Riding Leggings"],
+          "weapons": ["Snowman Cannon", "Mini Nuke I"],
+          "pros": ["Mísseis que perseguem: ótimo contra as mãos do Senhor da Lua."],
+          "cons": ["Sem arma nova nesta etapa."],
+          "next": ["r-ml-celebration"]
+        }
+      ],
+      "next": {
+        "target": "Moon Lord",
+        "optional": [{ "key": "Lunar Events", "why": "derrote as 4 torres para ele vir sozinho" }],
+        "prep": [
+          "Derrotar as quatro torres chama o Senhor da Lua; depois ele pode ser invocado com o [[Celestial Sigil]].",
+          "Leve [[Super Healing Potion]], muita munição e todas as poções de defesa.",
+          "Mire nos olhos das mãos primeiro e depois no da testa."
+        ],
+        "arena": ["Muitas fileiras de plataformas, bem largas, de preferência com a Enfermeira por perto.", "Fogueira, Lanterna de Coração, [[Star in a Bottle]] e uma piscina de mel."]
+      }
+    },
+    {
+      "stage": "post-moon-lord",
+      "summary": "Fim de jogo: armadura do Vórtice, a [[S.D.M.G.]] e o [[Celebration Mk2]] do Senhor da Lua, e balas e flechas de luminita.",
+      "armor": "Vortex armor",
+      "armorAlt": [{ "name": "Shroomite Mask", "note": "+ [[Red Riding Dress]] e [[Red Riding Leggings]]" }],
+      "weapons": [
+        { "sub": "arcos", "item": "Phantasm", "alt": ["Eventide", "Tsunami"] },
+        { "sub": "armas-de-fogo", "item": { "name": "S.D.M.G.", "note": "do Senhor da Lua" }, "alt": ["Vortex Beater"] },
+        { "sub": "lancadores", "item": { "name": "Celebration Mk2", "note": "do Senhor da Lua" }, "alt": ["Snowman Cannon"] },
+        { "sub": "arremesso", "note": "Sem armas de arremesso no fim do jogo: siga pelos **lançadores**." }
+      ],
+      "accessories": ["Ranger Emblem", "Recon Scope", "Chaos Cylinder", { "name": "Phoenix Quiver", "sub": ["arcos"] }, "Soaring Insignia"],
+      "buffs": [{ "name": "Archery Potion", "sub": ["arcos"] }, "Ammo Reservation Potion", "Ammo Box", "Swiftness Potion", "Lifeforce Potion", "Wrath Potion"],
+      "ammo": [
+        { "name": "Luminite Bullet", "note": "atravessa: o melhor contra grupos", "sub": ["armas-de-fogo"] },
+        { "name": "Chlorophyte Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Crystal Bullet", "sub": ["armas-de-fogo"] },
+        { "name": "Luminite Arrow", "sub": ["arcos"] },
+        { "name": "Endless Musket Pouch", "sub": ["armas-de-fogo"] },
+        { "name": "Endless Quiver", "sub": ["arcos"] },
+        { "name": "Mini Nuke I", "sub": ["lancadores"] }
+      ],
+      "paths": [
+        {
+          "id": "r-ml-sdmg",
+          "title": "S.D.M.G.",
+          "when": "O melhor das armas de fogo.",
+          "sub": ["armas-de-fogo"],
+          "armor": ["Vortex armor"],
+          "weapons": ["S.D.M.G.", { "name": "Luminite Bullet", "note": "ou balas de cristal contra chefes" }],
+          "pros": ["Uma das armas mais fortes do jogo.", "Dois terços dos tiros não gastam bala."],
+          "cons": ["Cai do Senhor da Lua com sorte."]
+        },
+        {
+          "id": "r-ml-phantasm",
+          "title": "Phantasm + luminita",
+          "when": "O melhor dos arcos.",
+          "sub": ["arcos"],
+          "armor": ["Vortex armor"],
+          "weapons": ["Phantasm", "Luminite Arrow"],
+          "pros": ["Feito com fragmentos, sem depender de sorte."],
+          "cons": ["Um pouco abaixo da [[S.D.M.G.]]."]
+        },
+        {
+          "id": "r-ml-celebration",
+          "title": "Festa final",
+          "when": "O melhor dos lançadores.",
+          "sub": ["lancadores"],
+          "armor": ["Vortex armor"],
+          "weapons": ["Celebration Mk2", "Snowman Cannon"],
+          "pros": ["Fogos de artifício que limpam a tela."],
+          "cons": ["Cai do Senhor da Lua com sorte."]
+        }
+      ],
+      "next": {
+        "prep": [
+          "Não há mais chefes obrigatórios. Os opcionais que faltarem (luas, Duque, Imperatriz) ficam bem mais fáceis.",
+          "O [[Zenith]] mata tudo, seja qual for a armadura: use se quiser.",
+          "Bom momento para construir, decorar e terminar o Bestiário."
+        ]
+      }
+    }
+  ],
+  "source": { "page": "Guide:Class setups", "revid": 1035055, "date": "2026-10-20" }
+}
