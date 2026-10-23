@@ -26,6 +26,7 @@ const ArenaPlannerPage = lazy(() => import('./pages/tools/ArenaPlannerPage'))
 const ItemComparePage = lazy(() => import('./pages/tools/ItemComparePage'))
 const HappinessPage = lazy(() => import('./pages/tools/HappinessPage'))
 const VendorsPage = lazy(() => import('./pages/tools/VendorsPage'))
+const ConditionsPage = lazy(() => import('./pages/tools/ConditionsPage'))
 
 installLinkPrefetch()
 
@@ -54,6 +55,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="ferramentas/comparar" element={<ItemComparePage />} />
           <Route path="ferramentas/felicidade" element={<HappinessPage />} />
           <Route path="ferramentas/vendedores" element={<VendorsPage />} />
+          <Route path="ferramentas/condicoes" element={<ConditionsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

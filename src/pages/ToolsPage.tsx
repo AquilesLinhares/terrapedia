@@ -55,6 +55,13 @@ export const TOOLS = [
     icon: 'Piggy Bank',
     ready: true,
   },
+  {
+    slug: 'condicoes',
+    title: 'Condições de chefes e eventos',
+    text: 'Como invocar cada chefe e evento, onde, quando vem sozinho e o que já dá para fazer no seu mundo.',
+    icon: 'Suspicious Looking Eye',
+    ready: true,
+  },
 ]
 
 /** Página `/ferramentas`: cartões das ferramentas de jogo. */

@@ -106,3 +106,22 @@ export function currentStage(done: Iterable<string>): Stage {
 export function stageAtLeast(current: StageId, min: StageId) {
   return STAGES.findIndex((s) => s.id === current) >= STAGES.findIndex((s) => s.id === min)
 }
+
+// Etapa que um chefe abre (para conferir "depois de X" sem mundo ativo)
+const MILESTONE_STAGE: Record<string, StageId> = {
+  'Eye of Cthulhu': 'post-eye',
+  'Eater of Worlds': 'post-evil',
+  'Brain of Cthulhu': 'post-evil',
+  Skeletron: 'post-skeletron',
+  'Wall of Flesh': 'hardmode',
+  'The Twins': 'post-mech',
+  'The Destroyer': 'post-mech',
+  'Skeletron Prime': 'post-mech',
+  Plantera: 'post-plantera',
+  Golem: 'post-golem',
+  'Lunatic Cultist': 'post-cultist',
+  'Lunar Events': 'post-cultist',
+  'Moon Lord': 'post-moon-lord',
+}
+/** Etapa mínima em que um chefe/evento (key de MILESTONES) pode ter sido derrotado. */
+export const milestoneStage = (key: string): StageId => MILESTONE_STAGE[key] ?? (milestone(key)?.phase === 'hard' ? 'hardmode' : 'start')

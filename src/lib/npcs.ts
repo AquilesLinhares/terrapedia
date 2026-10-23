@@ -5,7 +5,7 @@
 // regras da página "NPCs" da wiki (seção Happiness, versão 1.4.5).
 
 import { useEffect, useState } from 'react'
-import { milestone, STAGES, stageAtLeast, type StageId } from './progression'
+import { milestoneStage, STAGES, stageAtLeast, type StageId } from './progression'
 
 export type BiomeId = 'forest' | 'underground' | 'desert' | 'snow' | 'jungle' | 'ocean' | 'hallow' | 'mushroom'
 export type Level = 'love' | 'like' | 'dislike' | 'hate'
@@ -146,25 +146,6 @@ export function npcUnlocked(info: NpcInfo, stage: StageId, defeated: Set<string>
   if (!stageAtLeast(stage, info.stage)) return false
   return !info.needs || !defeated || defeated.has(info.needs)
 }
-
-// Etapa que um chefe abre (para conferir "depois de X" sem mundo ativo)
-const MILESTONE_STAGE: Record<string, StageId> = {
-  'Eye of Cthulhu': 'post-eye',
-  'Eater of Worlds': 'post-evil',
-  'Brain of Cthulhu': 'post-evil',
-  Skeletron: 'post-skeletron',
-  'Wall of Flesh': 'hardmode',
-  'The Twins': 'post-mech',
-  'The Destroyer': 'post-mech',
-  'Skeletron Prime': 'post-mech',
-  Plantera: 'post-plantera',
-  Golem: 'post-golem',
-  'Lunatic Cultist': 'post-cultist',
-  'Lunar Events': 'post-cultist',
-  'Moon Lord': 'post-moon-lord',
-}
-/** Etapa mínima em que um chefe/evento (key de MILESTONES) pode ter sido derrotado. */
-export const milestoneStage = (key: string): StageId => MILESTONE_STAGE[key] ?? (milestone(key)?.phase === 'hard' ? 'hardmode' : 'start')
 
 /**
  * Condição de venda já cumprida no mundo (etapa e chefes)? Outras condições (noite, bioma...) não contam.
