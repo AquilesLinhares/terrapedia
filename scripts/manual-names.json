@@ -77,5 +77,9 @@
   { "pt": "Armadura de Clorofita", "en": "Chlorophyte armor", "type": "página" },
   { "pt": "Armadura do Cavaleiro de Valhalla", "en": "Valhalla Knight armor", "type": "página" },
   { "pt": "Armadura de Pó das Estrelas", "en": "Stardust armor", "type": "página" },
-  { "pt": "Armadura de Abóbora", "en": "Pumpkin armor", "type": "página" }
+  { "pt": "Armadura de Abóbora", "en": "Pumpkin armor", "type": "página" },
+  { "pt": "Armadura da Selva", "en": "Jungle armor", "type": "página" },
+  { "pt": "Armadura de Adamantina", "en": "Adamantite armor", "type": "página" },
+  { "pt": "Armadura do Artista Sombrio", "en": "Dark Artist armor", "type": "página" },
+  { "pt": "Armadura de Nébula", "en": "Nebula armor", "type": "página" }
 ]

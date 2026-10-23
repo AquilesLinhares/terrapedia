@@ -55,9 +55,9 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Acesso rápido flutuante (feito, 2026-10-22)**: janelinha "glass" que fica por cima do jogo (Document
   Picture-in-Picture, Chrome/Edge no PC) com itens fixados, favoritos, buscar depois e etapa do mundo.
   Veja "Acesso rápido flutuante" abaixo.
-- **Guias de classe (piloto do Invocador, 2026-10-22)**: uma página por classe em `/classes/<classe>`, etapas iguais às do
+- **Guias de classe (Invocador e Mago feitos, 2026-10-22)**: uma página por classe em `/classes/<classe>`, etapas iguais às do
   mundo compartilhado, abas Resumo e Detalhado (mapa de caminhos), filtro de subclasse e selos Expert/Mestre. Faltam
-  Corpo a corpo, À distância e Mago. Veja "Guias de classe" abaixo.
+  Corpo a corpo e À distância. Veja "Guias de classe" abaixo.
 
 ## Stack
 
@@ -196,7 +196,9 @@ de itens que não existem no dicionário/receitas e regenera o `guide-index.json
 
 Um arquivo por classe em `src/data/classes/` com o nome do `PlayerClass` (`summoner.json`, depois `magic.json`, `melee.json`,
 `ranged.json`). Classe sem arquivo aparece como "em breve" em `/classes`. Fonte: "Guide:Class setups" da wiki (só a parte da
-classe) + páginas dos itens, organizados com nossas palavras e na versão atual do jogo (1.4.5). Formato em `src/lib/classGuides.ts`:
+classe) + páginas dos itens, organizados com nossas palavras e na versão atual do jogo (1.4.5). As armas vão na subclasse pela
+categoria da wiki (campo `listcat` da tabela Cargo `Items`): no Mago, "wands" → Cajados, "spell books" → Livros de magia, o resto
+(armas de fogo mágicas, instrumentos...) → Armas mágicas. Formato em `src/lib/classGuides.ts`:
 
 - **Guia**: `intro`, `basics` (como a classe funciona), `subclasses` (`id` na URL, `label` igual às sugestões da ficha do mundo,
   `icon`), `names` (nomes PT que faltam no dicionário, ex.: conjuntos de armadura — também vão em `scripts/manual-names.json`),

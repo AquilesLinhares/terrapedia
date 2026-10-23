@@ -1,0 +1,718 @@
+{
+  "class": "magic",
+  "slug": "mago",
+  "title": "Mago",
+  "emblem": "Sorcerer Emblem",
+  "intro": "O mago gasta **mana** para lançar feitiços com cajados, livros de magia e armas mágicas. Tem os efeitos mais variados do jogo (tiros que perseguem, atravessam paredes ou ficam no chão queimando), mas é frágil: armaduras de mago dão pouca defesa.",
+  "basics": [
+    "Todo feitiço gasta **mana**. Cada [[Mana Crystal]] aumenta o máximo em 20 (até 200 com 9 cristais); armaduras e acessórios dão mais.",
+    "A [[Mana Potion]] devolve mana na hora, mas deixa você com **Doença da Mana** (menos dano mágico por alguns segundos). Acessórios como a [[Mana Flower]] tomam a poção sozinhos quando falta mana.",
+    "Inimigos derrubam estrelas que devolvem mana. Pegar estrelas também dá o buff [[Mana Surge]]. [[Celestial Cuffs]] e [[Celestial Magnet]] puxam as estrelas de longe.",
+    "Feitiços servem para coisas diferentes: **alvo único** (chefes), **controle de grupo** (muitos inimigos) e **suporte** (nuvens e paredes de fogo que ficam atacando). Leve um de cada.",
+    "Mesmo jogando de mago, use lacaios e sentinelas extras: a [[Bewitching Table]] e a [[War Table]] dão um a mais de graça."
+  ],
+  "subclasses": [
+    {
+      "id": "cajados",
+      "label": "Cajados",
+      "icon": "Diamond Staff",
+      "text": "Varinhas, cajados e cetros: a maior parte das armas de mago. Muitos atravessam paredes ou ficam no chão causando dano."
+    },
+    {
+      "id": "livros",
+      "label": "Livros de magia",
+      "icon": "Demon Scythe",
+      "text": "Livros que lançam projéteis em grupo ou que quicam nas paredes. Bons para limpar inimigos."
+    },
+    {
+      "id": "armas-magicas",
+      "label": "Armas mágicas",
+      "icon": "Space Gun",
+      "text": "Armas de fogo, instrumentos e outros objetos que gastam mana em vez de munição. Muitas atiram rápido e são as melhores contra chefes."
+    }
+  ],
+  "names": { "Jungle armor": "Armadura da Selva", "Adamantite armor": "Armadura de Adamantina", "Hallowed armor": "Armadura Consagrada", "Chlorophyte armor": "Armadura de Clorofita", "Dark Artist armor": "Armadura do Artista Sombrio", "Nebula armor": "Armadura de Nébula" },
+  "stages": [
+    {
+      "stage": "start",
+      "summary": "Já dá para começar de mago: varinhas de pedras preciosas com minério e gemas, e armaduras que aumentam a mana. Junte [[Mana Crystal|Cristais de Mana]] (estrelas caídas à noite).",
+      "armor": { "name": "Jungle armor", "note": "esporos da Selva; mais mana e acerto crítico" },
+      "armorAlt": [
+        { "name": "Magic Hat", "note": "Mercador Viajante; com um robe de gema" },
+        { "name": "Diamond Robe", "note": "robe de gema: mais mana e feitiços de gema mais fortes" },
+        { "name": "Wizard Hat", "note": "com o [[Mystic Robe]]: dano máximo, defesa mínima" }
+      ],
+      "weapons": [
+        { "sub": "cajados", "item": { "name": "Thunder Zapper", "note": "baús de arenito do Deserto Subterrâneo" }, "alt": ["Ruby Staff", "Diamond Staff", "Glacier Fang", "Wand of Sparking"] },
+        { "sub": "livros", "item": { "name": "Demon Scythe", "note": "cai dos Demônios no Submundo: perigoso tão cedo" } },
+        { "sub": "armas-magicas", "item": { "name": "Mystic Bloom", "note": "feito com o [[Nature's Gift]] da Selva" }, "alt": [{ "name": "Gray Zapinator", "note": "Mercador Viajante, quando aparecer" }] }
+      ],
+      "accessories": [
+        { "name": "Band of Starpower", "note": "+40 de mana" },
+        { "name": "Nature's Gift", "note": "flor azul rara na Selva Subterrânea" },
+        "Mana Flower",
+        "Hermes Boots",
+        "Cloud in a Bottle"
+      ],
+      "buffs": [{ "name": "Mana Crystal", "qty": "9" }, "Arcane Crystal", "Mana Potion", "Mana Regeneration Potion", "Magic Power Potion", "Ironskin Potion"],
+      "paths": [
+        {
+          "id": "m-start-gem",
+          "title": "Cajados de gema",
+          "when": "Se você acha gemas minerando: um cajado com o robe da mesma linha fica bem mais forte.",
+          "sub": ["cajados"],
+          "armor": [{ "name": "Magic Hat", "note": "ou o capacete da [[Jungle armor]]" }, "Diamond Robe"],
+          "weapons": [{ "name": "Ruby Staff", "note": "com o [[Sapphire Robe]] atira muito rápido" }, "Diamond Staff"],
+          "extras": ["Band of Starpower"],
+          "pros": ["Sai cedo, só com minério e gemas.", "Robes de gema dão muita mana."],
+          "cons": ["Defesa muito baixa.", "O [[Magic Hat]] depende do Mercador Viajante."],
+          "next": ["m-eye-jungle"]
+        },
+        {
+          "id": "m-start-jungle",
+          "title": "Selva + varinha do deserto",
+          "when": "Se você prefere um começo mais seguro, com defesa.",
+          "sub": ["cajados", "armas-magicas"],
+          "armor": ["Jungle armor"],
+          "weapons": ["Thunder Zapper", "Mystic Bloom"],
+          "extras": ["Nature's Gift"],
+          "pros": ["A armadura da Selva é a mais equilibrada do começo.", "O [[Thunder Zapper]] acerta forte em linha reta."],
+          "cons": ["Precisa explorar a Selva e o Deserto Subterrâneo."],
+          "next": ["m-eye-jungle", "m-eye-zap"]
+        }
+      ],
+      "next": {
+        "target": "Eye of Cthulhu",
+        "optional": [{ "key": "King Slime", "why": "fácil para testar os feitiços" }],
+        "prep": [
+          "Use [[Life Crystal]] (vários) até ter pelo menos 200 de vida, e [[Mana Crystal]] para ter mana sobrando.",
+          "Invoque de noite com o [[Suspicious Looking Eye]].",
+          "Leve [[Lesser Healing Potion]] e algumas [[Mana Potion]] (com moderação: elas baixam o dano por um tempo)."
+        ],
+        "arena": [
+          "Uma ou duas fileiras compridas de plataformas no céu.",
+          "Feitiços que perseguem ou atravessam o caminho ajudam enquanto você corre."
+        ]
+      }
+    },
+    {
+      "stage": "post-eye",
+      "summary": "Com o minério do Olho e a chance do [[Goblin Army|Exército Goblin]], vêm o Funileiro e os primeiros acessórios combinados de mana. Quebrar orbes/corações também dá armas de mago.",
+      "armor": "Jungle armor",
+      "armorAlt": [{ "name": "Magic Hat", "note": "+ [[Diamond Robe]]" }, { "name": "Wizard Hat", "note": "+ [[Mystic Robe]]" }],
+      "weapons": [
+        { "sub": "cajados", "item": "Thunder Zapper", "alt": [{ "name": "Vilethorn", "note": "orbe da Corrupção; atravessa paredes" }, { "name": "Crimson Rod", "note": "coração do Carmesim; nuvem de sangue" }, "Glacier Fang"] },
+        { "sub": "livros", "item": { "name": "Demon Scythe", "note": "Demônios do Submundo" } },
+        { "sub": "armas-magicas", "item": "Mystic Bloom", "alt": [{ "name": "Space Gun", "note": "barras de meteorito" }, "Gray Zapinator"] }
+      ],
+      "accessories": [
+        { "name": "Mana Regeneration Band", "note": "regenera vida e mana" },
+        { "name": "Celestial Cuffs", "note": "devolve mana quando você apanha" },
+        { "name": "Magnet Flower", "note": "toma poção de mana sozinho e puxa estrelas" },
+        "Shield of Cthulhu",
+        "Hermes Boots"
+      ],
+      "buffs": ["Mana Regeneration Potion", "Magic Power Potion", "Mana Potion", "Ironskin Potion", "Regeneration Potion", "Well Fed"],
+      "paths": [
+        {
+          "id": "m-eye-jungle",
+          "title": "Selva + mana sem fim",
+          "when": "Se o Exército Goblin já veio e você tem o Funileiro.",
+          "sub": ["cajados", "livros"],
+          "armor": ["Jungle armor"],
+          "weapons": ["Thunder Zapper", { "name": "Demon Scythe", "note": "se tiver coragem de ir ao Submundo" }],
+          "extras": ["Mana Regeneration Band", "Magnet Flower"],
+          "pros": ["Quase nunca fica sem mana.", "Combinação segura para o resto do pré-Modo Difícil."],
+          "cons": ["Os acessórios combinados pedem várias peças."],
+          "next": ["m-evil-jungle"]
+        },
+        {
+          "id": "m-eye-zap",
+          "title": "Tiro rápido",
+          "when": "Se você encontrou um meteorito ou o Mercador Viajante vende o [[Gray Zapinator]].",
+          "sub": ["armas-magicas"],
+          "armor": ["Jungle armor"],
+          "weapons": ["Space Gun", "Gray Zapinator"],
+          "pros": ["Armas mágicas atiram rápido e de longe.", "O [[Space Gun]] sai só com barras de meteorito."],
+          "cons": ["Gastam mana depressa sem a armadura de meteorito.", "O [[Gray Zapinator]] depende da sorte com o Mercador."],
+          "next": ["m-evil-meteor"]
+        }
+      ],
+      "next": {
+        "target": "Eater of Worlds",
+        "optional": [{ "key": "Goblin Army", "why": "libera o Funileiro Goblin para juntar acessórios de mana" }],
+        "prep": [
+          "O chefe depende do mundo: [[Eater of Worlds]] na Corrupção, [[Brain of Cthulhu]] no Carmesim. Os dois contam como a mesma etapa.",
+          "Feitiços que atravessam inimigos ([[Vilethorn]], [[Demon Scythe]]) rendem muito contra os segmentos do Devorador.",
+          "Contra o Cérebro, prefira tiros rápidos para estourar os Creepers."
+        ],
+        "arena": ["Cave um espaço aberto perto da superfície do bioma, com plataformas."]
+      }
+    },
+    {
+      "stage": "post-evil",
+      "summary": "O minério de meteorito e as escamas/amostras do chefe liberam a armadura de meteorito: com ela, o [[Space Gun]] não gasta mana. O [[Gray Zapinator]] vira a melhor arma do pré-Modo Difícil.",
+      "armor": { "name": "Jungle armor", "note": "o melhor no geral" },
+      "armorAlt": [
+        { "name": "Meteor armor", "note": "o [[Space Gun]] passa a não gastar mana" },
+        { "name": "Magic Hat", "note": "+ [[Diamond Robe]] + [[Meteor Leggings]] (dano)" }
+      ],
+      "weapons": [
+        { "sub": "cajados", "item": "Thunder Zapper", "alt": [{ "name": "Weather Pain", "note": "do [[Deerclops|Cervídeo]]" }, "Crimson Rod", "Vilethorn"] },
+        { "sub": "livros", "item": "Demon Scythe" },
+        { "sub": "armas-magicas", "item": { "name": "Gray Zapinator", "note": "Mercador Viajante" }, "alt": ["Space Gun", { "name": "Bee Gun", "note": "da Abelha Rainha" }] }
+      ],
+      "accessories": [
+        "Celestial Cuffs",
+        "Magnet Flower",
+        "Mana Regeneration Band",
+        "Shield of Cthulhu",
+        { "name": "Worm Scarf", "note": "-17% de dano recebido (Devorador)" },
+        { "name": "Brain of Confusion", "note": "esquiva (Cérebro)" }
+      ],
+      "buffs": ["Mana Regeneration Potion", "Magic Power Potion", "Mana Potion", "Ironskin Potion", "Regeneration Potion", "Well Fed"],
+      "paths": [
+        {
+          "id": "m-evil-meteor",
+          "title": "Meteorito: mana de graça",
+          "when": "Se você usa o [[Space Gun]] ou o [[Gray Zapinator]].",
+          "sub": ["armas-magicas"],
+          "armor": ["Meteor armor"],
+          "weapons": ["Space Gun", "Gray Zapinator"],
+          "pros": ["Com o conjunto completo, o [[Space Gun]] atira sem gastar mana.", "Tudo sai do mesmo meteorito."],
+          "cons": ["Pouca defesa.", "O bônus só vale para o [[Space Gun]]."],
+          "next": ["m-skel-meteor"]
+        },
+        {
+          "id": "m-evil-jungle",
+          "title": "Selva equilibrada",
+          "when": "Se você quer defesa e usa cajados ou o [[Demon Scythe]].",
+          "sub": ["cajados", "livros"],
+          "armor": ["Jungle armor"],
+          "weapons": ["Thunder Zapper", "Demon Scythe", { "name": "Weather Pain", "note": "suporte: persegue sozinho" }],
+          "extras": ["Celestial Cuffs"],
+          "pros": ["Mais defesa que as outras opções de mago.", "Bom com qualquer arma."],
+          "cons": ["Menos dano que os chapéus com robe."],
+          "next": ["m-skel-aqua"]
+        },
+        {
+          "id": "m-evil-glass",
+          "title": "Canhão de vidro",
+          "when": "Se você desvia bem e quer o máximo de dano.",
+          "sub": ["cajados", "livros", "armas-magicas"],
+          "armor": ["Magic Hat", { "name": "Diamond Robe", "note": "ou [[Mystic Robe]]" }, "Meteor Leggings"],
+          "weapons": ["Demon Scythe", "Thunder Zapper"],
+          "pros": ["Muito dano e mana para feitiços caros como o [[Demon Scythe]]."],
+          "cons": ["Morre fácil: dois ou três golpes de chefe."],
+          "next": ["m-skel-aqua", "m-skel-meteor"]
+        }
+      ],
+      "next": {
+        "target": "Skeletron",
+        "optional": [
+          { "key": "Queen Bee", "why": "dá o [[Bee Gun]]" },
+          { "key": "Deerclops", "why": "dá o [[Weather Pain]]" }
+        ],
+        "prep": [
+          "Fale com o Velho na entrada da Masmorra, de noite, e lute ali mesmo.",
+          "Feitiços que perseguem facilitam acertar a cabeça enquanto você foge."
+        ],
+        "arena": ["Plataformas no céu acima da entrada da Masmorra.", "Fogueira, Lanterna de Coração e uma [[Ironskin Potion]]."]
+      }
+    },
+    {
+      "stage": "post-skeletron",
+      "summary": "A Masmorra é o paraíso do mago: [[Aqua Scepter]], [[Water Bolt]], [[Magic Missile]] e, nos Baús das Sombras do Submundo, o [[Flamelash]] e a [[Flower of Fire]].",
+      "armor": "Jungle armor",
+      "armorAlt": ["Meteor armor", { "name": "Magic Hat", "note": "+ [[Diamond Robe]] + [[Meteor Leggings]]" }],
+      "weapons": [
+        { "sub": "cajados", "item": { "name": "Aqua Scepter", "note": "baús da Masmorra" }, "alt": ["Flamelash", "Flower of Fire", "Magic Missile"] },
+        { "sub": "livros", "item": "Demon Scythe", "alt": [{ "name": "Water Bolt", "note": "Masmorra; quica nas paredes" }, { "name": "Book of Skulls", "note": "do Esqueletron" }] },
+        { "sub": "armas-magicas", "item": "Gray Zapinator", "alt": ["Space Gun", "Bee Gun"] }
+      ],
+      "accessories": [
+        "Celestial Cuffs",
+        "Magnet Flower",
+        { "name": "Restoration Shield", "note": "escudo da Masmorra + faixa de regeneração" },
+        "Shield of Cthulhu",
+        "Worm Scarf",
+        "Brain of Confusion"
+      ],
+      "buffs": ["Mana Regeneration Potion", "Magic Power Potion", "Bewitching Table", "Ironskin Potion", "Endurance Potion", "Water Walking Potion"],
+      "paths": [
+        {
+          "id": "m-skel-aqua",
+          "title": "Cetro d'água",
+          "when": "Se você explorou a Masmorra: o [[Aqua Scepter]] é ótimo contra a Parede de Carne.",
+          "sub": ["cajados"],
+          "armor": ["Jungle armor"],
+          "weapons": ["Aqua Scepter", "Flamelash"],
+          "extras": ["Restoration Shield"],
+          "pros": ["Acerta vários inimigos e é bom tanto em chefe quanto em grupo.", "Não depende de sorte."],
+          "cons": ["Alcance curto: o jato cai rápido."],
+          "next": ["m-hm-drain"]
+        },
+        {
+          "id": "m-skel-meteor",
+          "title": "Zapinator + meteorito",
+          "when": "Se você continua com as armas mágicas.",
+          "sub": ["armas-magicas"],
+          "armor": ["Meteor armor"],
+          "weapons": ["Gray Zapinator", "Space Gun"],
+          "pros": ["O [[Gray Zapinator]] é das melhores armas antes do Modo Difícil."],
+          "cons": ["Só pode ser comprado antes do Modo Difícil: garanta o seu agora."],
+          "next": ["m-hm-zap"]
+        },
+        {
+          "id": "m-skel-books",
+          "title": "Livros que quicam",
+          "when": "Se você gosta de livros de magia.",
+          "sub": ["livros"],
+          "armor": ["Magic Hat", "Diamond Robe"],
+          "weapons": ["Demon Scythe", "Water Bolt", "Book of Skulls"],
+          "pros": ["O [[Water Bolt]] quica nas paredes: ótimo em túneis.", "O [[Demon Scythe]] segue forte até a Parede."],
+          "cons": ["Projéteis lentos contra chefes rápidos."],
+          "next": ["m-hm-books"]
+        }
+      ],
+      "next": {
+        "target": "Wall of Flesh",
+        "prep": [
+          "Jogue uma [[Guide Voodoo Doll]] na lava do Submundo (mata o Guia, que volta depois).",
+          "Feitiços que atravessam inimigos ([[Aqua Scepter]], [[Demon Scythe]]) limpam os Famintos.",
+          "**Atenção:** derrotar a Parede muda o mundo para o Modo Difícil (inimigos mais fortes e biomas se espalhando)."
+        ],
+        "arena": ["Ponte de plataformas no Submundo, de preferência de ponta a ponta.", "Sem ponte: [[Water Walking Potion]] ou botas que andam na lava."]
+      }
+    },
+    {
+      "stage": "hardmode",
+      "summary": "O mago fica bom para limpar grupos no começo do Modo Difícil. A [[Orange Zapinator]] (Mercador Viajante) é a melhor contra chefes, e o [[Sorcerer Emblem]] cai da Parede de Carne.",
+      "armor": { "name": "Adamantite Headgear", "note": "+ [[Adamantite Breastplate]] e [[Forbidden Treads]]" },
+      "armorAlt": [
+        { "name": "Adamantite armor", "image": "Adamantite armor Headgear.png", "note": "conjunto completo" },
+        { "name": "Titanium Mask", "note": "defesa, no lugar do capacete" },
+        "Forbidden Treads"
+      ],
+      "weapons": [
+        { "sub": "cajados", "item": { "name": "Life Drain", "note": "Mímico Carmesim; rouba vida" }, "alt": ["Meteor Staff", "Sky Fracture", { "name": "Crystal Serpent", "note": "pescado no Sagrado" }, "Nimbus Rod"] },
+        { "sub": "livros", "item": { "name": "Golden Shower", "note": "icor: baixa a defesa dos inimigos" }, "alt": ["Cursed Flames", "Crystal Storm"] },
+        { "sub": "armas-magicas", "item": { "name": "Orange Zapinator", "note": "Mercador Viajante" }, "alt": ["Spirit Flame", { "name": "Blood Thorn", "note": "Tubarão Hemogoblin (Lua de Sangue)" }, "Shadowflame Hex Doll", "Killing Deck"] }
+      ],
+      "accessories": [
+        { "name": "Sorcerer Emblem", "note": "+15% de dano mágico" },
+        "Celestial Cuffs",
+        { "name": "Mana Cloak", "note": "estrelas caem quando você apanha" },
+        "Restoration Shield",
+        { "name": "Demon Heart", "note": "+1 espaço de acessório" },
+        { "name": "Wings", "image": "Angel Wings.png", "note": "qualquer asa; as primeiras usam Almas do Voo" }
+      ],
+      "buffs": [{ "name": "Crystal Ball", "note": "Feiticeiro (NPC): buff de magia" }, "Mana Regeneration Potion", "Magic Power Potion", "Ironskin Potion", "Endurance Potion", "Wrath Potion"],
+      "paths": [
+        {
+          "id": "m-hm-drain",
+          "title": "Cajados de controle",
+          "when": "Se você enfrenta muitos inimigos e quer se curar atacando.",
+          "sub": ["cajados"],
+          "armor": [{ "name": "Adamantite Headgear", "note": "+ [[Adamantite Breastplate]] e [[Forbidden Treads]]" }],
+          "weapons": ["Life Drain", "Meteor Staff", { "name": "Nimbus Rod", "note": "suporte" }],
+          "pros": ["O [[Life Drain]] acerta tudo perto do cursor, através de paredes, e cura você.", "O [[Meteor Staff]] sai com barras de meteorito."],
+          "cons": ["O [[Life Drain]] só cai de Mímicos Carmesins."],
+          "next": ["m-mech-trident"]
+        },
+        {
+          "id": "m-hm-zap",
+          "title": "Zapinator laranja",
+          "when": "Se o Mercador Viajante trouxer a [[Orange Zapinator]].",
+          "sub": ["armas-magicas"],
+          "armor": [{ "name": "Adamantite Headgear", "note": "+ [[Adamantite Breastplate]] e [[Forbidden Treads]]" }],
+          "weapons": ["Orange Zapinator", "Spirit Flame"],
+          "pros": ["Ótima contra chefes; o laser ganha efeitos aleatórios a cada acerto."],
+          "cons": ["Depende da sorte com o Mercador Viajante.", "Fraca contra grupos."],
+          "next": ["m-mech-zap"]
+        },
+        {
+          "id": "m-hm-books",
+          "title": "Livros do Modo Difícil",
+          "when": "Se você usa livros: cada bioma do mal dá um.",
+          "sub": ["livros"],
+          "armor": [{ "name": "Titanium Mask", "note": "defesa, com o resto de adamantina" }],
+          "weapons": ["Golden Shower", { "name": "Cursed Flames", "note": "Corrupção" }, { "name": "Crystal Storm", "note": "Sagrado" }],
+          "pros": ["A [[Golden Shower]] baixa a defesa dos inimigos: ajuda o grupo todo.", "Feitos com materiais fáceis do Modo Difícil."],
+          "cons": ["Dano em alvo único abaixo das outras opções."],
+          "next": ["m-mech-tome"]
+        }
+      ],
+      "next": {
+        "target": "The Twins",
+        "optional": [
+          { "key": "Queen Slime", "why": "bom treino de esquiva antes dos mecânicos" },
+          { "key": "Pirate Invasion", "why": "moedas e acessórios" }
+        ],
+        "prep": [
+          "Qualquer chefe mecânico serve para esta etapa. O mago é forte contra o [[The Destroyer|Destruidor]]: feitiços que atravessam ([[Meteor Staff]], [[Life Drain]]) acertam vários segmentos.",
+          "Asas são quase obrigatórias daqui em diante.",
+          "Leve [[Mana Potion|poções de mana]] e o buff da [[Crystal Ball]]."
+        ],
+        "arena": ["Várias fileiras de plataformas no céu, bem compridas.", "Fogueira, Lanterna de Coração e uma piscina de [[Honey]] por perto."]
+      }
+    },
+    {
+      "stage": "post-mech",
+      "summary": "O primeiro mecânico libera as Barras Consagradas (capacete de mago consagrado), o [[Unholy Trident]] dos Diabos Vermelhos e o [[Tome of Infinite Wisdom]] do Exército do Ancião.",
+      "armor": { "name": "Hallowed armor", "image": "Hallowed armor Headgear.png", "note": "com o capacete de mago; esquiva de vez em quando" },
+      "armorAlt": [{ "name": "Hallowed Headgear", "note": "defesa: com [[Squire's Plating]] e [[Apprentice's Trousers]]" }, "Adamantite armor"],
+      "weapons": [
+        { "sub": "cajados", "item": { "name": "Unholy Trident", "note": "Diabos Vermelhos do Submundo" }, "alt": [{ "name": "Tome of Infinite Wisdom", "note": "Ogro do Exército do Ancião" }, "Rainbow Rod", "Life Drain"] },
+        { "sub": "livros", "item": "Golden Shower", "alt": ["Cursed Flames", "Crystal Storm"] },
+        { "sub": "armas-magicas", "item": "Orange Zapinator", "alt": [{ "name": "Magical Harp", "note": "pede Almas da Visão (Gêmeos)" }, "Shadowflame Hex Doll"] }
+      ],
+      "accessories": ["Sorcerer Emblem", "Celestial Cuffs", "Mana Cloak", "Restoration Shield", "Demon Heart", { "name": "Wings", "image": "Angel Wings.png" }],
+      "buffs": ["Crystal Ball", "Mana Regeneration Potion", "Magic Power Potion", "Lifeforce Potion", "Endurance Potion", "Wrath Potion"],
+      "paths": [
+        {
+          "id": "m-mech-trident",
+          "title": "Tridente profano",
+          "when": "Se você caça Diabos Vermelhos no Submundo.",
+          "sub": ["cajados"],
+          "armor": [{ "name": "Hallowed armor", "image": "Hallowed armor Headgear.png" }],
+          "weapons": ["Unholy Trident", { "name": "Nimbus Rod", "note": "suporte" }],
+          "pros": ["Dano muito alto em alvo único; fica preso nos blocos causando dano."],
+          "cons": ["Cai raramente."],
+          "next": ["m-mechs-venom"]
+        },
+        {
+          "id": "m-mech-tome",
+          "title": "Tomo da sabedoria",
+          "when": "Se você joga o Exército do Ancião (nível 2) e quer uma arma para tudo.",
+          "sub": ["cajados", "livros"],
+          "armor": [{ "name": "Hallowed armor", "image": "Hallowed armor Headgear.png" }],
+          "weapons": [{ "name": "Tome of Infinite Wisdom", "note": "clique: páginas; botão direito: tornado" }, "Golden Shower"],
+          "pros": ["Dois ataques: páginas para chefes, tornado para grupos.", "As Medalhas do evento também compram armaduras."],
+          "cons": ["Cai de Ogros, com sorte."],
+          "next": ["m-mechs-venom", "m-mechs-harp"]
+        },
+        {
+          "id": "m-mech-zap",
+          "title": "Zapinator + harpa",
+          "when": "Se você já tem a [[Orange Zapinator]] e venceu os Gêmeos.",
+          "sub": ["armas-magicas"],
+          "armor": [{ "name": "Hallowed armor", "image": "Hallowed armor Headgear.png" }],
+          "weapons": ["Orange Zapinator", "Magical Harp"],
+          "pros": ["A [[Magical Harp]] atravessa paredes e persegue: bom contra grupos.", "A Zapinator segue forte contra chefes."],
+          "cons": ["A harpa precisa de uma [[Harp]] comprada do Feiticeiro (NPC)."],
+          "next": ["m-mechs-harp"]
+        }
+      ],
+      "next": {
+        "target": "The Destroyer",
+        "prep": [
+          "Faltam os outros mecânicos: [[The Destroyer]] e o [[Skeletron Prime]]. Os três juntos liberam a Clorofita.",
+          "Contra o Destruidor, feitiços que atravessam e acertam vários segmentos rendem muito.",
+          "Contra o Esqueletron Alfa, mire na cabeça e derrube os braços que atrapalham."
+        ],
+        "arena": ["As mesmas plataformas no céu; para o Destruidor, uma área bem larga."]
+      }
+    },
+    {
+      "stage": "post-all-mechs",
+      "summary": "Com os três mecânicos, a Clorofita aparece e o [[Avenger Emblem]] pode ser feito. O [[Venom Staff]] vira o melhor cajado e o [[Celestial Emblem]] o melhor acessório.",
+      "armor": { "name": "Chlorophyte armor", "image": "Chlorophyte armor Headgear.png", "note": "com o capacete de mago" },
+      "armorAlt": [
+        { "name": "Hallowed Headgear", "note": "dano: com [[Chlorophyte Plate Mail]] e [[Apprentice's Trousers]]" },
+        { "name": "Hallowed armor", "image": "Hallowed armor Headgear.png" }
+      ],
+      "weapons": [
+        { "sub": "cajados", "item": { "name": "Venom Staff", "note": "[[Poison Staff]] + clorofita" }, "alt": ["Unholy Trident", "Tome of Infinite Wisdom", "Rainbow Rod"] },
+        { "sub": "livros", "item": "Golden Shower", "alt": ["Crystal Storm", "Cursed Flames"] },
+        { "sub": "armas-magicas", "item": "Orange Zapinator", "alt": ["Magical Harp", "Shadowflame Hex Doll"] }
+      ],
+      "accessories": [
+        { "name": "Celestial Emblem", "note": "+15% de dano e puxa estrelas" },
+        "Sorcerer Emblem",
+        "Celestial Cuffs",
+        "Restoration Shield",
+        "Demon Heart",
+        { "name": "Wings", "image": "Angel Wings.png" }
+      ],
+      "buffs": ["Crystal Ball", "Mana Surge", "Mana Regeneration Potion", "Magic Power Potion", "Lifeforce Potion", "Endurance Potion"],
+      "paths": [
+        {
+          "id": "m-mechs-venom",
+          "title": "Veneno de clorofita",
+          "when": "Se você usa cajados: o [[Venom Staff]] envenena tudo pela frente.",
+          "sub": ["cajados"],
+          "armor": [{ "name": "Chlorophyte armor", "image": "Chlorophyte armor Headgear.png" }],
+          "weapons": ["Venom Staff", "Unholy Trident"],
+          "extras": ["Celestial Emblem"],
+          "pros": ["Bom contra grupos e contra a Plantera.", "Clorofita é fácil de minerar na Selva."],
+          "cons": ["Precisa do [[Poison Staff]], que cai das Aranhas Reclusas Negras (cavernas de aranha)."],
+          "next": ["m-plant-fork"]
+        },
+        {
+          "id": "m-mechs-harp",
+          "title": "Dano máximo",
+          "when": "Se você desvia bem e quer o máximo de dano mágico.",
+          "sub": ["armas-magicas", "livros"],
+          "armor": ["Hallowed Headgear", "Chlorophyte Plate Mail", "Apprentice's Trousers"],
+          "weapons": ["Orange Zapinator", "Magical Harp", "Golden Shower"],
+          "pros": ["Mais dano e acerto crítico que a armadura completa.", "As calças do Aprendiz ainda dão velocidade."],
+          "cons": ["Sem bônus de conjunto.", "As calças custam Medalhas do Defensor."],
+          "next": ["m-plant-leaf"]
+        }
+      ],
+      "next": {
+        "target": "Plantera",
+        "optional": [{ "key": "Frost Legion", "why": "fácil, para treinar o grupo" }],
+        "prep": [
+          "Ache e quebre o Bulbo da Plantera (rosa) na Selva subterrânea.",
+          "Feitiços que perseguem ou atravessam paredes ajudam muito nos túneis da Selva.",
+          "[[Flask of Ichor|Icor]] ou a [[Golden Shower]] baixam a defesa dela."
+        ],
+        "arena": ["Cave um túnel largo e comprido na Selva subterrânea (ou várias plataformas).", "Não saia da Selva: ela fica furiosa e muito mais forte."]
+      }
+    },
+    {
+      "stage": "post-plantera",
+      "summary": "A armadura espectral (barras espectrais da Masmorra) é o grande salto do mago: cura você ao causar dano ou causa dano extra. A Plantera e a Masmorra trazem as melhores armas da etapa.",
+      "armor": { "name": "Spectre armor", "image": "Spectre armor Mask.png", "note": "com a máscara: dano extra" },
+      "armorAlt": [{ "name": "Spectre Hood", "note": "com o capuz: cada acerto cura você" }],
+      "weapons": [
+        { "sub": "cajados", "item": { "name": "Inferno Fork", "note": "Satanistas da Masmorra" }, "alt": ["Spectre Staff", "Shadowbeam Staff", { "name": "Resonance Scepter", "note": "da Princesa" }, { "name": "Nettle Burst", "note": "da Plantera" }] },
+        { "sub": "livros", "item": { "name": "Magnet Sphere", "note": "Esqueletos Blindados da Masmorra (raro)" }, "alt": ["Golden Shower"] },
+        { "sub": "armas-magicas", "item": { "name": "Leaf Blower", "note": "da Plantera" }, "alt": [{ "name": "Wasp Gun", "note": "muito melhor com o [[Hive Pack]]" }, "Toxic Flask", "Rainbow Gun", { "name": "Stellar Tune", "note": "da Imperatriz da Luz" }] }
+      ],
+      "accessories": [
+        "Celestial Emblem",
+        "Celestial Cuffs",
+        "Sorcerer Emblem",
+        "Restoration Shield",
+        { "name": "Mystic Arts Sash", "note": "regeneração + chance de esquiva" },
+        { "name": "Spore Sac", "note": "esporos que atacam sozinhos (Plantera)" },
+        "Demon Heart"
+      ],
+      "buffs": ["Crystal Ball", "Mana Surge", "Mana Regeneration Potion", "Magic Power Potion", "Lifeforce Potion", "Wrath Potion"],
+      "paths": [
+        {
+          "id": "m-plant-fork",
+          "title": "Masmorra: fogo e sombras",
+          "when": "Se você caça na Masmorra do Modo Difícil (também é de onde vêm as barras espectrais).",
+          "sub": ["cajados"],
+          "armor": [{ "name": "Spectre armor", "image": "Spectre armor Mask.png" }],
+          "weapons": ["Inferno Fork", "Spectre Staff", "Shadowbeam Staff"],
+          "pros": ["Tudo sai da mesma área.", "O [[Inferno Fork]] deixa uma explosão queimando no lugar."],
+          "cons": ["Drops com sorte; a Masmorra é perigosa agora."],
+          "next": ["m-golem-blizzard"]
+        },
+        {
+          "id": "m-plant-leaf",
+          "title": "Soprador de folhas",
+          "when": "Se a Plantera deixou o [[Leaf Blower]] (ou o [[Wasp Gun]]).",
+          "sub": ["armas-magicas"],
+          "armor": [{ "name": "Spectre armor", "image": "Spectre armor Mask.png" }],
+          "weapons": ["Leaf Blower", { "name": "Wasp Gun", "note": "com o [[Hive Pack]]" }, "Rainbow Gun"],
+          "pros": ["Atira muito rápido: ótimo contra o Golem.", "O [[Rainbow Gun]] ajuda como suporte."],
+          "cons": ["Gasta mana depressa."],
+          "next": ["m-golem-bubble", "m-golem-arc"]
+        },
+        {
+          "id": "m-plant-hood",
+          "title": "Capuz: cura constante",
+          "when": "Se você morre muito e quer aguentar mais.",
+          "sub": ["cajados", "livros", "armas-magicas"],
+          "armor": ["Spectre Hood", "Spectre Robe", { "name": "Spectre Pants" }],
+          "weapons": ["Magnet Sphere", { "name": "Nettle Burst", "note": "atravessa paredes" }],
+          "extras": ["Mystic Arts Sash"],
+          "pros": ["Cada dano que você causa cura você ou o grupo.", "Ótimo para eventos longos."],
+          "cons": ["Bem menos dano que a máscara."],
+          "next": ["m-golem-blizzard"]
+        }
+      ],
+      "next": {
+        "target": "Golem",
+        "optional": [
+          { "key": "Pumpkin Moon", "why": "bom treino e moedas" },
+          { "key": "Frost Moon", "why": "[[Blizzard Staff]] e [[Razorpine]]" },
+          { "key": "Duke Fishron", "why": "[[Razorblade Typhoon]] e [[Bubble Gun]]" },
+          { "key": "Empress of Light", "why": "[[Nightglow]] e [[Stellar Tune]]" }
+        ],
+        "prep": [
+          "A Plantera deixa a [[Temple Key]]: abra o Templo Lihzahrd na Selva.",
+          "Chegue ao altar e use uma [[Lihzahrd Power Cell]].",
+          "Cuidado com as armadilhas do templo no caminho (dardos, bolas de espinho, lanças)."
+        ],
+        "arena": ["Limpe e aumente a sala do altar.", "Plataformas ajudam a desviar dos punhos."]
+      }
+    },
+    {
+      "stage": "post-golem",
+      "summary": "As luas, o Duque e a Invasão Marciana trazem as armas mais fortes antes do fim. O mago começa a brilhar contra chefes únicos aqui.",
+      "armor": { "name": "Spectre Mask", "note": "+ [[Spectre Robe]] e [[Dark Artist's Leggings]]" },
+      "armorAlt": [{ "name": "Spectre armor", "image": "Spectre armor Mask.png" }, { "name": "Spectre armor", "image": "Spectre armor Hood.png", "note": "com o capuz (defesa)" }],
+      "weapons": [
+        { "sub": "cajados", "item": { "name": "Blizzard Staff", "note": "Rainha do Gelo (Lua Congelada)" }, "alt": [{ "name": "Razorpine", "note": "Sempre-Grito (Lua Congelada)" }, { "name": "Betsy's Wrath", "note": "baixa a defesa" }, "Inferno Fork"] },
+        { "sub": "livros", "item": { "name": "Razorblade Typhoon", "note": "do Duque Peixe-dragão" }, "alt": ["Magnet Sphere"] },
+        { "sub": "armas-magicas", "item": { "name": "Arc Surge", "note": "Disco Marciano, bem raro" }, "alt": [{ "name": "Bubble Gun", "note": "do Duque" }, "Charged Blaster Cannon", "Laser Machinegun", { "name": "Nightglow", "note": "da Imperatriz" }] }
+      ],
+      "accessories": [
+        "Celestial Emblem",
+        "Celestial Cuffs",
+        "Sorcerer Emblem",
+        "Restoration Shield",
+        "Mystic Arts Sash",
+        "Demon Heart",
+        { "name": "Soaring Insignia", "note": "voo sem fim (Imperatriz)" }
+      ],
+      "buffs": ["Crystal Ball", "Mana Surge", "Mana Regeneration Potion", "Magic Power Potion", "Lifeforce Potion", "Wrath Potion"],
+      "paths": [
+        {
+          "id": "m-golem-blizzard",
+          "title": "Nevasca",
+          "when": "Se você jogou a Lua Congelada.",
+          "sub": ["cajados"],
+          "armor": ["Spectre Mask", "Spectre Robe", "Dark Artist's Leggings"],
+          "weapons": ["Blizzard Staff", "Razorpine"],
+          "pros": ["O [[Blizzard Staff]] cobre uma área enorme de gelo.", "Bom contra grupos e contra o Cultista."],
+          "cons": ["A Lua Congelada é um evento difícil."],
+          "next": ["m-cult-nebula"]
+        },
+        {
+          "id": "m-golem-bubble",
+          "title": "Tufão do Duque",
+          "when": "Se você venceu o [[Duke Fishron|Duque Peixe-dragão]].",
+          "sub": ["livros", "armas-magicas"],
+          "armor": ["Spectre Mask", "Spectre Robe", "Dark Artist's Leggings"],
+          "weapons": ["Razorblade Typhoon", "Bubble Gun"],
+          "pros": ["As serras perseguem os inimigos.", "Segue útil até o fim do jogo."],
+          "cons": ["O Duque é um chefe difícil para esta etapa."],
+          "next": ["m-cult-nebula", "m-cult-typhoon"]
+        },
+        {
+          "id": "m-golem-arc",
+          "title": "Marciano",
+          "when": "Se você enfrenta a [[Martian Madness|Invasão Marciana]].",
+          "sub": ["armas-magicas"],
+          "armor": ["Spectre Mask", "Spectre Robe", "Dark Artist's Leggings"],
+          "weapons": [{ "name": "Arc Surge", "note": "o melhor, mas muito raro" }, "Charged Blaster Cannon", "Laser Machinegun"],
+          "pros": ["Raios que acertam a tela inteira (Arc Surge).", "Vários drops bons no mesmo evento."],
+          "cons": ["O [[Arc Surge]] pode exigir muitas invasões."],
+          "next": ["m-cult-nebula"]
+        }
+      ],
+      "next": {
+        "target": "Lunatic Cultist",
+        "optional": [
+          { "key": "Martian Madness", "why": "armas marcianas" },
+          { "key": "Duke Fishron", "why": "[[Razorblade Typhoon]]" },
+          { "key": "Frost Moon", "why": "[[Blizzard Staff]]" }
+        ],
+        "prep": [
+          "Depois do Golem, cultistas aparecem rezando na entrada da Masmorra. Ataque um deles para começar a luta.",
+          "Ele cria cópias: feitiços que acertam vários ao mesmo tempo ajudam a achar o verdadeiro."
+        ],
+        "arena": ["Plataformas acima da entrada da Masmorra.", "Espaço para desviar do dragão fantasma."]
+      }
+    },
+    {
+      "stage": "post-cultist",
+      "summary": "Derrote as quatro torres celestiais: a **Coluna de Nébula** dá os fragmentos do mago. [[Nebula Blaze]] e [[Nebula Arcanum]] são as armas contra o Senhor da Lua.",
+      "armor": { "name": "Spectre Mask", "note": "+ [[Spectre Robe]] e [[Dark Artist's Leggings]]" },
+      "armorAlt": [
+        { "name": "Dark Artist armor", "note": "contra o Senhor da Lua, com lacaios do invocador" },
+        { "name": "Valhalla Knight's Breastplate", "note": "no lugar do robe, para aguentar mais" }
+      ],
+      "weapons": [
+        { "sub": "cajados", "item": "Blizzard Staff", "alt": ["Betsy's Wrath", "Inferno Fork"] },
+        { "sub": "livros", "item": "Razorblade Typhoon", "alt": ["Magnet Sphere"] },
+        { "sub": "armas-magicas", "item": { "name": "Nebula Blaze", "note": "18 [[Nebula Fragment]]" }, "alt": ["Nebula Arcanum", "Arc Surge", "Bubble Gun"] }
+      ],
+      "accessories": ["Celestial Emblem", "Celestial Cuffs", "Sorcerer Emblem", "Mystic Arts Sash", "Demon Heart", "Soaring Insignia"],
+      "buffs": ["Crystal Ball", "Mana Surge", "Super Healing Potion", "Magic Power Potion", "Mana Regeneration Potion", "Lifeforce Potion"],
+      "paths": [
+        {
+          "id": "m-cult-nebula",
+          "title": "Nébula",
+          "when": "O caminho de quase todo mago: fragmentos da [[Nebula Pillar]].",
+          "sub": ["armas-magicas"],
+          "armor": ["Spectre Mask", "Spectre Robe", "Dark Artist's Leggings"],
+          "weapons": [{ "name": "Nebula Blaze", "note": "alvo único" }, { "name": "Nebula Arcanum", "note": "grupos" }],
+          "pros": ["Fácil de fazer depois das torres.", "Uma arma para chefe e outra para grupo."],
+          "cons": ["A cura da armadura espectral não funciona no Senhor da Lua até o olho de cima cair."],
+          "next": ["m-ml-prism"]
+        },
+        {
+          "id": "m-cult-typhoon",
+          "title": "Serras + segurança",
+          "when": "Se você já tem o [[Razorblade Typhoon]] e quer aguentar mais pancada.",
+          "sub": ["livros"],
+          "armor": ["Spectre Mask", { "name": "Valhalla Knight's Breastplate" }, "Dark Artist's Leggings"],
+          "weapons": ["Razorblade Typhoon", "Nebula Arcanum"],
+          "pros": ["O peitoral de Valhalla regenera muito.", "Perde pouco dano."],
+          "cons": ["Menos mana e acerto crítico."],
+          "next": ["m-ml-flare"]
+        }
+      ],
+      "next": {
+        "target": "Moon Lord",
+        "optional": [{ "key": "Lunar Events", "why": "derrote as 4 torres para ele vir sozinho" }],
+        "prep": [
+          "Derrotar as quatro torres chama o Senhor da Lua; depois ele pode ser invocado com o [[Celestial Sigil]].",
+          "Leve [[Super Healing Potion]], [[Mana Potion|poções de mana]] e todas as poções de defesa.",
+          "Mire nos olhos das mãos primeiro e depois no da testa."
+        ],
+        "arena": ["Muitas fileiras de plataformas, bem largas, de preferência com a Enfermeira por perto.", "Fogueira, Lanterna de Coração, [[Star in a Bottle]] e uma piscina de mel."]
+      }
+    },
+    {
+      "stage": "post-moon-lord",
+      "summary": "Fim de jogo: armadura de Nébula e o [[Last Prism]], um dos feitiços mais fortes do jogo. Daqui pra frente o mago derrete qualquer chefe.",
+      "armor": "Nebula armor",
+      "armorAlt": [{ "name": "Spectre Mask", "note": "+ [[Spectre Robe]] e [[Dark Artist's Leggings]]" }],
+      "weapons": [
+        { "sub": "cajados", "item": { "name": "Betsy's Wrath", "note": "suporte: baixa a defesa" }, "alt": ["Blizzard Staff"] },
+        { "sub": "livros", "item": { "name": "Lunar Flare", "note": "do Senhor da Lua" }, "alt": ["Razorblade Typhoon"] },
+        { "sub": "armas-magicas", "item": { "name": "Last Prism", "note": "do Senhor da Lua" }, "alt": ["Nebula Blaze", "Nebula Arcanum", "Arc Surge"] }
+      ],
+      "accessories": [
+        "Celestial Emblem",
+        "Celestial Cuffs",
+        "Sorcerer Emblem",
+        "Mana Cloak",
+        "Mystic Arts Sash",
+        { "name": "Arcane Flower", "note": "inimigos atacam menos você" },
+        "Soaring Insignia"
+      ],
+      "buffs": ["Crystal Ball", "Mana Surge", "Magic Power Potion", "Mana Regeneration Potion", "Lifeforce Potion", "Wrath Potion"],
+      "paths": [
+        {
+          "id": "m-ml-prism",
+          "title": "Último Prisma",
+          "when": "O mais forte contra chefes e grupos.",
+          "sub": ["armas-magicas"],
+          "armor": ["Nebula armor"],
+          "weapons": ["Last Prism", "Nebula Arcanum"],
+          "pros": ["O raio fica mais forte quanto mais tempo você segura.", "Derrete chefes."],
+          "cons": ["Gasta muita mana: use os acessórios de mana."]
+        },
+        {
+          "id": "m-ml-flare",
+          "title": "Chuva lunar",
+          "when": "Se você prefere atacar de cima e através de paredes.",
+          "sub": ["livros", "cajados"],
+          "armor": ["Nebula armor"],
+          "weapons": ["Lunar Flare", "Razorblade Typhoon", "Betsy's Wrath"],
+          "pros": ["As chamas atravessam blocos até o cursor.", "Ótimo para defender a base."],
+          "cons": ["Menos dano que o [[Last Prism]]."]
+        }
+      ],
+      "next": {
+        "prep": [
+          "Não há mais chefes obrigatórios. Os opcionais que faltarem (luas, Duque, Imperatriz) ficam bem mais fáceis.",
+          "O [[Zenith]] mata tudo, seja qual for a armadura: use se quiser.",
+          "Bom momento para construir, decorar e terminar o Bestiário."
+        ]
+      }
+    }
+  ],
+  "source": { "page": "Guide:Class setups", "revid": 1035055, "date": "2026-10-20" }
+}
