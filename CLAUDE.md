@@ -61,6 +61,8 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Ferramentas de jogo, lote A — combate (feito, 2026-10-23)**: página `/ferramentas` no menu com Calculadora de lacaios,
   Melhor modificador, Checklist de buffs (salvo no mundo), Planejador de arena e Comparador de itens. Dados das tabelas Cargo da
   wiki. Veja "Ferramentas" abaixo.
+- **Ferramentas de jogo, lote B — NPCs e mundo (feito, 2026-10-23)**: Felicidade dos NPCs (casas salvas no mundo), Vendedores
+  (lojas, chegada, "quem vende?") e Condições de chefes e eventos. Veja "Ferramentas" abaixo.
 
 ## Stack
 
@@ -69,7 +71,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `vite-plugin-pwa` (manifest + service worker)
 - React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`, `/historico`,
   `/classes`, `/classes/:slug`, `/ferramentas`, `/ferramentas/lacaios`, `/ferramentas/modificador`, `/ferramentas/buffs`,
-  `/ferramentas/arena`, `/ferramentas/comparar`).
+  `/ferramentas/arena`, `/ferramentas/comparar`, `/ferramentas/felicidade`, `/ferramentas/vendedores`, `/ferramentas/condicoes`).
   Só `HomePage` e `ArticlePage` vão no pacote principal; as outras telas são `lazy()` em `main.tsx`.
 
 ## Estrutura
@@ -129,6 +131,10 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/lib/worldChecklist.ts` — checklist salvo no mundo ativo ou no aparelho (usado pela árvore e pelos buffs)
 - `src/pages/ToolsPage.tsx` (cartões, lista `TOOLS`), `src/pages/tools/*Page.tsx` (uma por ferramenta),
   `src/components/ToolsUI.tsx` (cabeçalho, etapa, classe, busca de itens, `SetChip`), `BossPicker.tsx` (`useBoss()`, `?chefe=`)
+- `src/data/npc-data.json` — preferências e lojas dos NPCs, gerado por `scripts/build-npcs.mjs`. Não editar à mão.
+- `src/lib/npcs.ts` — NPCs: `useNpcData()`, `NPCS` (como chega, etapa, vendedor), `BIOMES`, felicidade (`npcMood`, `housePylon`,
+  `suggestHouses`), `conditionUnlocked`; `src/lib/npcHouses.ts` — casas salvas (`useNpcHouses()`); `src/components/NpcName.tsx`
+- `src/lib/bossSummons.ts` — como invocar cada chefe/evento (`SUMMONS`, `SUMMON_LIST`, `EXTRA_EVENTS`)
 - `src/index.css` — tema escuro e estilos do conteúdo da wiki (`.wiki-content`)
 
 ## Comandos
@@ -139,6 +145,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `node scripts/build-guides.mjs` — confere as páginas reorganizadas e gera o índice de etiquetas
 - `node scripts/build-classes.mjs` — confere os guias de classe e gera os selos Expert/Mestre (precisa de internet)
 - `node scripts/build-tools.mjs [pasta-loc]` — baixa os dados das Ferramentas (precisa de internet; veja "Ferramentas")
+- `node scripts/build-npcs.mjs` — baixa preferências e lojas dos NPCs (precisa de internet; veja "Ferramentas")
 
 ## Dicionário PT-BR ↔ EN
 
@@ -268,6 +275,30 @@ minha ficha (`useToolClass()`; sem ficha, `terrapedia:tools-class`). Itens sempr
   `terrapedia:buff-checks`. Chefe novo = uma entrada em `BOSS_PREP` com a mesma `key` de `MILESTONES`.
 - **Comparador de itens** (`/ferramentas/comparar?itens=A|B|C`): até 3 itens; melhor valor de cada linha em dourado; efeitos em PT
   (`describeEquip`), texto do jogo em inglês buscado na hora (`fetchTooltips`, não fica salvo), receitas, drops e vendedores.
+- **Dados dos NPCs** (`scripts/build-npcs.mjs` → `src/data/npc-data.json`, ~35 KB, baixado só quando a ferramenta abre): preferências
+  da página "NPCs/preferences" (tabela com rowspan; a Princesa "ama todos" e todos gostam dela), lojas das páginas de cada vendedor
+  (`{{shop row|Item|condição}}`) e preços da tabela Cargo `Items` (campo `buy`; medalhas do Defensor viram `"5m"`). Itens só de
+  sementes especiais (Remix, Zenith, Not the Bees...) ficam de fora. As condições vêm em inglês: famílias comuns (golfe, Bestiário,
+  "com X no inventário") são traduzidas por regra; o resto em `scripts/npc-conditions-pt.json` (texto limpo EN → PT; `""` = sem
+  condição). O script lista as que faltam. No PT valem `[[Item]]`, `{lua:1,2}` (fases da lua, 1 = cheia ... 8 = crescente gibosa) e
+  `{pilone}`. Cada condição também guarda `stage`/`needs` (etapa e chefes) quando dá para tirar do texto. Rode de novo depois de
+  uma atualização do Terraria.
+- **Felicidade dos NPCs** (`/ferramentas/felicidade`): casas com bioma e NPCs; regras da seção "Happiness" da página NPCs (1.4.5):
+  solidão (até 2 vizinhos) −5%, cada vizinho além de 3 +5%, ama/gosta/não gosta/odeia = 88/94/106/112% (bioma e cada vizinho),
+  limite 75–150%, arredonda em 1%. Considera a casa inteira a até 25 blocos e as casas a mais de 120 blocos entre si. Pilone: um
+  vendedor (menos Taberneiro e visitantes) + mais um NPC na casa; desde a 1.4.5 a felicidade não importa. "Sugerir arranjo" usa
+  os NPCs liberados (`npcUnlocked`: etapa + chefe/evento opcional do mundo) e faz busca local (mudar NPC de casa, trocar dois,
+  trocar bioma; menor soma de preços, bônus por Pilone diferente, penalidade por casa de um NPC só). Casas na tabela
+  `world_npc_houses` (uma linha por mundo; membros veem e mudam; o app faz `update` e, se não havia linha, `insert`; relê a cada
+  20 s; espera 800 ms sem mexer para salvar) ou em `terrapedia:npc-houses`.
+- **Vendedores** (`/ferramentas/vendedores?npc=&item=`): ícones dos NPCs (cabeça do mapa, `npcIcon`), "Como chega" (`NPCS`, escrito
+  por nós), loja com preço em moedas (imagens da wiki) e condição; "ainda não no seu mundo" quando a etapa/chefes da condição não
+  foram cumpridos (`conditionUnlocked`; sem mundo, cada chefe vale pela etapa de `milestoneStage` em `progression.ts`). Busca
+  reversa "Quem vende...?" com `ItemPicker`. "Any Pylon" aparece como "Pilone (do bioma)".
+- **Condições de chefes e eventos** (`/ferramentas/condicoes?chefe=`): dados em `src/lib/bossSummons.ts` (escritos por nós): item de
+  invocação (com a receita do `recipes.json`), como começar sem item, onde, se acontece sozinho, o que precisa antes, `after`
+  (etapa) e `needs`. Estado: Derrotado ✓ (mundo ativo) / Possível agora / Ainda não. Lua de Sangue e Eclipse Solar ficam em
+  `EXTRA_EVENTS` (não contam para a etapa). Chefe novo em `MILESTONES` = uma entrada em `SUMMONS` com a mesma `key`.
 - **Menu**: "Ferramentas" no topo (PC) e no rodapé (celular, 7 itens, "Ferram."). No PC os nomes dos links só aparecem a partir
   de `xl` (1280 px); abaixo disso, só ícones.
 
@@ -404,6 +435,8 @@ chave secreta/service_role no app. As duas variáveis também estão cadastradas
 A tabela `page_translations` (cache das traduções automáticas) foi apagada do Supabase em 2026-10-21. Tudo o que foi aplicado no banco está registrado nesse arquivo.
 Em Authentication → URL Configuration, a Site URL é o endereço publicado.
 Tabelas criadas em 2026-10-21 (registradas no fim do `schema.sql`): `world_craft_checks`, `notes`, `world_notes`.
+Em 2026-10-23 também `world_npc_houses` (casas da Felicidade dos NPCs; criada pelo MCP, avisos de segurança sem nada novo; as
+linhas dela no teste SQL ainda precisam ser rodadas no SQL Editor).
 Em 2026-10-23: `world_buff_checks` (checklist de buffs; mesmas regras de `world_craft_checks`). RLS conferido pelo MCP (ligado,
 3 regras, `anon` sem acesso, ninguém faz `update`); o teste `teste-mundo-checklist-notas.sql` ganhou as linhas dela e
 passou em tudo no SQL Editor em 2026-10-23.
