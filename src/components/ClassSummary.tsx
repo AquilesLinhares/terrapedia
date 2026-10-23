@@ -51,7 +51,14 @@ export default function ClassSummary({
             {weapons.map((w) => (
               <div key={w.sub}>
                 {w.item ? (
-                  <BigItem item={w.item} label={subLabel(w.sub)} />
+                  <>
+                    <BigItem item={w.item} label={subLabel(w.sub)} />
+                    {w.note && (
+                      <p className="mt-1 px-1 text-xs text-ink/75">
+                        <RichText text={w.note} book={book} />
+                      </p>
+                    )}
+                  </>
                 ) : (
                   <div className="rounded-lg border border-dashed border-line px-3 py-2.5 text-sm text-ink/75">
                     <span className="block text-[11px] font-semibold tracking-wide text-muted uppercase">{subLabel(w.sub)}</span>

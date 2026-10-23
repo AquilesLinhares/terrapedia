@@ -1,0 +1,833 @@
+{
+  "class": "melee",
+  "slug": "corpo-a-corpo",
+  "title": "Corpo a corpo",
+  "emblem": "Warrior Emblem",
+  "intro": "O guerreiro luta de perto com espadas, lanças, ioiôs, manguais e bumerangues. Tem a maior defesa do jogo, e muitas das suas armas também atiram projéteis, então não precisa ficar sempre colado no inimigo.",
+  "basics": [
+    "**Velocidade corpo a corpo** faz as armas baterem mais rápido. Luvas como as [[Feral Claws]] também ligam o golpe automático: é só segurar o botão.",
+    "O ioiô fica preso num fio e segue o cursor. A [[White String]] aumenta o alcance; com a [[Yoyo Bag]] você usa dois ioiôs ao mesmo tempo e ainda solta contrapesos.",
+    "Muitas espadas atiram projéteis (ex.: [[Enchanted Sword]], [[Terra Blade]]): dá alcance sem abrir mão da defesa alta.",
+    "A [[Sharpening Station]] e bebidas como a [[Ale]] e o [[Sake]] dão buffs de corpo a corpo. Frascos ([[Flask of Ichor]], [[Flask of Venom]]) somam um efeito a cada golpe.",
+    "Mesmo jogando de guerreiro, use lacaios e sentinelas extras: a [[Bewitching Table]] e a [[War Table]] dão um a mais de graça."
+  ],
+  "subclasses": [
+    {
+      "id": "espadas",
+      "label": "Espadas",
+      "icon": "Night's Edge",
+      "text": "Espadas largas e curtas. Várias atiram feixes ou estrelas e terminam na [[Zenith]], a arma mais forte do jogo."
+    },
+    {
+      "id": "lancas",
+      "label": "Lanças",
+      "icon": "Dark Lance",
+      "text": "Lanças que atacam em linha reta, com bom alcance para uma arma de perto."
+    },
+    {
+      "id": "ioios",
+      "label": "Ioiôs",
+      "icon": "Amazon",
+      "text": "Ioiôs controlados pelo cursor. Dá para atacar de longe e através de buracos estreitos."
+    },
+    {
+      "id": "manguais",
+      "label": "Manguais",
+      "icon": "Sunfury",
+      "text": "Bolas presas em correntes que você gira ou arremessa. Muito dano em área."
+    },
+    {
+      "id": "bumerangues",
+      "label": "Bumerangues",
+      "icon": "Flamarang",
+      "text": "Armas arremessadas que voltam para a mão, como bumerangues, discos, facas e martelos."
+    }
+  ],
+  "names": {
+    "Turtle armor": "Armadura de Tartaruga",
+    "Beetle armor": "Armadura de Besouro",
+    "Solar Flare armor": "Armadura das Chamas do Sol",
+    "Titanium armor": "Armadura de Titânio",
+    "Adamantite armor": "Armadura de Adamantina",
+    "Hallowed armor": "Armadura Consagrada"
+  },
+  "stages": [
+    {
+      "stage": "start",
+      "summary": "Comece com espadas de minério e, com sorte, a [[Enchanted Sword]] (pedra encantada no subterrâneo) ou a [[Starfury]] (ilhas flutuantes). A Selva já dá armas boas com ferrões e esporos.",
+      "armor": { "name": "Platinum armor", "note": "ou a do minério que seu mundo tiver" },
+      "armorAlt": [{ "name": "Gladiator armor", "note": "Hoplites do bioma de Mármore" }, "Gold armor"],
+      "weapons": [
+        { "sub": "espadas", "item": { "name": "Starfury", "note": "baús das ilhas flutuantes" }, "alt": [{ "name": "Enchanted Sword", "note": "pedra encantada no subterrâneo" }, { "name": "Blade of Grass", "note": "Selva" }, "Platinum Broadsword"] },
+        { "sub": "lancas", "item": { "name": "Storm Spear", "note": "baús de arenito do Deserto Subterrâneo" }, "alt": ["Spear"] },
+        { "sub": "ioios", "item": { "name": "Amazon", "note": "feito com materiais da Selva" }, "alt": ["Wooden Yoyo", "Rally"] },
+        { "sub": "manguais", "item": { "name": "Flaming Mace", "note": "[[Mace]] + tochas" } },
+        { "sub": "bumerangues", "item": { "name": "Thorn Chakram", "note": "Selva" }, "alt": [{ "name": "Enchanted Boomerang", "note": "bumerangue de madeira + estrela caída" }] }
+      ],
+      "accessories": [
+        { "name": "Feral Claws", "note": "mais velocidade e golpe automático" },
+        { "name": "White String", "note": "mais alcance de ioiô", "sub": ["ioios"] },
+        "Shark Tooth Necklace",
+        "Hermes Boots",
+        "Cloud in a Bottle",
+        "Band of Regeneration"
+      ],
+      "buffs": ["Ironskin Potion", "Regeneration Potion", "Swiftness Potion", "Endurance Potion", "Well Fed", { "name": "Life Crystal", "qty": "10–15" }],
+      "paths": [
+        {
+          "id": "g-start-sword",
+          "title": "Espada mágica",
+          "when": "Se você achou a [[Enchanted Sword]] ou a [[Starfury]].",
+          "sub": ["espadas"],
+          "armor": ["Platinum armor"],
+          "weapons": ["Starfury", "Enchanted Sword"],
+          "extras": ["Feral Claws"],
+          "pros": ["Atiram de longe mesmo sendo espadas.", "Fazem parte da receita da [[Zenith]] no fim do jogo: guarde!"],
+          "cons": ["Dependem de sorte ou de explorar bastante."],
+          "next": ["g-eye-jungle"]
+        },
+        {
+          "id": "g-start-jungle",
+          "title": "Armas da Selva",
+          "when": "Se você vai até a Selva juntar ferrões e esporos.",
+          "sub": ["espadas", "ioios", "bumerangues"],
+          "armor": ["Platinum armor"],
+          "weapons": ["Blade of Grass", "Amazon", "Thorn Chakram"],
+          "pros": ["Três armas boas com os mesmos materiais.", "Envenenam os inimigos."],
+          "cons": ["A Selva é perigosa no comecinho."],
+          "next": ["g-eye-jungle"]
+        },
+        {
+          "id": "g-start-spear",
+          "title": "Lança e maça",
+          "when": "Se você prefere alcance em linha reta ou girar uma bola de fogo.",
+          "sub": ["lancas", "manguais"],
+          "armor": ["Platinum armor"],
+          "weapons": ["Storm Spear", "Flaming Mace"],
+          "pros": ["A [[Storm Spear]] solta raios e alcança longe.", "A maça de fogo queima grupos."],
+          "cons": ["A lança fica nos baús do Deserto Subterrâneo."],
+          "next": ["g-eye-evil"]
+        }
+      ],
+      "next": {
+        "target": "Eye of Cthulhu",
+        "optional": [{ "key": "King Slime", "why": "fácil e bom para treinar" }],
+        "prep": [
+          "Use [[Life Crystal]] (vários) até ter pelo menos 200 de vida.",
+          "Invoque de noite com o [[Suspicious Looking Eye]].",
+          "Armas que atiram (estrelas, feixes, ioiô) evitam ficar colado no Olho."
+        ],
+        "arena": ["Uma ou duas fileiras compridas de plataformas no céu.", "Fogueira e Lanterna de Coração por perto."]
+      }
+    },
+    {
+      "stage": "post-eye",
+      "summary": "O minério do Olho faz a espada do mal, e quebrar orbes/corações dá o [[Ball O' Hurt]] ou o [[The Rotted Fork]]. Depois do [[Goblin Army|Exército Goblin]], o Inventor Goblin junta acessórios.",
+      "armor": "Platinum armor",
+      "armorAlt": ["Gladiator armor"],
+      "weapons": [
+        { "sub": "espadas", "item": "Blade of Grass", "alt": [{ "name": "Light's Bane", "note": "Corrupção" }, { "name": "Blood Butcherer", "note": "Carmesim" }, "Enchanted Sword", "Starfury"] },
+        { "sub": "lancas", "item": { "name": "The Rotted Fork", "note": "coração do Carmesim; na Corrupção, a [[Storm Spear]]" }, "alt": ["Storm Spear"] },
+        { "sub": "ioios", "item": "Amazon", "alt": [{ "name": "Code 1", "note": "Caixeiro-viajante" }, "Rally"] },
+        { "sub": "manguais", "item": { "name": "Ball O' Hurt", "note": "orbe da Corrupção" }, "alt": [{ "name": "The Meatball", "note": "Carmesim" }, "Flaming Mace"] },
+        { "sub": "bumerangues", "item": "Thorn Chakram", "alt": ["Enchanted Boomerang"] }
+      ],
+      "accessories": [
+        "Feral Claws",
+        { "name": "Strung Counterweight", "note": "solta um contrapeso a cada acerto", "sub": ["ioios"] },
+        { "name": "Pyroclastic Stone", "note": "golpes queimam e soltam pulsos" },
+        "Shield of Cthulhu",
+        "Shark Tooth Necklace",
+        "Hermes Boots"
+      ],
+      "buffs": ["Ironskin Potion", "Regeneration Potion", "Swiftness Potion", "Endurance Potion", "Well Fed"],
+      "paths": [
+        {
+          "id": "g-eye-jungle",
+          "title": "Selva + Inventor Goblin",
+          "when": "Se você já usa as armas da Selva e o Exército Goblin já veio.",
+          "sub": ["espadas", "ioios", "bumerangues"],
+          "armor": ["Platinum armor"],
+          "weapons": ["Blade of Grass", "Amazon", "Thorn Chakram"],
+          "extras": ["Strung Counterweight", "Pyroclastic Stone"],
+          "pros": ["Acessórios combinados deixam tudo mais forte.", "A [[Blade of Grass]] entra na receita da [[Night's Edge]]."],
+          "cons": ["Ainda sem a armadura de pedra infernal."],
+          "next": ["g-evil-molten", "g-evil-bee"]
+        },
+        {
+          "id": "g-eye-evil",
+          "title": "Armas do mal",
+          "when": "Se você quebrou orbes (Corrupção) ou corações (Carmesim).",
+          "sub": ["manguais", "lancas", "espadas"],
+          "armor": ["Platinum armor"],
+          "weapons": [{ "name": "Ball O' Hurt", "note": "ou [[The Rotted Fork]]" }, { "name": "Light's Bane", "note": "ou [[Blood Butcherer]]" }],
+          "pros": ["O mangual atravessa vários inimigos.", "A espada do mal também entra na [[Night's Edge]]."],
+          "cons": ["Quebrar orbes/corações chama monstros e o chefe do bioma."],
+          "next": ["g-evil-flail"]
+        }
+      ],
+      "next": {
+        "target": "Eater of Worlds",
+        "optional": [{ "key": "Goblin Army", "why": "libera o Inventor Goblin para juntar acessórios" }],
+        "prep": [
+          "O chefe depende do mundo: [[Eater of Worlds]] na Corrupção, [[Brain of Cthulhu]] no Carmesim. Os dois contam como a mesma etapa.",
+          "Manguais e lanças que atravessam acertam vários segmentos do Devorador.",
+          "Contra o Cérebro, golpes rápidos estouram os Creepers."
+        ],
+        "arena": ["Cave um espaço aberto perto da superfície do bioma, com plataformas."]
+      }
+    },
+    {
+      "stage": "post-evil",
+      "summary": "A picareta do minério do mal minera a pedra infernal: armadura Derretida (a melhor do guerreiro antes do Modo Difícil), [[Volcano]] e [[Flamarang]]. A Abelha Rainha dá o [[Bee Keeper]] e a cera do [[Hive-Five]].",
+      "armor": { "name": "Molten armor", "note": "pedra infernal do Submundo" },
+      "armorAlt": [{ "name": "Shadow armor", "note": "mais velocidade; ou [[Crimson armor]]" }, "Crimson armor"],
+      "weapons": [
+        { "sub": "espadas", "item": "Volcano", "alt": [{ "name": "Bee Keeper", "note": "da Abelha Rainha" }, "Blade of Grass"] },
+        { "sub": "lancas", "item": "The Rotted Fork", "alt": ["Storm Spear"], "note": "A [[Dark Lance]] vem depois do Esqueletron." },
+        { "sub": "ioios", "item": { "name": "Hive-Five", "note": "cera de abelha" }, "alt": ["Amazon", "Code 1"] },
+        { "sub": "manguais", "item": "Ball O' Hurt", "alt": ["The Meatball"] },
+        { "sub": "bumerangues", "item": { "name": "Flamarang", "note": "bumerangue encantado + pedra infernal" }, "alt": ["Thorn Chakram"] }
+      ],
+      "accessories": [
+        "Feral Claws",
+        { "name": "Strung Counterweight", "sub": ["ioios"] },
+        "Pyroclastic Stone",
+        "Shield of Cthulhu",
+        { "name": "Worm Scarf", "note": "-17% de dano recebido (Devorador)" },
+        { "name": "Brain of Confusion", "note": "esquiva (Cérebro)" }
+      ],
+      "buffs": [{ "name": "Sharpening Station", "note": "cabanas da Selva Subterrânea" }, "Ale", "Flask of Fire", "Ironskin Potion", "Endurance Potion", "Regeneration Potion"],
+      "paths": [
+        {
+          "id": "g-evil-molten",
+          "title": "Pedra infernal",
+          "when": "Se você já tem a picareta do minério do mal para minerar no Submundo.",
+          "sub": ["espadas", "bumerangues"],
+          "armor": ["Molten armor"],
+          "weapons": ["Volcano", "Flamarang"],
+          "pros": ["Muita defesa e dano.", "O [[Volcano]] também entra na receita da [[Night's Edge]]."],
+          "cons": ["Minerar no Submundo é perigoso."],
+          "next": ["g-skel-nights"]
+        },
+        {
+          "id": "g-evil-bee",
+          "title": "Abelhas",
+          "when": "Se você derrotou a [[Queen Bee|Abelha Rainha]].",
+          "sub": ["ioios", "espadas"],
+          "armor": ["Molten armor"],
+          "weapons": ["Hive-Five", "Bee Keeper"],
+          "extras": ["Strung Counterweight"],
+          "pros": ["Abelhas perseguem os inimigos sozinhas.", "O [[Bee Keeper]] faz parte da receita da [[Zenith]]: guarde!"],
+          "cons": ["Depende de um chefe opcional."],
+          "next": ["g-skel-yoyo", "g-skel-nights"]
+        },
+        {
+          "id": "g-evil-flail",
+          "title": "Sombras e correntes",
+          "when": "Se você usa manguais ou lanças e quer velocidade.",
+          "sub": ["manguais", "lancas"],
+          "armor": [{ "name": "Shadow armor", "note": "ou [[Crimson armor]]" }],
+          "weapons": [{ "name": "Ball O' Hurt", "note": "ou [[The Meatball]]" }, "The Rotted Fork"],
+          "pros": ["Armadura do bioma do mal: sai junto com o chefe.", "A das Sombras dá velocidade."],
+          "cons": ["Menos defesa que a Derretida."],
+          "next": ["g-skel-flail"]
+        }
+      ],
+      "next": {
+        "target": "Skeletron",
+        "optional": [{ "key": "Queen Bee", "why": "dá o [[Bee Keeper]] e cera para o [[Hive-Five]]" }],
+        "prep": [
+          "Fale com o Velho na entrada da Masmorra, de noite, e lute ali mesmo.",
+          "Golpes que atravessam ajudam a acertar a cabeça enquanto as mãos atrapalham."
+        ],
+        "arena": ["Plataformas no céu acima da entrada da Masmorra.", "Fogueira, Lanterna de Coração e uma [[Ironskin Potion]]."]
+      }
+    },
+    {
+      "stage": "post-skeletron",
+      "summary": "A Masmorra dá a [[Muramasa]], a peça que faltava para a [[Night's Edge]] ([[Light's Bane]] ou [[Blood Butcherer]] + [[Muramasa]] + [[Blade of Grass]] + [[Volcano]]). O Submundo e a Masmorra trazem também [[Sunfury]], [[Dark Lance]], [[Valor]] e [[Cascade]].",
+      "armor": "Molten armor",
+      "armorAlt": ["Shadow armor", "Crimson armor"],
+      "weapons": [
+        { "sub": "espadas", "item": { "name": "Night's Edge", "note": "quatro espadas no altar do mal" }, "alt": [{ "name": "Muramasa", "note": "Masmorra" }, "Volcano"] },
+        { "sub": "lancas", "item": { "name": "Dark Lance", "note": "Baús das Sombras do Submundo" }, "alt": ["The Rotted Fork"] },
+        { "sub": "ioios", "item": { "name": "Cascade", "note": "inimigos do Submundo, raro" }, "alt": [{ "name": "Valor", "note": "Masmorra" }, "Hive-Five"] },
+        { "sub": "manguais", "item": { "name": "Sunfury", "note": "Baús das Sombras do Submundo" }, "alt": [{ "name": "Blue Moon", "note": "Masmorra" }, "Ball O' Hurt"] },
+        { "sub": "bumerangues", "item": "Flamarang", "alt": ["Thorn Chakram"] }
+      ],
+      "accessories": [
+        "Feral Claws",
+        { "name": "Strung Counterweight", "sub": ["ioios"] },
+        "Pyroclastic Stone",
+        { "name": "Bone Glove", "note": "atira ossos junto (Esqueletron)" },
+        "Shield of Cthulhu",
+        "Worm Scarf"
+      ],
+      "buffs": ["Sharpening Station", "Ale", "Flask of Poison", "Ironskin Potion", "Endurance Potion", "Water Walking Potion"],
+      "paths": [
+        {
+          "id": "g-skel-nights",
+          "title": "Lâmina da Noite",
+          "when": "Se você juntou as quatro espadas.",
+          "sub": ["espadas"],
+          "armor": ["Molten armor"],
+          "weapons": ["Night's Edge"],
+          "pros": ["A melhor espada antes do Modo Difícil.", "É o começo da linha da [[Terra Blade]]."],
+          "cons": ["Precisa de quatro espadas de lugares diferentes."],
+          "next": ["g-hm-mimic"]
+        },
+        {
+          "id": "g-skel-yoyo",
+          "title": "Ioiô de fogo",
+          "when": "Se você usa ioiôs.",
+          "sub": ["ioios"],
+          "armor": ["Molten armor"],
+          "weapons": [{ "name": "Cascade", "note": "ou [[Valor]]" }],
+          "extras": ["Strung Counterweight"],
+          "pros": ["Explosões de fogo a cada acerto.", "Alcance seguro contra a Parede."],
+          "cons": ["O [[Cascade]] cai raramente."],
+          "next": ["g-hm-yoyo"]
+        },
+        {
+          "id": "g-skel-flail",
+          "title": "Mangual do sol",
+          "when": "Se você abriu um Baú das Sombras.",
+          "sub": ["manguais", "lancas"],
+          "armor": ["Molten armor"],
+          "weapons": ["Sunfury", "Dark Lance"],
+          "pros": ["O [[Sunfury]] tem muito alcance e dano em área.", "A [[Dark Lance]] é a melhor lança antes do Modo Difícil."],
+          "cons": ["Baús das Sombras pedem a [[Shadow Key]]."],
+          "next": ["g-hm-flail"]
+        }
+      ],
+      "next": {
+        "target": "Wall of Flesh",
+        "prep": [
+          "Jogue uma [[Guide Voodoo Doll]] na lava do Submundo (mata o Guia, que volta depois).",
+          "Armas que atravessam ([[Night's Edge]], [[Sunfury]]) limpam os Famintos.",
+          "**Atenção:** derrotar a Parede muda o mundo para o Modo Difícil (inimigos mais fortes e biomas se espalhando)."
+        ],
+        "arena": ["Ponte de plataformas no Submundo, de preferência de ponta a ponta.", "Sem ponte: [[Water Walking Potion]] ou botas que andam na lava."]
+      }
+    },
+    {
+      "stage": "hardmode",
+      "summary": "No começo do Modo Difícil o guerreiro tem a maior defesa. Os Mímicos dão armas fortes, ioiôs novos caem de inimigos dos biomas e o [[Warrior Emblem]] cai da Parede.",
+      "armor": { "name": "Adamantite Helmet", "note": "+ [[Frost Breastplate]] e [[Mythril Greaves]]" },
+      "armorAlt": [
+        { "name": "Titanium Mask", "note": "defesa: + [[Frost Breastplate]] e [[Adamantite Leggings]]" },
+        { "name": "Adamantite armor", "image": "Adamantite armor Helmet.png" },
+        { "name": "Titanium armor", "image": "Titanium armor Mask.png" }
+      ],
+      "weapons": [
+        { "sub": "espadas", "item": { "name": "Fetid Baghnakhs", "note": "Mímico de Carmim; ótimo para quem aguenta pancada" }, "alt": [{ "name": "Ice Sickle", "note": "inimigos da Neve" }, { "name": "Bladetongue", "note": "pescada no Carmesim" }, "Night's Edge"] },
+        { "sub": "lancas", "item": { "name": "Mythril Halberd", "note": "ou a do minério do seu mundo" }, "alt": ["Cobalt Naginata", "Dark Lance"] },
+        { "sub": "ioios", "item": { "name": "Amarok", "note": "inimigos da Neve, raro" }, "alt": [{ "name": "Chik", "note": "ioiô de madeira + cristais" }, "Hel-Fire", { "name": "Gradient", "note": "Comerciante Esqueleto" }] },
+        { "sub": "manguais", "item": { "name": "Drippler Crippler", "note": "Enguia de Sangue (Lua de Sangue)" }, "alt": [{ "name": "Chain Guillotines", "note": "Mímico Corrompido" }, "Dao of Pow"] },
+        { "sub": "bumerangues", "item": { "name": "Bananarang", "note": "Palhaço (Lua de Sangue)" }, "alt": [{ "name": "Shadowflame Knife", "note": "Exército Goblin" }, { "name": "Flying Knife", "note": "Mímico Consagrado" }, { "name": "Sergeant United Shield", "note": "Caixeiro-viajante" }] }
+      ],
+      "accessories": [
+        { "name": "Warrior Emblem", "note": "+15% de dano corpo a corpo" },
+        { "name": "Berserker's Glove", "note": "defesa, velocidade e armas maiores" },
+        { "name": "Yoyo Bag", "note": "dois ioiôs + contrapeso", "sub": ["ioios"] },
+        { "name": "Demon Heart", "note": "+1 espaço de acessório" },
+        { "name": "Wings", "image": "Angel Wings.png", "note": "qualquer asa; as primeiras usam Almas do Voo" }
+      ],
+      "buffs": ["Flask of Ichor", "Flask of Cursed Flames", "Sharpening Station", "Ale", "Ironskin Potion", "Endurance Potion"],
+      "paths": [
+        {
+          "id": "g-hm-mimic",
+          "title": "Garras do Mímico",
+          "when": "Se você quer jogar de tanque, aguentando os golpes de perto.",
+          "sub": ["espadas"],
+          "armor": [{ "name": "Titanium Mask", "note": "+ [[Frost Breastplate]] e [[Adamantite Leggings]]" }],
+          "weapons": ["Fetid Baghnakhs", { "name": "Night's Edge", "note": "para grupos" }],
+          "extras": ["Berserker's Glove"],
+          "pros": ["Dano altíssimo de perto.", "Defesa alta para aguentar."],
+          "cons": ["Alcance curtíssimo.", "Mímicos de Carmim são perigosos."],
+          "next": ["g-mech-excal"]
+        },
+        {
+          "id": "g-hm-yoyo",
+          "title": "Ioiôs do Modo Difícil",
+          "when": "Se você usa ioiôs.",
+          "sub": ["ioios"],
+          "armor": [{ "name": "Adamantite Helmet", "note": "+ [[Frost Breastplate]] e [[Mythril Greaves]]" }],
+          "weapons": [{ "name": "Chik", "note": "fácil de fazer" }, { "name": "Amarok", "note": "se cair" }],
+          "extras": ["Yoyo Bag"],
+          "pros": ["Com a [[Yoyo Bag]], dois ioiôs ao mesmo tempo.", "Atacam através de paredes finas."],
+          "cons": ["Os melhores ioiôs caem por sorte."],
+          "next": ["g-mech-yoyo"]
+        },
+        {
+          "id": "g-hm-flail",
+          "title": "Lua de Sangue",
+          "when": "Se você enfrenta as Luas de Sangue do Modo Difícil.",
+          "sub": ["manguais", "bumerangues", "lancas"],
+          "armor": [{ "name": "Adamantite Helmet", "note": "+ [[Frost Breastplate]] e [[Mythril Greaves]]" }],
+          "weapons": ["Drippler Crippler", "Bananarang", { "name": "Mythril Halberd", "note": "lança de minério" }],
+          "pros": ["O [[Drippler Crippler]] tem um dos maiores danos desta etapa.", "Bananarangs voltam rápido e acertam várias vezes."],
+          "cons": ["Dependem de drops na Lua de Sangue."],
+          "next": ["g-mech-disc", "g-mech-gungnir"]
+        }
+      ],
+      "next": {
+        "target": "The Destroyer",
+        "optional": [
+          { "key": "Queen Slime", "why": "bom treino de esquiva antes dos mecânicos" },
+          { "key": "Pirate Invasion", "why": "moedas e acessórios" }
+        ],
+        "prep": [
+          "Qualquer chefe mecânico serve para esta etapa: as armas consagradas só pedem barras de qualquer um deles.",
+          "Contra o [[The Destroyer|Destruidor]], armas que atravessam e manguais acertam vários segmentos.",
+          "Asas são quase obrigatórias daqui em diante."
+        ],
+        "arena": ["Várias fileiras de plataformas no céu, bem compridas.", "Fogueira, Lanterna de Coração e uma piscina de [[Honey]] por perto."]
+      }
+    },
+    {
+      "stage": "post-mech",
+      "summary": "Barras Consagradas: [[Excalibur]], [[Gungnir]], [[Light Disc]] e a máscara consagrada. O [[Yelets]] começa a cair na Selva, e a [[Truffle]] vende a [[Mushroom Spear]].",
+      "armor": { "name": "Hallowed armor", "image": "Hallowed armor Mask.png", "note": "com a máscara de guerreiro; esquiva de vez em quando" },
+      "armorAlt": [{ "name": "Titanium Mask", "note": "+ [[Frost Breastplate]] e [[Adamantite Leggings]]" }, "Adamantite armor"],
+      "weapons": [
+        { "sub": "espadas", "item": { "name": "Excalibur", "note": "12 barras consagradas" }, "alt": ["Fetid Baghnakhs", "Night's Edge"] },
+        { "sub": "lancas", "item": "Gungnir", "alt": [{ "name": "Mushroom Spear", "note": "Trufa" }, "Mythril Halberd"] },
+        { "sub": "ioios", "item": { "name": "Yelets", "note": "inimigos da Selva, raro" }, "alt": [{ "name": "Format:C", "note": "feito com Almas do Medo" }, "Chik", "Amarok"] },
+        { "sub": "manguais", "item": "Drippler Crippler", "alt": ["Dao of Pow", "Chain Guillotines"] },
+        { "sub": "bumerangues", "item": { "name": "Light Disc", "note": "barras consagradas + almas" }, "alt": ["Bananarang", "Flying Knife"] }
+      ],
+      "accessories": ["Warrior Emblem", "Berserker's Glove", { "name": "Yoyo Bag", "sub": ["ioios"] }, "Demon Heart", { "name": "Wings", "image": "Angel Wings.png" }],
+      "buffs": ["Flask of Ichor", "Sharpening Station", "Ale", "Lifeforce Potion", "Endurance Potion", "Ironskin Potion"],
+      "paths": [
+        {
+          "id": "g-mech-excal",
+          "title": "Excalibur",
+          "when": "Se você usa espadas.",
+          "sub": ["espadas"],
+          "armor": [{ "name": "Hallowed armor", "image": "Hallowed armor Mask.png" }],
+          "weapons": ["Excalibur", { "name": "Night's Edge", "note": "guarde: as duas viram a [[Terra Blade]]" }],
+          "pros": ["Sai só com barras: sem sorte.", "Rápida e com área grande."],
+          "cons": ["Ainda não atira projéteis."],
+          "next": ["g-mechs-true"]
+        },
+        {
+          "id": "g-mech-gungnir",
+          "title": "Lança consagrada",
+          "when": "Se você usa lanças.",
+          "sub": ["lancas"],
+          "armor": [{ "name": "Hallowed armor", "image": "Hallowed armor Mask.png" }],
+          "weapons": ["Gungnir", "Mushroom Spear"],
+          "pros": ["Alcance longo e dano alto.", "A lança de cogumelo solta cogumelos que ficam no ar."],
+          "cons": ["Ataca só em linha reta."],
+          "next": ["g-mechs-partisan"]
+        },
+        {
+          "id": "g-mech-yoyo",
+          "title": "Yelets",
+          "when": "Se você usa ioiôs.",
+          "sub": ["ioios"],
+          "armor": [{ "name": "Hallowed armor", "image": "Hallowed armor Mask.png" }],
+          "weapons": [{ "name": "Yelets", "note": "envenena com ácido" }, { "name": "Format:C", "note": "críticos fortes" }],
+          "extras": ["Yoyo Bag"],
+          "pros": ["O ácido do [[Yelets]] aumenta muito o dano em chefes."],
+          "cons": ["O [[Yelets]] cai raramente na Selva."],
+          "next": ["g-mechs-yoyo"]
+        },
+        {
+          "id": "g-mech-disc",
+          "title": "Disco de luz",
+          "when": "Se você usa bumerangues ou manguais.",
+          "sub": ["bumerangues", "manguais"],
+          "armor": [{ "name": "Hallowed armor", "image": "Hallowed armor Mask.png" }],
+          "weapons": ["Light Disc", "Drippler Crippler"],
+          "pros": ["Vários discos de uma vez, que quicam nas paredes."],
+          "cons": ["Dano em alvo único abaixo das espadas."],
+          "next": ["g-mechs-flail"]
+        }
+      ],
+      "next": {
+        "target": "The Twins",
+        "prep": [
+          "Faltam os outros mecânicos: [[The Twins]] e o [[Skeletron Prime]] (ou o Destruidor, se ainda não foi). As almas dos três fazem a [[True Night's Edge]].",
+          "Contra os Gêmeos, armas que atiram projéteis ajudam a alcançar o olho que voa longe.",
+          "Contra o Esqueletron Alfa, mire na cabeça."
+        ],
+        "arena": ["As mesmas plataformas no céu; para o Destruidor, uma área bem larga."]
+      }
+    },
+    {
+      "stage": "post-all-mechs",
+      "summary": "As almas dos três mecânicos fazem a [[True Night's Edge]]; a clorofita faz a [[True Excalibur]], a [[Chlorophyte Claymore]] e a [[Chlorophyte Partisan]]. A armadura de Tartaruga é a de mais defesa do jogo até aqui.",
+      "armor": { "name": "Hallowed Mask", "note": "+ [[Turtle Scale Mail]] e [[Squire's Greaves]]" },
+      "armorAlt": [
+        { "name": "Turtle armor", "note": "defesa máxima" },
+        { "name": "Chlorophyte Mask", "note": "dano: + [[Monk's Shirt]] e [[Squire's Greaves]]" }
+      ],
+      "weapons": [
+        { "sub": "espadas", "item": { "name": "True Excalibur", "note": "[[Excalibur]] + clorofita" }, "alt": ["True Night's Edge", "Chlorophyte Claymore", "Chlorophyte Saber"] },
+        { "sub": "lancas", "item": "Chlorophyte Partisan", "alt": ["Mushroom Spear", "Gungnir"] },
+        { "sub": "ioios", "item": "Yelets", "alt": ["Format:C", { "name": "Red's Throw", "note": "só no Expert: sacos de chefes do Modo Difícil" }] },
+        { "sub": "manguais", "item": "Drippler Crippler", "alt": ["Dao of Pow"] },
+        { "sub": "bumerangues", "item": "Light Disc", "alt": ["Bananarang"] }
+      ],
+      "accessories": [
+        "Warrior Emblem",
+        { "name": "Mechanical Glove", "note": "[[Power Glove]] + [[Avenger Emblem]]" },
+        "Berserker's Glove",
+        { "name": "Magic Yoyo Bag", "sub": ["ioios"] },
+        "Demon Heart",
+        { "name": "Wings", "image": "Angel Wings.png" }
+      ],
+      "buffs": ["Flask of Ichor", "Sharpening Station", "Ale", "Sake", "Lifeforce Potion", "Endurance Potion"],
+      "paths": [
+        {
+          "id": "g-mechs-true",
+          "title": "Espadas verdadeiras",
+          "when": "Se você usa espadas: faça as duas, que juntas viram a [[Terra Blade]].",
+          "sub": ["espadas"],
+          "armor": [{ "name": "Hallowed Mask", "note": "+ [[Turtle Scale Mail]] e [[Squire's Greaves]]" }],
+          "weapons": ["True Excalibur", "True Night's Edge"],
+          "pros": ["As duas atiram feixes.", "Último passo antes da [[Terra Blade]]."],
+          "cons": ["A [[True Night's Edge]] pede almas dos três mecânicos."],
+          "next": ["g-plant-terra"]
+        },
+        {
+          "id": "g-mechs-partisan",
+          "title": "Partisana de clorofita",
+          "when": "Se você usa lanças.",
+          "sub": ["lancas"],
+          "armor": [{ "name": "Chlorophyte Mask", "note": "+ [[Monk's Shirt]] e [[Squire's Greaves]]" }],
+          "weapons": ["Chlorophyte Partisan", "Mushroom Spear"],
+          "pros": ["Solta nuvens de esporos que ficam causando dano."],
+          "cons": ["Precisa de clorofita (Selva)."],
+          "next": ["g-plant-flower"]
+        },
+        {
+          "id": "g-mechs-yoyo",
+          "title": "Ioiô ácido",
+          "when": "Se você usa ioiôs.",
+          "sub": ["ioios"],
+          "armor": [{ "name": "Hallowed Mask", "note": "+ [[Turtle Scale Mail]] e [[Squire's Greaves]]" }],
+          "weapons": ["Yelets", "Format:C"],
+          "extras": ["Magic Yoyo Bag"],
+          "pros": ["Bom contra a Plantera: o ioiô alcança nos túneis."],
+          "cons": ["Sem ioiô novo nesta etapa."],
+          "next": ["g-plant-yoyo"]
+        },
+        {
+          "id": "g-mechs-flail",
+          "title": "Tanque de Tartaruga",
+          "when": "Se você quer o máximo de defesa e usa manguais ou bumerangues.",
+          "sub": ["manguais", "bumerangues"],
+          "armor": ["Turtle armor"],
+          "weapons": ["Drippler Crippler", "Light Disc"],
+          "pros": ["A Tartaruga devolve parte do dano para quem bate em você.", "Aguenta a Plantera de perto."],
+          "cons": ["Menos dano que as outras opções."],
+          "next": ["g-plant-flower"]
+        }
+      ],
+      "next": {
+        "target": "Plantera",
+        "optional": [{ "key": "Frost Legion", "why": "fácil, para treinar o grupo" }],
+        "prep": [
+          "Ache e quebre o Bulbo da Plantera (rosa) na Selva subterrânea.",
+          "Armas que atiram projéteis ou atravessam blocos ajudam nos túneis da Selva.",
+          "[[Flask of Ichor]] baixa a defesa dela a cada golpe."
+        ],
+        "arena": ["Cave um túnel largo e comprido na Selva subterrânea (ou várias plataformas).", "Não saia da Selva: ela fica furiosa e muito mais forte."]
+      }
+    },
+    {
+      "stage": "post-plantera",
+      "summary": "A [[Terra Blade]] fica pronta com a [[Broken Hero Sword]] (Mothron, no Eclipse Solar). A Plantera solta o [[Seedler]] e o [[Flower Pow]], e o baú Carmesim da Masmorra guarda as [[Vampire Knives]].",
+      "armor": { "name": "Hallowed Mask", "note": "+ [[Squire's Plating]] e [[Squire's Greaves]]" },
+      "armorAlt": [{ "name": "Turtle armor", "note": "defesa" }, { "name": "Chlorophyte Mask", "note": "dano: + [[Monk's Shirt]] e [[Squire's Greaves]]" }],
+      "weapons": [
+        { "sub": "espadas", "item": { "name": "Terra Blade", "note": "as duas espadas verdadeiras + [[Broken Hero Sword]]" }, "alt": [{ "name": "Vampire Knives", "note": "baú Carmesim: facas que roubam vida" }, "Keybrand", { "name": "Psycho Knife", "note": "Eclipse Solar" }, { "name": "Seedler", "note": "da Plantera" }] },
+        { "sub": "lancas", "item": { "name": "North Pole", "note": "Rainha do Gelo (Lua Congelada)" }, "alt": ["Chlorophyte Partisan", "Mushroom Spear"] },
+        { "sub": "ioios", "item": { "name": "The Eye of Cthulhu", "note": "Mothron (Eclipse Solar)" }, "alt": ["Yelets"] },
+        { "sub": "manguais", "item": { "name": "Flower Pow", "note": "da Plantera" }, "alt": ["Drippler Crippler"] },
+        { "sub": "bumerangues", "item": { "name": "Paladin's Hammer", "note": "Paladino da Masmorra; volta como bumerangue" }, "alt": ["Light Disc"] }
+      ],
+      "accessories": [
+        "Warrior Emblem",
+        { "name": "Fire Gauntlet", "note": "golpes queimam; [[Mechanical Glove]] + [[Magma Stone]]" },
+        "Berserker's Glove",
+        { "name": "Magic Yoyo Bag", "sub": ["ioios"] },
+        { "name": "Spore Sac", "note": "esporos que atacam sozinhos (Plantera)" },
+        "Demon Heart"
+      ],
+      "buffs": ["Flask of Venom", "Flask of Ichor", "Sharpening Station", "Ale", "Lifeforce Potion", "Endurance Potion"],
+      "paths": [
+        {
+          "id": "g-plant-terra",
+          "title": "Terra Blade",
+          "when": "Se você tem as duas espadas verdadeiras: falta só a [[Broken Hero Sword]].",
+          "sub": ["espadas"],
+          "armor": [{ "name": "Hallowed Mask", "note": "+ [[Squire's Plating]] e [[Squire's Greaves]]" }],
+          "weapons": ["Terra Blade"],
+          "extras": ["Fire Gauntlet"],
+          "pros": ["Uma das melhores armas até o fim do jogo.", "Atira feixes grandes e atravessa tudo."],
+          "cons": ["A espada quebrada cai do Mothron, que aparece no Eclipse Solar."],
+          "next": ["g-golem-dragon"]
+        },
+        {
+          "id": "g-plant-vampire",
+          "title": "Facas vampiras",
+          "when": "Se seu mundo tem Carmesim e você achou a [[Crimson Key|Chave Carmesim]].",
+          "sub": ["espadas"],
+          "armor": [{ "name": "Chlorophyte Mask", "note": "+ [[Monk's Shirt]] e [[Squire's Greaves]]" }],
+          "weapons": ["Vampire Knives"],
+          "pros": ["Cada acerto cura você: quase impossível morrer em eventos.", "Fortes até o fim do jogo."],
+          "cons": ["Só existem em mundos Carmesim."],
+          "next": ["g-golem-dragon"]
+        },
+        {
+          "id": "g-plant-yoyo",
+          "title": "Olho no ioiô",
+          "when": "Se você usa ioiôs e joga o Eclipse Solar.",
+          "sub": ["ioios"],
+          "armor": [{ "name": "Hallowed Mask", "note": "+ [[Squire's Plating]] e [[Squire's Greaves]]" }],
+          "weapons": ["The Eye of Cthulhu"],
+          "extras": ["Magic Yoyo Bag"],
+          "pros": ["Dano alto e alcance longo."],
+          "cons": ["Precisa derrotar Mothrons."],
+          "next": ["g-golem-kraken"]
+        },
+        {
+          "id": "g-plant-flower",
+          "title": "Flores e martelos",
+          "when": "Se você usa manguais, bumerangues ou lanças.",
+          "sub": ["manguais", "bumerangues", "lancas"],
+          "armor": ["Turtle armor"],
+          "weapons": ["Flower Pow", "Paladin's Hammer", { "name": "North Pole", "note": "lança" }],
+          "pros": ["O [[Flower Pow]] solta pétalas que perseguem.", "O martelo baixa a defesa dos inimigos."],
+          "cons": ["Cada arma vem de um lugar diferente."],
+          "next": ["g-golem-flairon", "g-golem-pole"]
+        }
+      ],
+      "next": {
+        "target": "Golem",
+        "optional": [
+          { "key": "Pumpkin Moon", "why": "[[The Horseman's Blade]] (para a [[Zenith]])" },
+          { "key": "Frost Moon", "why": "[[North Pole]] e [[Christmas Tree Sword]]" },
+          { "key": "Duke Fishron", "why": "[[Flairon]] e [[Kraken]]" },
+          { "key": "Empress of Light", "why": "[[Starlight]]" }
+        ],
+        "prep": [
+          "A Plantera deixa a [[Temple Key]]: abra o Templo Lihzahrd na Selva.",
+          "Chegue ao altar e use uma [[Lihzahrd Power Cell]].",
+          "Cuidado com as armadilhas do templo no caminho (dardos, bolas de espinho, lanças)."
+        ],
+        "arena": ["Limpe e aumente a sala do altar.", "Plataformas ajudam a desviar dos punhos."]
+      }
+    },
+    {
+      "stage": "post-golem",
+      "summary": "Betsy, a Invasão Marciana, o Duque e as luas trazem as armas mais fortes antes do fim. Com as cascas que o Golem deixa, a armadura de Besouro vira a melhor do guerreiro.",
+      "armor": { "name": "Beetle armor", "image": "Beetle armor Shell.png", "note": "com a Concha (defesa) ou a Cota (dano)" },
+      "armorAlt": [
+        { "name": "Hallowed Mask", "note": "+ [[Valhalla Knight's Breastplate]] e [[Valhalla Knight's Greaves]]" },
+        { "name": "Chlorophyte Mask", "note": "dano: + [[Shinobi Infiltrator's Torso]] e [[Valhalla Knight's Greaves]]" }
+      ],
+      "weapons": [
+        { "sub": "espadas", "item": { "name": "Flying Dragon", "note": "da Betsy" }, "alt": [{ "name": "Influx Waver", "note": "Disco Voador de Marte" }, "Terra Blade", { "name": "Starlight", "note": "da Imperatriz" }, "The Horseman's Blade"] },
+        { "sub": "lancas", "item": "North Pole", "alt": ["Chlorophyte Partisan"] },
+        { "sub": "ioios", "item": { "name": "Kraken", "note": "do Duque Peixe-dragão" }, "alt": ["The Eye of Cthulhu"] },
+        { "sub": "manguais", "item": { "name": "Flairon", "note": "do Duque Peixe-dragão" }, "alt": ["Flower Pow"] },
+        { "sub": "bumerangues", "item": { "name": "Possessed Hatchet", "note": "do Golem; persegue o inimigo" }, "alt": ["Paladin's Hammer"] }
+      ],
+      "accessories": ["Warrior Emblem", "Fire Gauntlet", "Berserker's Glove", { "name": "Magic Yoyo Bag", "sub": ["ioios"] }, "Demon Heart", { "name": "Soaring Insignia", "note": "voo sem fim (Imperatriz)" }],
+      "buffs": ["Flask of Ichor", "Flask of Venom", "Sharpening Station", "Ale", "Sake", "Lifeforce Potion"],
+      "paths": [
+        {
+          "id": "g-golem-dragon",
+          "title": "Dragão voador",
+          "when": "Se você jogou o Exército do Ancião no nível 3 (Betsy).",
+          "sub": ["espadas"],
+          "armor": [{ "name": "Beetle armor", "image": "Beetle armor Scale Mail.png", "note": "com a Cota" }],
+          "weapons": ["Flying Dragon", "Terra Blade"],
+          "pros": ["Um dos maiores danos desta etapa.", "A [[Terra Blade]] segue ótima contra grupos."],
+          "cons": ["Betsy é difícil."],
+          "next": ["g-cult-sword"]
+        },
+        {
+          "id": "g-golem-pole",
+          "title": "Polo Norte",
+          "when": "Se você usa lanças e jogou a Lua Congelada.",
+          "sub": ["lancas"],
+          "armor": [{ "name": "Beetle armor", "image": "Beetle armor Scale Mail.png" }],
+          "weapons": ["North Pole"],
+          "pros": ["Solta flocos de neve em área."],
+          "cons": ["A Rainha do Gelo aparece só nas ondas altas."],
+          "next": ["g-cult-daybreak"]
+        },
+        {
+          "id": "g-golem-kraken",
+          "title": "Kraken",
+          "when": "Se você usa ioiôs e venceu o Duque.",
+          "sub": ["ioios"],
+          "armor": [{ "name": "Beetle armor", "image": "Beetle armor Scale Mail.png" }],
+          "weapons": ["Kraken"],
+          "extras": ["Magic Yoyo Bag"],
+          "pros": ["Ondas de dano a cada acerto."],
+          "cons": ["O Duque é um chefe difícil para esta etapa."],
+          "next": ["g-cult-yoyo"]
+        },
+        {
+          "id": "g-golem-flairon",
+          "title": "Bolhas e machado",
+          "when": "Se você usa manguais ou bumerangues.",
+          "sub": ["manguais", "bumerangues"],
+          "armor": [{ "name": "Beetle armor", "image": "Beetle armor Shell.png" }],
+          "weapons": ["Flairon", "Possessed Hatchet"],
+          "pros": ["O [[Flairon]] solta bolhas que perseguem.", "O machado persegue o inimigo sozinho."],
+          "cons": ["Dependem de chefes (Duque e Golem)."],
+          "next": ["g-cult-solar"]
+        }
+      ],
+      "next": {
+        "target": "Lunatic Cultist",
+        "optional": [
+          { "key": "Martian Madness", "why": "[[Influx Waver]] (para a [[Zenith]])" },
+          { "key": "Duke Fishron", "why": "[[Flairon]] e [[Kraken]]" },
+          { "key": "Empress of Light", "why": "[[Starlight]]" }
+        ],
+        "prep": [
+          "Depois do Golem, cultistas aparecem rezando na entrada da Masmorra. Ataque um deles para começar a luta.",
+          "Ele cria cópias: armas com área grande acertam várias de uma vez."
+        ],
+        "arena": ["Plataformas acima da entrada da Masmorra.", "Espaço para desviar do dragão fantasma."]
+      }
+    },
+    {
+      "stage": "post-cultist",
+      "summary": "Derrote as torres celestiais: a **Coluna do Sol** dá os fragmentos do guerreiro. [[Daybreak]] e [[Solar Eruption]] chegam antes do Senhor da Lua.",
+      "armor": { "name": "Beetle armor", "image": "Beetle armor Shell.png" },
+      "armorAlt": [{ "name": "Hallowed Mask", "note": "+ [[Valhalla Knight's Breastplate]] e [[Valhalla Knight's Greaves]]" }],
+      "weapons": [
+        { "sub": "espadas", "item": "Terra Blade", "alt": ["Flying Dragon", "Influx Waver", "Starlight"] },
+        { "sub": "lancas", "item": { "name": "Daybreak", "note": "18 [[Solar Fragment]]" }, "alt": ["North Pole"] },
+        { "sub": "ioios", "item": "Kraken", "alt": ["The Eye of Cthulhu"] },
+        { "sub": "manguais", "item": { "name": "Solar Eruption", "note": "18 [[Solar Fragment]]" }, "alt": ["Flairon"] },
+        { "sub": "bumerangues", "item": "Possessed Hatchet", "alt": ["Paladin's Hammer"] }
+      ],
+      "accessories": ["Warrior Emblem", "Fire Gauntlet", "Berserker's Glove", { "name": "Magic Yoyo Bag", "sub": ["ioios"] }, "Demon Heart", "Soaring Insignia"],
+      "buffs": ["Flask of Ichor", "Flask of Venom", "Sharpening Station", "Sake", "Super Healing Potion", "Lifeforce Potion"],
+      "paths": [
+        {
+          "id": "g-cult-sword",
+          "title": "Espadas contra o Senhor da Lua",
+          "when": "Se você usa espadas.",
+          "sub": ["espadas"],
+          "armor": [{ "name": "Beetle armor", "image": "Beetle armor Scale Mail.png" }],
+          "weapons": ["Flying Dragon", "Terra Blade"],
+          "pros": ["Alcance e dano para acertar os olhos das mãos."],
+          "cons": ["Sem espada nova nesta etapa."],
+          "next": ["g-ml-zenith"]
+        },
+        {
+          "id": "g-cult-daybreak",
+          "title": "Lança do sol",
+          "when": "Se você usa lanças.",
+          "sub": ["lancas"],
+          "armor": [{ "name": "Beetle armor", "image": "Beetle armor Scale Mail.png" }],
+          "weapons": [{ "name": "Daybreak", "note": "arremessada; gruda e explode" }],
+          "pros": ["O maior dano em alvo único antes do Senhor da Lua."],
+          "cons": ["Precisa dos fragmentos do Sol."],
+          "next": ["g-ml-solar"]
+        },
+        {
+          "id": "g-cult-yoyo",
+          "title": "Kraken até o fim",
+          "when": "Se você usa ioiôs.",
+          "sub": ["ioios"],
+          "armor": [{ "name": "Beetle armor", "image": "Beetle armor Scale Mail.png" }],
+          "weapons": ["Kraken"],
+          "pros": ["Segue forte até o [[Terrarian]]."],
+          "cons": ["Sem ioiô novo nesta etapa."],
+          "next": ["g-ml-terrarian"]
+        },
+        {
+          "id": "g-cult-solar",
+          "title": "Erupção solar",
+          "when": "Se você usa manguais ou bumerangues.",
+          "sub": ["manguais", "bumerangues"],
+          "armor": [{ "name": "Beetle armor", "image": "Beetle armor Shell.png" }],
+          "weapons": ["Solar Eruption", "Possessed Hatchet"],
+          "pros": ["A [[Solar Eruption]] atravessa paredes e acerta em linha."],
+          "cons": ["Precisa dos fragmentos do Sol."],
+          "next": ["g-ml-solar"]
+        }
+      ],
+      "next": {
+        "target": "Moon Lord",
+        "optional": [{ "key": "Lunar Events", "why": "derrote as 4 torres para ele vir sozinho" }],
+        "prep": [
+          "Derrotar as quatro torres chama o Senhor da Lua; depois ele pode ser invocado com o [[Celestial Sigil]].",
+          "Leve [[Super Healing Potion]] e todas as poções de defesa.",
+          "Mire nos olhos das mãos primeiro e depois no da testa."
+        ],
+        "arena": ["Muitas fileiras de plataformas, bem largas, de preferência com a Enfermeira por perto.", "Fogueira, Lanterna de Coração, [[Star in a Bottle]] e uma piscina de mel."]
+      }
+    },
+    {
+      "stage": "post-moon-lord",
+      "summary": "Fim de jogo: armadura das Chamas do Sol e a [[Zenith]], feita com dez espadas do jogo (inclusive a [[Terra Blade]], a [[Meowmere]] e a [[Star Wrath]]). O [[Terrarian]] é o melhor ioiô.",
+      "armor": "Solar Flare armor",
+      "armorAlt": [{ "name": "Beetle armor", "image": "Beetle armor Shell.png" }],
+      "weapons": [
+        { "sub": "espadas", "item": { "name": "Zenith", "note": "dez espadas na Bigorna de Mithril" }, "alt": ["Meowmere", "Star Wrath", "Terra Blade"] },
+        { "sub": "lancas", "item": "Daybreak" },
+        { "sub": "ioios", "item": { "name": "Terrarian", "note": "do Senhor da Lua" } },
+        { "sub": "manguais", "item": "Solar Eruption" },
+        { "sub": "bumerangues", "item": "Possessed Hatchet", "note": "Não há bumerangue novo no fim do jogo." }
+      ],
+      "accessories": ["Warrior Emblem", "Fire Gauntlet", "Berserker's Glove", { "name": "Magic Yoyo Bag", "sub": ["ioios"] }, "Soaring Insignia"],
+      "buffs": ["Flask of Nanites", "Flask of Venom", "Flask of Ichor", "Sake", "Ale", "Sharpening Station"],
+      "paths": [
+        {
+          "id": "g-ml-zenith",
+          "title": "Zênite",
+          "when": "Junte as dez espadas: [[Copper Shortsword]], [[Enchanted Sword]], [[Starfury]], [[Bee Keeper]], [[Seedler]], [[The Horseman's Blade]], [[Influx Waver]], [[Star Wrath]], [[Meowmere]] e [[Terra Blade]].",
+          "sub": ["espadas"],
+          "armor": ["Solar Flare armor"],
+          "weapons": ["Zenith"],
+          "pros": ["A arma mais forte do jogo.", "Atravessa paredes e acerta a tela toda."],
+          "cons": ["Precisa de espadas de quase todas as etapas."]
+        },
+        {
+          "id": "g-ml-solar",
+          "title": "Arsenal solar",
+          "when": "Se você usa lanças ou manguais.",
+          "sub": ["lancas", "manguais"],
+          "armor": ["Solar Flare armor"],
+          "weapons": ["Daybreak", "Solar Eruption"],
+          "pros": ["Combinam com a armadura das Chamas do Sol."],
+          "cons": ["Bem abaixo da [[Zenith]]."]
+        },
+        {
+          "id": "g-ml-terrarian",
+          "title": "Terrarian",
+          "when": "O melhor dos ioiôs.",
+          "sub": ["ioios"],
+          "armor": ["Solar Flare armor"],
+          "weapons": ["Terrarian"],
+          "extras": ["Magic Yoyo Bag"],
+          "pros": ["Solta projéteis que perseguem enquanto gira."],
+          "cons": ["Cai do Senhor da Lua com sorte."]
+        }
+      ],
+      "next": {
+        "prep": [
+          "Não há mais chefes obrigatórios. Os opcionais que faltarem (luas, Duque, Imperatriz) ficam bem mais fáceis.",
+          "Com a [[Zenith]], qualquer chefe cai rápido.",
+          "Bom momento para construir, decorar e terminar o Bestiário."
+        ]
+      }
+    }
+  ],
+  "source": { "page": "Guide:Class setups", "revid": 1035055, "date": "2026-10-20" }
+}

@@ -84,5 +84,9 @@
   { "pt": "Armadura de Nébula", "en": "Nebula armor", "type": "página" },
   { "pt": "Armadura de Cogumelita", "en": "Shroomite armor", "type": "página" },
   { "pt": "Armadura da Chapeuzinho Vermelho", "en": "Red Riding armor", "type": "página" },
-  { "pt": "Armadura do Vórtice", "en": "Vortex armor", "type": "página" }
+  { "pt": "Armadura do Vórtice", "en": "Vortex armor", "type": "página" },
+  { "pt": "Armadura de Tartaruga", "en": "Turtle armor", "type": "página" },
+  { "pt": "Armadura de Besouro", "en": "Beetle armor", "type": "página" },
+  { "pt": "Armadura das Chamas do Sol", "en": "Solar Flare armor", "type": "página" },
+  { "pt": "Armadura de Titânio", "en": "Titanium armor", "type": "página" }
 ]
