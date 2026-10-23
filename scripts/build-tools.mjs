@@ -12,10 +12,14 @@
 //
 // Só números e nomes: nenhuma descrição do jogo vai para o arquivo.
 //
-// Uso: node scripts/build-tools.mjs
+// Nomes PT dos modificadores ("Legendary" → "Lendário"): vêm dos arquivos de tradução do jogo, os mesmos
+// do dicionário (veja extract-terraria-loc.ps1). Passe a pasta como argumento; sem ela, o script mantém os
+// nomes que já estão no tools-data.json.
+//
+// Uso: node scripts/build-tools.mjs [C:	emp	erraria-loc]
 // Saída: src/data/tools-data.json
 
-import { writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -95,7 +99,7 @@ const itemRows = await cargoAll(
       'Items._pageName=page,Items.itemid=itemid,Items.name=name,Items.type=type,Items.listcat=listcat,Items.damage=damage,Items.damagetype=damagetype,' +
       'Items.usetime=usetime,Items.knockback=knockback,Items.critical=critical,Items.velocity=velocity,Items.mana=mana,Items.rare=rare,' +
       'Items.defense=defense,Items.autoswing=autoswing,Items.hardmode=hardmode,Items.tag=tag,Items.buffs=buffs,Items.debuffs=debuffs,' +
-      'Items.bodyslot=bodyslot,Items.unobtainable=unobtainable',
+      'Items.bodyslot=bodyslot,Items.unobtainable=unobtainable,Items.consumable=consumable',
     where: WANTED_TYPES.map((t) => `Items.type HOLDS '${t}'`).join(' OR '),
     order_by: 'Items._ID',
   },
@@ -170,6 +174,8 @@ for (const r of itemRows) {
     defense: num(r.defense),
     autoswing: r.autoswing === '1',
     hardmode: r.hardmode === '1',
+    // Armas que se gastam (Shuriken, granadas) não recebem modificador
+    consumable: r.consumable === '1',
     buffs: decode(r.buffs).split('^').filter(Boolean),
     debuffs: decode(r.debuffs).split('^').filter(Boolean),
   }
@@ -349,6 +355,29 @@ for (const line of accText.split('\n')) {
   if (mod && effect) accessoryMods.push({ name: mod[1], effect, value: mod[2].trim() })
 }
 modCats.accessory = accessoryMods
+
+// Ordem da lista completa da página (do modificador mais valioso ao menos valioso)
+modCats.order = tableNames(modPage.text.slice(modPage.text.indexOf('=== Complete list ===')))
+if (modCats.order.length < 70) console.warn(`  Atenção: lista completa de modificadores com ${modCats.order.length} nomes`)
+
+// Nomes PT oficiais (arquivos do jogo). Sem a pasta, mantém os do arquivo atual.
+const OUT_PATH = join(ROOT, 'src/data/tools-data.json')
+let modifierPt = {}
+const locDir = process.argv[2]
+if (locDir) {
+  const readLoc = (file) =>
+    JSON.parse(readFileSync(join(locDir, file), 'utf8').replace(/^﻿/, '').replace(/,(\s*[}\]])/g, '$1')).Prefix
+  const en = readLoc('en-US.Items.json')
+  const pt = readLoc('pt-BR.Items.json')
+  for (const [key, enName] of Object.entries(en)) {
+    // As chaves do jogo seguem o mesmo padrão dos nomes daqui ("Deadly2", "Quick2"); "IllTempered" → "Ill-Tempered"
+    const name = modifiers[key] || modCats.accessory.some((a) => a.name === key) ? key : enName
+    if (pt[key]) modifierPt[name] = pt[key].replace(/[()]/g, '').trim()
+  }
+} else if (existsSync(OUT_PATH)) {
+  modifierPt = JSON.parse(readFileSync(OUT_PATH, 'utf8')).modifierPt ?? {}
+}
+for (const n of [...Object.keys(modifiers), ...accessoryMods.map((a) => a.name)]) if (!modifierPt[n]) console.warn(`  Atenção: modificador "${n}" sem nome PT`)
 console.log(`Modificadores: ${Object.keys(modifiers).length} de arma, ${accessoryMods.length} de acessório`)
 
 // ---------- 5. Drops ----------
@@ -375,7 +404,7 @@ console.log(`Itens com drops: ${Object.keys(drops).length}`)
 // ---------- Montagem ----------
 
 // Itens como arrays curtos (o arquivo fica bem menor). A ordem dos campos está em `fields`.
-const FIELDS = ['kind', 'class', 'cat', 'slot', 'set', 'damage', 'useTime', 'knockback', 'crit', 'velocity', 'mana', 'rare', 'defense', 'autoswing', 'hardmode', 'buffs', 'debuffs']
+const FIELDS = ['kind', 'class', 'cat', 'slot', 'set', 'damage', 'useTime', 'knockback', 'crit', 'velocity', 'mana', 'rare', 'defense', 'autoswing', 'hardmode', 'buffs', 'debuffs', 'consumable']
 const compact = {}
 for (const [name, it] of Object.entries(items)) {
   const row = FIELDS.map((f) => {
@@ -402,9 +431,9 @@ const out = {
   sets,
   modifiers,
   modCats,
+  modifierPt,
   drops,
   vendors,
 }
-const path = join(ROOT, 'src/data/tools-data.json')
-writeFileSync(path, JSON.stringify(out))
-console.log(`Gravado ${path} (${(JSON.stringify(out).length / 1024).toFixed(0)} KB)`)
+writeFileSync(OUT_PATH, JSON.stringify(out))
+console.log(`Gravado ${OUT_PATH} (${(JSON.stringify(out).length / 1024).toFixed(0)} KB)`)

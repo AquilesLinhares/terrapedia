@@ -18,7 +18,7 @@ export const TOOLS = [
     title: 'Melhor modificador',
     text: 'Qual modificador buscar ao reforjar uma arma ou acessório, e por quê.',
     icon: 'Reforge.png',
-    ready: false,
+    ready: true,
   },
   {
     slug: 'buffs',

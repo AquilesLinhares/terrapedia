@@ -30,6 +30,8 @@ export interface ToolItem {
   hardmode: boolean
   buffs: string[]
   debuffs: string[]
+  /** Arma que se gasta (Shuriken, granadas): não recebe modificador */
+  consumable: boolean
 }
 
 /** Bônus de equipamento (tabela Equipinfo): números são frações (0.1 = +10%) ou quantidades. */
@@ -56,7 +58,11 @@ export interface ToolsData {
   modifiers: Record<string, Modifier>
   modCats: Record<'universal' | 'common' | 'melee' | 'ranged' | 'magic' | 'summon', string[]> & {
     accessory: { name: string; effect: string; value: string }[]
+    /** Todos os modificadores de arma, do mais valioso ao menos (ordem da wiki) */
+    order: string[]
   }
+  /** Nome oficial PT de cada modificador ("Legendary" → "Lendário") */
+  modifierPt: Record<string, string>
   /** Item → [fonte, chance %, modo exclusivo?] */
   drops: Record<string, [string, number | null, ('expert' | 'master')?][]>
   /** Item → NPCs que vendem */
@@ -74,7 +80,7 @@ export function loadToolsData(): Promise<ToolsData> {
       raw.fields.forEach((f, i) => {
         const v = row[i] ?? 0
         if (f === 'buffs' || f === 'debuffs') it[f] = v || []
-        else if (f === 'autoswing' || f === 'hardmode') it[f] = v === 1
+        else if (f === 'autoswing' || f === 'hardmode' || f === 'consumable') it[f] = v === 1
         else it[f] = v === 0 && !['damage', 'knockback', 'crit', 'defense', 'rare'].includes(f) ? null : v
       })
       // Zero nos números só vale quando o item tem aquele número (ex.: repulsão 0 de uma arma)
