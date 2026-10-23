@@ -405,15 +405,15 @@ A tabela `page_translations` (cache das traduções automáticas) foi apagada do
 Em Authentication → URL Configuration, a Site URL é o endereço publicado.
 Tabelas criadas em 2026-10-21 (registradas no fim do `schema.sql`): `world_craft_checks`, `notes`, `world_notes`.
 Em 2026-10-23: `world_buff_checks` (checklist de buffs; mesmas regras de `world_craft_checks`). RLS conferido pelo MCP (ligado,
-3 regras, `anon` sem acesso, ninguém faz `update`); o teste `teste-mundo-checklist-notas.sql` ganhou as linhas dela, mas ainda
-não foi rodado no SQL Editor.
+3 regras, `anon` sem acesso, ninguém faz `update`); o teste `teste-mundo-checklist-notas.sql` ganhou as linhas dela e
+passou em tudo no SQL Editor em 2026-10-23.
 Em 2026-10-22: `quick_access` (acesso rápido; RLS conferido: o dono vê, outra conta não vê nem muda). No mesmo dia,
 `rls_auto_enable()` (função do "automatic RLS" do Supabase, chamada pelo gatilho de eventos `ensure_rls`) perdeu o EXECUTE para
 `public`, `anon` e `authenticated`; o gatilho continua ligando o RLS em tabelas novas. Avisos de segurança que ficam de propósito:
 `create_world`/`join_world` chamáveis por quem tem login (é assim que o app cria e entra em mundos) e "Leaked password protection"
 desligado (recurso de plano pago).
 `supabase/tests/teste-mundo-checklist-notas.sql` testa o RLS delas com 3 usuários temporários (A e B no mundo, C de
-fora) numa transação desfeita no fim. Roda colando no SQL Editor do Supabase; passou nos 22 itens em 2026-10-21.
+fora) numa transação desfeita no fim. Roda colando no SQL Editor do Supabase; passou nos 22 itens em 2026-10-21 e, já com os de `world_buff_checks`, em tudo em 2026-10-23.
 (O MCP do Supabase recusa esse script porque ele escreve em `auth.users`; rode pelo SQL Editor.)
 
 ## Publicação
