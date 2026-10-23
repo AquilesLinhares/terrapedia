@@ -223,8 +223,8 @@ export const BOSS_PREP: BossPrep[] = [
     arena: {
       build: [
         { name: 'Wood Platform', note: 'ou bloco de pedra: uma ponte reta' },
-        CAMPFIRE,
-        LANTERN,
+        { name: 'Campfire', note: 'várias, ao longo da ponte' },
+        { name: 'Heart Lantern', note: 'várias, ao longo da ponte' },
         { name: 'Obsidian Skin Potion', note: 'cair na lava não é o fim' },
       ],
       size: 'Uma ponte reta de ~800 blocos (o ideal é atravessar o Submundo de um lado ao outro), um pouco acima da lava.',

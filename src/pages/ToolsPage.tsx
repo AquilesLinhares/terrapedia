@@ -32,7 +32,7 @@ export const TOOLS = [
     title: 'Planejador de arena',
     text: 'O que montar para cada chefe, tamanho sugerido e dicas curtas.',
     icon: 'Heart Lantern',
-    ready: false,
+    ready: true,
   },
   {
     slug: 'comparar',
