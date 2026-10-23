@@ -5,7 +5,7 @@
 // regras da página "NPCs" da wiki (seção Happiness, versão 1.4.5).
 
 import { useEffect, useState } from 'react'
-import { STAGES, stageAtLeast, type StageId } from './progression'
+import { milestone, STAGES, stageAtLeast, type StageId } from './progression'
 
 export type BiomeId = 'forest' | 'underground' | 'desert' | 'snow' | 'jungle' | 'ocean' | 'hallow' | 'mushroom'
 export type Level = 'love' | 'like' | 'dislike' | 'hate'
@@ -98,8 +98,10 @@ export interface NpcInfo {
   stage: StageId
   /** Chefe/evento opcional que precisa ter sido derrotado (key de MILESTONES) */
   needs?: string
-  /** Vende itens (e por isso pode vender Pilones; o Taberneiro não vende) */
+  /** Vende itens (e por isso pode vender Pilones) */
   vendor?: boolean
+  /** Vendedor que não vende Pilones (Taberneiro) */
+  noPylon?: boolean
   /** Não mora em casa (aparece só na lista de vendedores) */
   visitor?: boolean
 }
@@ -119,7 +121,7 @@ export const NPCS: NpcInfo[] = [
   { name: 'Party Girl', stage: 'start', vendor: true, arrives: 'Quando já há outros 14 NPCs morando no mundo.' },
   { name: 'Dryad', stage: 'post-eye', vendor: true, arrives: 'Depois de derrotar o Olho de Cthulhu, o Devorador/Cérebro ou o Esqueletron.' },
   { name: 'Goblin Tinkerer', stage: 'post-eye', needs: 'Goblin Army', vendor: true, arrives: 'Depois do Exército Goblin, aparece amarrado na camada de cavernas: fale com ele.' },
-  { name: 'Tavernkeep', stage: 'post-evil', arrives: 'Depois do Devorador/Cérebro, aparece desmaiado na superfície: fale com ele.' },
+  { name: 'Tavernkeep', stage: 'post-evil', vendor: true, noPylon: true, arrives: 'Depois do Devorador/Cérebro, aparece desmaiado na superfície: fale com ele.' },
   { name: 'Witch Doctor', stage: 'post-evil', needs: 'Queen Bee', vendor: true, arrives: 'Depois de derrotar a Abelha Rainha.' },
   { name: 'Clothier', stage: 'post-skeletron', vendor: true, arrives: 'Depois de derrotar o Esqueletron (o Velho da Masmorra vira o Alfaiate).' },
   { name: 'Mechanic', stage: 'post-skeletron', vendor: true, arrives: 'Depois do Esqueletron, encontrada amarrada na Masmorra: fale com ela.' },
@@ -145,11 +147,34 @@ export function npcUnlocked(info: NpcInfo, stage: StageId, defeated: Set<string>
   return !info.needs || !defeated || defeated.has(info.needs)
 }
 
-/** Condição de venda já cumprida no mundo (etapa e chefes)? Outras condições (noite, bioma...) não contam. */
+// Etapa que um chefe abre (para conferir "depois de X" sem mundo ativo)
+const MILESTONE_STAGE: Record<string, StageId> = {
+  'Eye of Cthulhu': 'post-eye',
+  'Eater of Worlds': 'post-evil',
+  'Brain of Cthulhu': 'post-evil',
+  Skeletron: 'post-skeletron',
+  'Wall of Flesh': 'hardmode',
+  'The Twins': 'post-mech',
+  'The Destroyer': 'post-mech',
+  'Skeletron Prime': 'post-mech',
+  Plantera: 'post-plantera',
+  Golem: 'post-golem',
+  'Lunatic Cultist': 'post-cultist',
+  'Lunar Events': 'post-cultist',
+  'Moon Lord': 'post-moon-lord',
+}
+/** Etapa mínima em que um chefe/evento (key de MILESTONES) pode ter sido derrotado. */
+export const milestoneStage = (key: string): StageId => MILESTONE_STAGE[key] ?? (milestone(key)?.phase === 'hard' ? 'hardmode' : 'start')
+
+/**
+ * Condição de venda já cumprida no mundo (etapa e chefes)? Outras condições (noite, bioma...) não contam.
+ * Sem mundo ativo (`defeated` null), cada chefe pedido vale pela etapa em que ele costuma cair.
+ */
 export function conditionUnlocked(cond: ShopCondition | null, stage: StageId, defeated: Set<string> | null) {
   if (!cond) return true
   if (cond.stage && !stageAtLeast(stage, cond.stage)) return false
-  return !cond.needs || !defeated || cond.needs.every((k) => defeated.has(k))
+  if (!cond.needs) return true
+  return defeated ? cond.needs.every((k) => defeated.has(k)) : cond.needs.every((k) => stageAtLeast(stage, milestoneStage(k)))
 }
 
 // ---------- Felicidade ----------
@@ -206,7 +231,10 @@ export function moodLabel(factor: number) {
 }
 
 // Vendedores que vendem Pilones (página "Pylons" da wiki): todos menos Taberneiro e os visitantes
-export const sellsPylons = (name: string) => Boolean(npcInfo(name)?.vendor && !npcInfo(name)?.visitor)
+export const sellsPylons = (name: string) => {
+  const info = npcInfo(name)
+  return Boolean(info?.vendor && !info.visitor && !info.noPylon)
+}
 
 /**
  * Pilone que a casa libera: precisa de um vendedor e de pelo menos mais um NPC perto. Desde a 1.4.5 a

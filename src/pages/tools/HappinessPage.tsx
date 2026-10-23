@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import ItemChip from '../../components/ItemChip'
+import NpcName from '../../components/NpcName'
 import { articlePath } from '../../components/SearchBar'
 import { cardClass, Loading, selectClass, StagePicker, ToolHeader } from '../../components/ToolsUI'
 import { XIcon } from '../../components/icons'
@@ -12,7 +13,6 @@ import {
   isHardmode,
   LEVEL_LABEL,
   moodLabel,
-  npcIcon,
   npcMood,
   NPCS,
   npcUnlocked,
@@ -27,20 +27,6 @@ import { ptName, useRecipeBook, type RecipeBook } from '../../lib/recipes'
 import { useDefeated, useToolStage } from '../../lib/toolsData'
 
 const pct = (factor: number) => `${factor > 1 ? '+' : '−'}${Math.round(Math.abs(factor - 1) * 100)}%`
-
-/** NPC clicável: cabeça do mapa + nome PT (+ EN). */
-export function NpcName({ book, name, showEn = true }: { book: RecipeBook; name: string; showEn?: boolean }) {
-  const pt = ptName(book, name)
-  return (
-    <Link to={articlePath(name)} className="group inline-flex min-w-0 items-center gap-2">
-      <img src={npcIcon(name)} alt="" loading="lazy" className="pixelated h-6 w-6 shrink-0 object-contain" />
-      <span className="min-w-0 leading-tight">
-        <span className="font-medium text-accent group-hover:underline">{pt}</span>
-        {showEn && pt !== name && <span className="block truncate text-xs text-muted">{name}</span>}
-      </span>
-    </Link>
-  )
-}
 
 function reasonText(r: MoodReason, house: House, book: RecipeBook) {
   if (r.kind === 'solitude') return 'pouca gente por perto'
@@ -292,6 +278,10 @@ export default function HappinessPage() {
         )}
 
         <p className="text-sm">
+          <Link to="/ferramentas/vendedores" className="font-semibold text-accent hover:underline">
+            Vendedores: o que cada NPC vende e como chega
+          </Link>
+          {' · '}
           <Link to={articlePath('NPCs')} className="text-accent hover:underline">
             Página dos NPCs na wiki
           </Link>

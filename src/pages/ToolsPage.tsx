@@ -48,6 +48,13 @@ export const TOOLS = [
     icon: 'Forest Pylon',
     ready: true,
   },
+  {
+    slug: 'vendedores',
+    title: 'Vendedores',
+    text: 'O que cada NPC vende, quando e por quanto, como ele chega e quem vende tal item.',
+    icon: 'Piggy Bank',
+    ready: true,
+  },
 ]
 
 /** Página `/ferramentas`: cartões das ferramentas de jogo. */
