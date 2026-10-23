@@ -91,6 +91,16 @@ export default function ClassSummary({
 
       <NextStep stage={stage} />
 
+      {guide.class === 'summoner' && (
+        <Link to="/ferramentas/lacaios" className={`${card} flex items-center justify-between gap-3 hover:border-accent hover:no-underline`}>
+          <span>
+            <span className="block font-display text-lg font-bold text-ink">Calculadora de lacaios</span>
+            <span className="block text-sm text-muted">Some as vagas de lacaio e sentinela da sua armadura, acessórios e poções.</span>
+          </span>
+          <span className="text-accent">→</span>
+        </Link>
+      )}
+
       <nav className="flex items-stretch justify-between gap-2 pt-1" aria-label="Outras etapas">
         {prev ? (
           <button type="button" onClick={() => onStage(prev.stage)} className="flex min-w-0 items-center gap-1 rounded-lg px-2 py-2 text-left text-sm text-muted transition hover:bg-panel hover:text-ink">

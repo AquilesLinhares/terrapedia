@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { ClassContext, ExclusiveBadge } from '../../components/ClassItems'
 import ItemChip, { Sprite } from '../../components/ItemChip'
 import { cardClass, Loading, selectClass, SetChip, StagePicker, ToolHeader, toolName } from '../../components/ToolsUI'
 import {
@@ -14,7 +15,9 @@ import {
   suggest,
   type Loadout,
 } from '../../lib/minionCalc'
+import { loadExclusive, type ExclusiveMode } from '../../lib/classGuides'
 import { milestone, STAGES } from '../../lib/progression'
+import { activeWorld, useWorld } from '../../lib/world'
 import { ptName, useRecipeBook, type RecipeBook } from '../../lib/recipes'
 import { useDefeated, useToolsData, useToolStage, type ToolsData } from '../../lib/toolsData'
 
@@ -82,6 +85,12 @@ function Calculator({
   const armor = useMemo(() => armorOptions(data), [data])
   const accessories = useMemo(() => accessoryOptions(data), [data])
   const result = compute(data, loadout)
+  const worldMode = activeWorld(useWorld())?.mode ?? null
+  const [exclusive, setExclusive] = useState<Record<string, ExclusiveMode>>({})
+  useEffect(() => {
+    loadExclusive().then(setExclusive)
+  }, [])
+  const ctx = useMemo(() => ({ book, exclusive, worldMode, names: {} }), [book, exclusive, worldMode])
 
   const toggle = (key: 'accessories' | 'buffs', name: string) =>
     setLoadout({ ...loadout, [key]: loadout[key].includes(name) ? loadout[key].filter((n) => n !== name) : [...loadout[key], name] })
@@ -89,6 +98,7 @@ function Calculator({
   const availableNote = (name: string, set?: string) => (isAvailable(set ?? name, stage, defeated) ? '' : ' · mais tarde')
 
   return (
+    <ClassContext.Provider value={ctx}>
     <div className="space-y-5">
       <Suggestion book={book} data={data} onUse={setLoadout} />
 
@@ -173,7 +183,10 @@ function Calculator({
                 {line.item && data.sets[line.item] ? (
                   <SetChip book={book} set={line.item} icon={data.sets[line.item].pieces[0]} showEn={false} />
                 ) : line.item ? (
-                  <ItemChip book={book} name={line.item} size="sm" showEn={false} />
+                  <>
+                    <ItemChip book={book} name={line.item} size="sm" showEn={false} />
+                    <ExclusiveBadge name={line.item} />
+                  </>
                 ) : (
                   <span>vaga inicial</span>
                 )}
@@ -190,6 +203,7 @@ function Calculator({
         </ul>
       </section>
     </div>
+    </ClassContext.Provider>
   )
 }
 
@@ -214,7 +228,9 @@ function Toggle({ book, name, on, onClick, children }: { book: RecipeBook; name:
     >
       <Sprite book={book} name={name} size="sm" />
       <span className="leading-tight">
-        <span className={`block font-medium ${on ? 'text-gold' : 'text-ink'}`}>{ptName(book, name)}</span>
+        <span className={`block font-medium ${on ? 'text-gold' : 'text-ink'}`}>{ptName(book, name)}
+          <ExclusiveBadge name={name} />
+        </span>
         <span className="block text-xs text-muted">{children}</span>
       </span>
     </button>
