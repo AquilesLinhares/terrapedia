@@ -41,6 +41,13 @@ export const TOOLS = [
     icon: 'Terra Blade',
     ready: true,
   },
+  {
+    slug: 'felicidade',
+    title: 'Felicidade dos NPCs',
+    text: 'Monte as casas: quem fica feliz em cada bioma, o preço de cada um e os Pilones liberados.',
+    icon: 'Forest Pylon',
+    ready: true,
+  },
 ]
 
 /** Página `/ferramentas`: cartões das ferramentas de jogo. */
@@ -55,7 +62,7 @@ export default function ToolsPage() {
     <div className="mx-auto max-w-4xl px-4 py-6">
       <PageHeading
         title="Ferramentas"
-        subtitle="Calculadoras e listas para o combate. Usam a etapa e a classe do seu mundo ativo quando dá."
+        subtitle="Calculadoras e listas para o combate, os NPCs e o mundo. Usam a etapa e a classe do seu mundo ativo quando dá."
       />
       <ul className="grid gap-3 sm:grid-cols-2">
         {TOOLS.map((tool) => {

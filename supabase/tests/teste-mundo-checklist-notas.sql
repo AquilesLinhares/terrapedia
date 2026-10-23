@@ -1,4 +1,4 @@
--- Teste das regras (RLS) do checklist da árvore e das notas, com 3 usuários temporários:
+-- Teste das regras (RLS) do checklist da árvore, dos buffs, das casas de NPCs e das notas, com 3 usuários temporários:
 -- A e B no mesmo mundo, C de fora. Tudo roda numa transação desfeita no fim (rollback):
 -- nenhum usuário, mundo ou nota fica gravado.
 --
@@ -25,6 +25,7 @@ begin
   insert into public.world_craft_checks (world_id, item, material) values (wid, 'Iron Pickaxe', 'Iron Bar');
   insert into public.world_buff_checks (world_id, boss, item) values (wid, 'Skeletron', 'Ironskin Potion');
   insert into public.world_notes (world_id, page, body) values (wid, 'Gel', 'nota do mundo de A');
+  insert into public.world_npc_houses (world_id, houses) values (wid, '[{"id":"a","biome":"forest","npcs":["Guide"]}]');
   insert into public.notes (page, body) values ('Gel', 'nota pessoal de A');
   update public.notes set body = 'nota pessoal de A (editada)', updated_at = now() where page = 'Gel';
   get diagnostics n = row_count;
@@ -43,6 +44,24 @@ begin
   get diagnostics n = row_count;
   insert into r (k, v) values ('B desmarca o buff de A (1)', n::text);
   insert into public.world_buff_checks (world_id, boss, item) values (wid, 'Skeletron', 'Campfire');
+  insert into r (k, v) values ('B vê as casas de NPCs de A (Guide)', (select houses->0->'npcs'->>0 from public.world_npc_houses where world_id = wid));
+  -- o mesmo update que o app faz
+  with u as (update public.world_npc_houses set houses = '[{"id":"b","biome":"snow","npcs":["Mechanic"]}]', updated_by = auth.uid(), updated_at = now()
+             where world_id = wid returning world_id) select count(*) into n from u;
+  insert into r (k, v) values ('B muda as casas de NPCs (1)', n::text);
+  begin
+    update public.world_npc_houses set houses = '[]', updated_by = '00000000-0000-4000-a000-00000000000a' where world_id = wid;
+    insert into r (k, v) values ('B muda as casas fingindo ser A (bloqueado)', 'ACEITOU (ruim)');
+  exception when others then insert into r (k, v) values ('B muda as casas fingindo ser A (bloqueado)', 'bloqueado ' || sqlstate);
+  end;
+  begin
+    insert into public.world_npc_houses (world_id, houses) values (wid, '[]');
+    insert into r (k, v) values ('B cria segunda linha de casas (23505, o app faz update)', 'aceitou');
+  exception when others then insert into r (k, v) values ('B cria segunda linha de casas (23505, o app faz update)', sqlstate);
+  end;
+  delete from public.world_npc_houses where world_id = wid;
+  get diagnostics n = row_count;
+  insert into r (k, v) values ('B apaga as casas (0, ninguém apaga)', n::text);
   insert into r (k, v) values ('B vê a nota do mundo (nota do mundo de A)', (select body from public.world_notes where world_id = wid and page = 'Gel'));
   insert into r (k, v) values ('B vê nota pessoal de A (0)', (select count(*) from public.notes)::text);
   update public.notes set body = 'hack' where page = 'Gel';
@@ -113,12 +132,22 @@ begin
   delete from public.world_notes where world_id = wid;
   get diagnostics n = row_count;
   insert into r (k, v) values ('C apaga nota do mundo (0)', n::text);
+  insert into r (k, v) values ('C vê casas de NPCs do mundo alheio (0)', (select count(*) from public.world_npc_houses)::text);
+  update public.world_npc_houses set houses = '[]', updated_by = auth.uid() where world_id = wid;
+  get diagnostics n = row_count;
+  insert into r (k, v) values ('C muda casas do mundo alheio (0)', n::text);
+  begin
+    insert into public.world_npc_houses (world_id, houses) values ((select v::uuid from ctx where k = 'wid'), '[]');
+    insert into r (k, v) values ('C cria casas no mundo alheio (bloqueado)', 'ACEITOU (ruim)');
+  exception when others then insert into r (k, v) values ('C cria casas no mundo alheio (bloqueado)', 'bloqueado ' || sqlstate);
+  end;
 end $$;
 
 -- ===== A confere o resultado; B sai do mundo =====
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000a","role":"authenticated"}', true);
 insert into r (k, v) select 'A vê checklist (Wood)', string_agg(material, ',') from public.world_craft_checks;
 insert into r (k, v) select 'A vê buffs (Campfire)', string_agg(item, ',') from public.world_buff_checks;
+insert into r (k, v) select 'A vê as casas que B mudou (Mechanic / true)', (houses->0->'npcs'->>0) || ' / ' || (updated_by = '00000000-0000-4000-a000-00000000000b') from public.world_npc_houses;
 insert into r (k, v) select 'A vê nota do mundo / editor é B (editada por B / true)', body || ' / ' || (updated_by = '00000000-0000-4000-a000-00000000000b') from public.world_notes;
 insert into r (k, v) select 'A vê a própria nota (nota pessoal de A (editada))', body from public.notes;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000b","role":"authenticated"}', true);

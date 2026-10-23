@@ -492,3 +492,26 @@ create policy "membros marcam" on public.world_buff_checks for insert to authent
 create policy "membros desmarcam" on public.world_buff_checks for delete to authenticated using (private.is_world_member(world_id));
 revoke all on public.world_buff_checks from anon, authenticated;
 grant select, insert, delete on public.world_buff_checks to authenticated;
+
+-- ============================================================
+-- Felicidade dos NPCs (Ferramentas): casas montadas no mundo ativo (uma linha por mundo; `houses` =
+-- [{ id, biome, npcs[] }]). Aplicado em 2026-10-23 (migração "world_npc_houses").
+-- Membros veem, criam e mudam (só houses/updated_*; o app faz update e, se não havia linha, insert).
+-- Ninguém apaga pela API (some junto com o mundo). Sem mundo, fica no aparelho.
+-- ============================================================
+create table public.world_npc_houses (
+  world_id uuid primary key references public.worlds (id) on delete cascade,
+  houses jsonb not null default '[]'::jsonb check (jsonb_typeof(houses) = 'array' and pg_column_size(houses) <= 20000),
+  updated_by uuid default auth.uid() references auth.users (id) on delete set null,
+  updated_at timestamptz not null default now()
+);
+create index world_npc_houses_updated_by_idx on public.world_npc_houses (updated_by);
+alter table public.world_npc_houses enable row level security;
+create policy "membros veem" on public.world_npc_houses for select to authenticated using (private.is_world_member(world_id));
+create policy "membros criam" on public.world_npc_houses for insert to authenticated
+  with check (private.is_world_member(world_id) and (select auth.uid()) = updated_by);
+create policy "membros mudam" on public.world_npc_houses for update to authenticated
+  using (private.is_world_member(world_id)) with check (private.is_world_member(world_id) and (select auth.uid()) = updated_by);
+revoke all on public.world_npc_houses from anon, authenticated;
+grant select, insert on public.world_npc_houses to authenticated;
+grant update (houses, updated_by, updated_at) on public.world_npc_houses to authenticated;
