@@ -58,6 +58,9 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Guias de classe (feito: Invocador e Mago em 2026-10-22, À distância e Corpo a corpo em 2026-10-23)**: uma página por
   classe em `/classes/<classe>`, etapas iguais às do mundo compartilhado, abas Resumo e Detalhado (mapa de caminhos), filtro
   de subclasse e selos Expert/Mestre. Veja "Guias de classe" abaixo.
+- **Ferramentas de jogo, lote A — combate (feito, 2026-10-23)**: página `/ferramentas` no menu com Calculadora de lacaios,
+  Melhor modificador, Checklist de buffs (salvo no mundo), Planejador de arena e Comparador de itens. Dados das tabelas Cargo da
+  wiki. Veja "Ferramentas" abaixo.
 
 ## Stack
 
@@ -65,7 +68,8 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - Tailwind CSS v4 (plugin `@tailwindcss/vite`)
 - `vite-plugin-pwa` (manifest + service worker)
 - React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`, `/historico`,
-  `/classes`, `/classes/:slug`).
+  `/classes`, `/classes/:slug`, `/ferramentas`, `/ferramentas/lacaios`, `/ferramentas/modificador`, `/ferramentas/buffs`,
+  `/ferramentas/arena`, `/ferramentas/comparar`).
   Só `HomePage` e `ArticlePage` vão no pacote principal; as outras telas são `lazy()` em `main.tsx`.
 
 ## Estrutura
@@ -118,6 +122,13 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/data/exclusive-items.json` — itens exclusivos de Expert/Mestre citados nos guias, gerado por `scripts/build-classes.mjs`. Não editar à mão.
 - `src/pages/ClassesPage.tsx` (`/classes`), `src/pages/ClassGuidePage.tsx` (`/classes/:slug`), `src/components/ClassSummary.tsx` (aba Resumo),
   `ClassPathMap.tsx` (aba Detalhado), `ClassItems.tsx` (itens, sprites e selo Expert/Mestre)
+- `src/data/tools-data.json` — dados das Ferramentas, gerado por `scripts/build-tools.mjs`. Não editar à mão.
+- `src/lib/toolsData.ts` — lê os dados (`useToolsData()`), `SET_NAMES` (nomes PT dos conjuntos), etapa/classe das ferramentas
+  (`useToolStage()`, `useToolClass()`) e `useDefeated()`
+- `src/lib/minionCalc.ts`, `bestModifier.ts`, `bossPrep.ts` (buffs e arena por chefe), `buffChecks.ts`, `itemCompare.ts` — lógica de cada ferramenta
+- `src/lib/worldChecklist.ts` — checklist salvo no mundo ativo ou no aparelho (usado pela árvore e pelos buffs)
+- `src/pages/ToolsPage.tsx` (cartões, lista `TOOLS`), `src/pages/tools/*Page.tsx` (uma por ferramenta),
+  `src/components/ToolsUI.tsx` (cabeçalho, etapa, classe, busca de itens, `SetChip`), `BossPicker.tsx` (`useBoss()`, `?chefe=`)
 - `src/index.css` — tema escuro e estilos do conteúdo da wiki (`.wiki-content`)
 
 ## Comandos
@@ -127,6 +138,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `npm run preview` — testa o build
 - `node scripts/build-guides.mjs` — confere as páginas reorganizadas e gera o índice de etiquetas
 - `node scripts/build-classes.mjs` — confere os guias de classe e gera os selos Expert/Mestre (precisa de internet)
+- `node scripts/build-tools.mjs [pasta-loc]` — baixa os dados das Ferramentas (precisa de internet; veja "Ferramentas")
 
 ## Dicionário PT-BR ↔ EN
 
@@ -224,6 +236,40 @@ O Detalhado mostra todas as etapas numa linha do tempo; tocar num caminho destac
 
 Depois de criar ou editar um guia, rode `node scripts/build-classes.mjs`: confere chaves, etapas, ligações dos caminhos, chefes,
 subclasses e se todo item existe no dicionário/receitas, e regenera `exclusive-items.json`.
+
+## Ferramentas
+
+Página `/ferramentas` (cartões; `ready: false` em `TOOLS` mostra "em breve"). Cada ferramenta é uma tela `lazy()`. Todas
+usam a etapa do mundo ativo (`useToolStage()`; sem mundo, a pessoa escolhe e fica em `terrapedia:tools-stage`) e a classe da
+minha ficha (`useToolClass()`; sem ficha, `terrapedia:tools-class`). Itens sempre pelo nome EN; PT e sprite vêm do dicionário/receitas.
+
+- **Dados** (`scripts/build-tools.mjs` → `src/data/tools-data.json`, ~150 KB, baixado só quando uma ferramenta abre): tabelas Cargo
+  da wiki (veja Special:CargoTables) `Items` (números de armas/acessórios/armaduras/ferramentas, categoria `listcat`, buffs, vendedor
+  pela tag `vendor:`), `Equipinfo` (bônus de equipamento: dano por classe, `maxMinions`, `maxTurrets`, imunidades...), `Modifiers`
+  (números dos modificadores), `Drops` (fonte e chance); da página "Modifiers" os grupos (Universal, Comum, Corpo a corpo, À
+  distância, Magia, Invocação), os de acessório e a ordem do mais ao menos valioso; das páginas "Minion-summoning weapons" e
+  "Sentry-summoning weapons" o total de vagas de cada conjunto (já com o bônus de conjunto). Os nomes PT oficiais dos
+  modificadores vêm dos arquivos de tradução do jogo (só nomes): passe a pasta extraída por `extract-terraria-loc.ps1` como
+  argumento; sem ela o script mantém os nomes que já estão no arquivo. Rode de novo depois de uma atualização do Terraria.
+- **Calculadora de lacaios** (`/ferramentas/lacaios`): cabeça/corpo/pernas, acessórios e poções/mesas; bônus de conjunto = total
+  do conjunto − peças. Os acessórios do Exército do Ancião (`dd2Accessory`) dão +1 sentinela e não somam entre si. A sugestão escolhe
+  o conjunto com mais vagas disponível na etapa (`GEAR_AVAILABILITY`: etapa mínima + chefe/evento que precisa, ex.: Abelha Rainha;
+  sem mundo os chefes opcionais não são conferidos) e mostra o próximo passo. Montagem salva em `terrapedia:minion-loadout`.
+- **Melhor modificador** (`/ferramentas/modificador?item=`): regras da seção "Best modifiers" da wiki em `bestModifier.ts`
+  (espadas/chicotes → Lendário, lanças/ioiôs/manguais → Divino, à distância → Surreal, magia → Mítico, invocação → Fabuloso; sem
+  repulsão → Demoníaco/Louvável; casos especiais: Terrariano, Metralhadora, Arpão, magias que ficam na tela, cajados de dano alto).
+  Mostra os números da arma com o modificador e todos os possíveis. Acessórios: Guarda para todos + escolha de dano por classe.
+  Armas que se gastam (`consumable`) e itens sem dano não aparecem.
+- **Checklist de buffs** (`/ferramentas/buffs?chefe=`) e **Planejador de arena** (`/ferramentas/arena?chefe=`): dados em
+  `src/lib/bossPrep.ts`, escritos por nós. `BUFF_GROUPS` (poções, da classe, comida/cura, estações de arena) com `from`/`until`
+  (etapa em que o item passa a valer / é trocado por um melhor), `class` e `needs`; cada chefe em `BOSS_PREP` tem a etapa em que
+  costuma ser enfrentado (`fight`, que filtra as listas), buffs extras e a arena (`build`, `size`, `tips`). Sem `?chefe=` abre o
+  próximo chefe não derrotado do mundo. As caixinhas ficam na tabela `world_buff_checks` (mundo ativo; relê a cada 20 s) ou em
+  `terrapedia:buff-checks`. Chefe novo = uma entrada em `BOSS_PREP` com a mesma `key` de `MILESTONES`.
+- **Comparador de itens** (`/ferramentas/comparar?itens=A|B|C`): até 3 itens; melhor valor de cada linha em dourado; efeitos em PT
+  (`describeEquip`), texto do jogo em inglês buscado na hora (`fetchTooltips`, não fica salvo), receitas, drops e vendedores.
+- **Menu**: "Ferramentas" no topo (PC) e no rodapé (celular, 7 itens, "Ferram."). No PC os nomes dos links só aparecem a partir
+  de `xl` (1280 px); abaixo disso, só ícones.
 
 ## Artigos em português
 
@@ -358,6 +404,9 @@ chave secreta/service_role no app. As duas variáveis também estão cadastradas
 A tabela `page_translations` (cache das traduções automáticas) foi apagada do Supabase em 2026-10-21. Tudo o que foi aplicado no banco está registrado nesse arquivo.
 Em Authentication → URL Configuration, a Site URL é o endereço publicado.
 Tabelas criadas em 2026-10-21 (registradas no fim do `schema.sql`): `world_craft_checks`, `notes`, `world_notes`.
+Em 2026-10-23: `world_buff_checks` (checklist de buffs; mesmas regras de `world_craft_checks`). RLS conferido pelo MCP (ligado,
+3 regras, `anon` sem acesso, ninguém faz `update`); o teste `teste-mundo-checklist-notas.sql` ganhou as linhas dela, mas ainda
+não foi rodado no SQL Editor.
 Em 2026-10-22: `quick_access` (acesso rápido; RLS conferido: o dono vê, outra conta não vê nem muda). No mesmo dia,
 `rls_auto_enable()` (função do "automatic RLS" do Supabase, chamada pelo gatilho de eventos `ensure_rls`) perdeu o EXECUTE para
 `public`, `anon` e `authenticated`; o gatilho continua ligando o RLS em tabelas novas. Avisos de segurança que ficam de propósito:
