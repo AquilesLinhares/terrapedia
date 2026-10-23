@@ -97,7 +97,7 @@ export default function ClassGuidePage() {
         </header>
 
         <details className="mb-4 rounded-xl border border-line bg-panel/60 px-3 py-2 text-sm">
-          <summary className="cursor-pointer font-semibold text-accent">Como o {guide.title.toLowerCase()} funciona</summary>
+          <summary className="cursor-pointer font-semibold text-accent">Como a classe funciona</summary>
           <ul className="mt-2 mb-1 list-disc space-y-1 pl-5 leading-relaxed text-ink/90 marker:text-gold/70">
             {guide.basics.map((t, i) => (
               <li key={i}>
