@@ -15,7 +15,8 @@ import { library, type ArticleRef } from '../lib/library'
 import { useRecipeBook } from '../lib/recipes'
 import CraftingSection, { craftingFor } from '../components/CraftingSection'
 import GuideView from '../components/GuideView'
-import { hasGuide, loadGuide, searchGuides, type Guide } from '../lib/guides'
+import GuideViewV2 from '../components/GuideViewV2'
+import { hasGuide, isV2, loadGuide, searchGuides, type Guide } from '../lib/guides'
 import { useLocalizedArticle } from '../lib/useLocalizedArticle'
 import { useArticleLang, type ArticleLang } from '../lib/articleLang'
 import { loadGameNames } from '../lib/localize'
@@ -209,7 +210,7 @@ export default function ArticlePage() {
           </button>
         </div>
 
-        {guide && book ? <GuideView guide={guide} book={book} /> : <LoadingLines />}
+        {guide && book ? isV2(guide) ? <GuideViewV2 guide={guide} book={book} /> : <GuideView guide={guide} book={book} /> : <LoadingLines />}
 
         <p className="mt-10 rounded-lg border border-line bg-panel/60 px-4 py-3 text-sm text-muted">
           Resumo em português feito pela Terrapedia a partir do artigo “

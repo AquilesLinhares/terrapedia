@@ -141,7 +141,8 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `src/data/guides/*.json` — páginas reorganizadas (uma por artigo; veja "Páginas reorganizadas" abaixo)
 - `src/data/guide-index.json` — etiquetas de busca, gerado por `scripts/build-guides.mjs`. Não editar à mão.
 - `src/lib/guides.ts` — formato das páginas reorganizadas, `hasGuide`/`loadGuide` e busca por etiquetas (`searchGuides`)
-- `src/components/GuideView.tsx` — desenha a página reorganizada (texto com `[[Item]]`, listas de itens, receitas)
+- `src/components/GuideView.tsx` — desenha a página reorganizada do molde antigo (texto com `[[Item]]`, listas de itens, receitas)
+- `src/components/GuideViewV2.tsx` — desenha as páginas do molde novo (`format: 2`; veja "Molde novo das páginas")
 - `src/data/classes/<classe>.json` — guias de classe (`summoner.json`...); `src/lib/classGuides.ts` — formato, `CLASS_LIST`, `loadClassGuide`
 - `src/data/exclusive-items.json` — itens exclusivos de Expert/Mestre citados nos guias, gerado por `scripts/build-classes.mjs`. Não editar à mão.
 - `src/pages/ClassesPage.tsx` (`/classes`), `src/pages/ClassGuidePage.tsx` (`/classes/:slug`), `src/components/ClassSummary.tsx` (aba Resumo),
@@ -233,6 +234,35 @@ melhor somem. Aparecem nas sugestões com "pela descrição: ..." e na página "
 
 Depois de criar ou editar uma página, rode `node scripts/build-guides.mjs`: ele confere o formato, avisa sobre nomes
 de itens que não existem no dicionário/receitas e regenera o `guide-index.json`.
+
+## Molde novo das páginas (`format: 2`, 2026-10-27)
+
+Molde curto, só com o que se usa **durante o jogo** (leitor: dupla Invocador + Mago, Terraria 1.4.5). Fica no mesmo lugar
+(`src/data/guides/<Título>.json`) e convive com o molde antigo: sem `format` = antigo (`GuideView`); `format: 2` = novo
+(`GuideViewV2.tsx`; `ArticlePage` escolhe por `isV2`). Tipos em `src/lib/guides.ts` (`BossGuideV2`, `ItemGuideV2`, `CraftingGuideV2`).
+Piloto: **Eye of Cthulhu** (chefe, reescrito no molde novo) e **Zenith** (item). Blood Moon e Extractinator ainda no molde antigo.
+
+- **Comum**: `page`, `type`, `format: 2`, `tags`, `summary` (1 frase), `facts` (ficha; um fato pode ter `modes: [Clássico, Expert, Mestre]` e o
+  do mundo ativo fica dourado), `quick` ("Em 10 segundos"), `duo`, `shortcuts?`, `source`. Fora do molde: curiosidades, dicas de dinheiro, trivia, histórico.
+- **Chefe/evento** (`type: "chefe" | "evento"`), nesta ordem na tela: ficha → `quick` (**3 linhas**: invocar / fazer / cuidado) → `duo` →
+  `summon` (curto + `recipesOf`) → `arena` → `phases` (**recolhível**) → `drops` (úteis: progresso e classes) + `dropsMore` (resto, **recolhível**) →
+  Atalhos. `duo = { summoner: DuoStage[], mage: DuoStage[] }`, com `DuoStage = { stage, take: ItemRef[], note? }` (`stage` = id de `STAGES`;
+  a última etapa já alcançada pelo mundo ganha "· sua etapa").
+- **Item** (`type: "item"`): ficha → `quick` (**2 linhas**: para que serve / quando vale a pena) → `duo = { summoner, mage }` com
+  `{ text, alt?: ItemRef[] }` (serve para a classe? alternativas melhores ou mais baratas) → `obtain` (drop, vendedor, observações; **a receita e o botão da
+  árvore vêm sozinhos** do `recipes.json`) → `modifier?` (texto + link para `/ferramentas/modificador?item=`) → `usedIn?` (o "Usado em" vem sozinho).
+- **Crafting** (`type: "crafting"`, **só o molde está definido, sem páginas ainda**): `quick` (2 linhas) → `what` (o que faz) → `build` (como montar a
+  estação) → `produces` (o que importante ela produz, **um grupo por etapa** com a etapa no título) → `substitutes` (ex.: Mithril ou Orichalcum) →
+  `shortcuts: ["tree"]` (atalho para `/arvore/<Item>`). Não tem `duo`.
+- **`duo`**: caixa "Para a nossa dupla" com Invocador e Mago. Destacada (borda dourada) quando o mundo ativo tem membros dessas classes (mostra os
+  nomes); sem mundo continua visível com as duas classes.
+- **`shortcuts`** (sempre sobre a própria página): `buffs` e `arena` (chefe tem que estar em `bossPrep.ts`), `drops` (aparece na tabela `drops`),
+  `modifier` (item em `tools-data.json`), `tree` (tem receita). O script recusa atalho que não existe.
+- **"conferir"**: onde não houver certeza de um número ou fonte, escreva "conferir" no texto; `build-guides.mjs` conta quantas marcas cada página tem.
+- **Criar uma página nova**: (1) leia o artigo pela API (`action=parse&prop=wikitext|revid`) e confira números em `tools-data.json`/`recipes.json`;
+  (2) escreva `src/data/guides/<Título>.json` com `format: 2`, nomes de itens em inglês, textos com palavras próprias; (3) classes/etapas do `duo`
+  podem vir de `src/data/classes/summoner.json` e `magic.json`; (4) rode `node scripts/build-guides.mjs` (confere seções, 3 linhas/2 linhas do `quick`,
+  etapas do `duo`, atalhos, nomes de itens, e regenera o índice de etiquetas) e `npm.cmd run build`.
 
 ## Guias de classe
 

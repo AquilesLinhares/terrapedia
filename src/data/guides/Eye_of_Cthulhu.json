@@ -1,6 +1,7 @@
 {
   "page": "Eye of Cthulhu",
   "type": "chefe",
+  "format": 2,
   "tags": [
     "olho gigante",
     "olho grande",
@@ -25,139 +26,135 @@
     "investida",
     "eoc"
   ],
-  "summary": "Um olho gigante que voa e atravessa blocos — normalmente o primeiro chefe do jogo. Aparece sozinho à noite quando você começa a ficar mais forte, ou pode ser chamado com o Olho Suspeito.",
+  "summary": "Olho gigante que voa e atravessa blocos: normalmente o primeiro chefe do jogo. Só aparece à noite.",
   "facts": [
-    { "label": "Vida", "value": "2.800 · 3.640 (Expert) · 4.641 (Mestre)" },
+    { "label": "Vida", "value": "", "modes": ["2.800", "3.640", "4.641"] },
     { "label": "Defesa", "value": "12 na 1ª fase, 0 na 2ª" },
     { "label": "Quando", "value": "À noite (19:30 às 4:30)" },
     { "label": "Fase do jogo", "value": "Pré-Modo Difícil (geralmente o 1º chefe)" }
   ],
+  "quick": [
+    "Use o [[Suspicious Looking Eye]] à noite, na superfície. Se esperar, ele pode vir sozinho.",
+    "Mate os servos quando precisar de vida e bata nele na 2ª fase, quando ele para no ar, ou durante o giro da transformação.",
+    "Na 2ª fase ele avança 3 vezes seguidas e bate mais forte. Tenha mobilidade e 200 de vida ou mais. Se amanhecer (4:30), ele vai embora."
+  ],
+  "duo": {
+    "summoner": [
+      {
+        "stage": "start",
+        "note": "Os lacaios acertam sozinhos: o seu trabalho é desviar. Uma poção de invocação a mais ajuda.",
+        "take": [
+          { "name": "Flinx Staff", "note": "o lacaio mais forte do começo" },
+          "Finch Staff",
+          "Snapthorn",
+          "Hermes Boots",
+          "Cloud in a Bottle",
+          "Shark Tooth Necklace",
+          "Summoning Potion",
+          "Ironskin Potion"
+        ]
+      }
+    ],
+    "mage": [
+      {
+        "stage": "start",
+        "note": "A mana acaba rápido: leve poções de mana e não pare de se mover na 2ª fase.",
+        "take": [
+          { "name": "Thunder Zapper", "note": "ou um cajado de gema (Rubi/Diamante)" },
+          "Ruby Staff",
+          "Diamond Staff",
+          "Jungle armor",
+          "Hermes Boots",
+          "Cloud in a Bottle",
+          "Mana Potion",
+          "Ironskin Potion"
+        ]
+      }
+    ]
+  },
   "summon": {
     "text": [
-      "Use o [[Suspicious Looking Eye]] à noite, em qualquer lugar. Só um Olho de Cthulhu por vez.",
-      "Ele é feito com 6 [[Lens|Lentes]], que caem dos [[Demon Eye|Olhos Demoníacos]] à noite.",
-      "**Também aparece sozinho**: ao anoitecer, 1 chance em 3, se ele ainda não foi derrotado no mundo, algum jogador tem pelo menos 200 de vida máxima e 11 de defesa, há pelo menos 4 NPCs morando na cidade e nenhum outro chefe ou evento (como a [[Pumpkin Moon]]) está acontecendo.",
-      "O aviso é \"You feel an evil presence watching you...\". Ele chega cerca de 1 minuto e 20 segundos depois.",
-      "Para evitar que ele apareça sozinho: fique abaixo da superfície a noite toda, ou tire equipamentos até ficar com 10 de defesa ou menos antes do anoitecer."
+      "O [[Suspicious Looking Eye]] leva 6 [[Lens|Lentes]], que caem dos [[Demon Eye|Olhos Demoníacos]] à noite. Só um Olho por vez.",
+      "**Sozinho**: no começo da noite, 1 chance em 3, enquanto ele não foi derrotado, alguém tem 200 de vida e mais de 10 de defesa e há pelo menos 4 NPCs na cidade. Aviso: \"You feel an evil presence watching you...\".",
+      "Para impedir que ele venha antes da hora: fique no subsolo a noite toda ou tire equipamentos até ficar com 10 de defesa ou menos."
     ],
     "recipesOf": ["Suspicious Looking Eye"]
   },
-  "where": {
+  "arena": {
     "text": [
-      "Na superfície (ou no espaço), à noite. Ele atravessa blocos, então não adianta se esconder atrás de paredes.",
-      "**Arena simples**: algumas fileiras de [[Wood Platform|plataformas]] do tamanho da tela, para pular e desviar. Ou um chão comprido e plano, para fugir correndo para os lados.",
-      "Coloque [[Torch|tochas]] para enxergar, e uma [[Campfire]] e uma [[Heart Lantern]] para recuperar vida mais rápido."
-    ]
-  },
-  "prep": {
-    "text": [
-      "Tenha pelo menos 200 de vida (8 [[Life Crystal|Cristais da Vida]] usados).",
-      "Armadura de prata/tungstênio ou de ouro/platina é suficiente. Ninja, Fóssil e Gladiador também são ótimas.",
-      "Prefira armas de longe que atravessam inimigos: matam os servos e acertam o chefe junto. Flechas flamejantes causam dano mesmo quando ele some atrás dos blocos.",
-      "Mobilidade é o mais importante na 2ª fase: botas de corrida ajudam muito (no Expert são quase obrigatórias)."
-    ],
-    "groups": [
-      { "label": "Armas boas", "items": ["Platinum Bow", "Gold Bow", "Flaming Arrow", "Minishark", "Musket", "Enchanted Boomerang"] },
-      { "label": "Acessórios", "items": ["Hermes Boots", "Cloud in a Bottle", "Grappling Hook", "Shark Tooth Necklace"] },
-      { "label": "Poções", "items": ["Ironskin Potion", "Swiftness Potion", "Regeneration Potion", "Lesser Healing Potion"] }
+      "Superfície, de noite. Ele atravessa blocos, então se esconder não adianta.",
+      "Montagem simples: umas 3 fileiras de [[Wood Platform|plataformas]] com uns 10 blocos entre elas, em cerca de 150 blocos de largura. Na 2ª fase, pule ou suba uma fileira na hora da investida.",
+      "[[Campfire]] e [[Heart Lantern]] para recuperar vida, [[Torch|tochas]] para enxergar."
     ]
   },
   "phases": [
     {
-      "name": "1ª fase — o olho",
+      "name": "1ª fase: o olho",
       "text": [
-        "Flutua acima de você e solta 3–4 [[Servant of Cthulhu|Servos de Cthulhu]] (olhinhos que voam até você).",
-        "Depois avança contra você 3 vezes seguidas, e repete o ciclo.",
-        "Os servos soltam corações e estrelas: mate alguns quando precisar de vida."
+        "Flutua acima de você, solta 3–4 [[Servant of Cthulhu|Servos de Cthulhu]] e avança 3 vezes seguidas. Repete.",
+        "Os servos soltam corações e estrelas quando morrem."
       ]
     },
     {
       "name": "Transformação",
       "text": [
-        "Com 50% da vida (65% no Expert/Mestre) ele gira parado e vira uma boca cheia de dentes.",
-        "**Melhor momento para bater**: durante o giro ele não se mexe nem ataca."
+        "Com 50% da vida (65% no Expert e no Mestre) ele gira parado e vira uma boca.",
+        "**Melhor hora para bater**: durante o giro ele não se mexe nem ataca."
       ]
     },
     {
-      "name": "2ª fase — a boca",
+      "name": "2ª fase: a boca",
       "text": [
-        "Para de soltar servos e perde a defesa, mas bate mais forte.",
-        "Avança 3 vezes seguidas, mais rápido, rugindo a cada investida, e depois para um pouco no ar — hora de atacar."
+        "Sem servos e sem defesa, mas bate mais forte. Avança 3 vezes seguidas, rugindo, e para um instante no ar."
       ]
     },
     {
       "name": "Expert e Mestre",
       "text": [
-        "Solta mais servos (e mais 4–5 ao se transformar).",
-        "Na 2ª fase ganha uma sequência de investidas muito rápidas, que ficam mais frequentes conforme a vida cai — perto do fim ele quase não para.",
-        "Com pouca vida a defesa fica negativa: ele passa a tomar mais dano."
+        "Mais servos, e a 2ª fase tem investidas ainda mais rápidas, cada vez mais frequentes com pouca vida."
       ]
-    },
-    {
-      "name": "Quando ele vai embora",
-      "text": ["Se amanhecer (4:30), se todos os jogadores morrerem ou se ele ficar longe demais."]
     }
   ],
   "drops": {
     "groups": [
       {
-        "label": "Mundo com Corrupção",
+        "label": "Para o progresso",
         "items": [
-          { "name": "Demonite Ore", "qty": "30–90" },
-          { "name": "Corrupt Seeds", "qty": "1–3" },
-          { "name": "Demon Altar", "note": "se não houver nenhum altar no mundo" }
+          { "name": "Demonite Ore", "qty": "30–90", "note": "mundo com Corrupção" },
+          { "name": "Crimtane Ore", "qty": "30–90", "note": "mundo com Carmim" },
+          { "name": "Demon Altar", "note": "só se o mundo não tiver nenhum altar" },
+          { "name": "Crimson Altar", "note": "só se o mundo não tiver nenhum altar" }
         ]
       },
       {
-        "label": "Mundo com Carmim",
-        "items": [
-          { "name": "Crimtane Ore", "qty": "30–90" },
-          { "name": "Crimson Seeds", "qty": "1–3" },
-          { "name": "Crimson Altar", "note": "se não houver nenhum altar no mundo" }
-        ]
-      },
-      {
-        "label": "Em qualquer mundo",
-        "items": [
-          { "name": "Unholy Arrow", "qty": "20–50" },
-          { "name": "Lesser Healing Potion", "qty": "5–15" }
-        ]
-      },
-      {
-        "label": "Com sorte",
-        "items": [
-          { "name": "Eye of Cthulhu Mask", "note": "1 em 7" },
-          { "name": "Eye of Cthulhu Trophy", "note": "10%" },
-          { "name": "Binoculars", "note": "2,5% (3,3% no Expert)" },
-          { "name": "Badger's Hat", "note": "se derrotado no mesmo dia que a Parede de Carne" }
-        ]
-      },
-      {
-        "label": "Expert e Mestre (dentro da Bolsa do Tesouro)",
+        "label": "Para a dupla",
         "items": [
           "Treasure Bag (Eye of Cthulhu)",
-          { "name": "Shield of Cthulhu", "note": "acessório exclusivo: dá um dash" }
-        ]
-      },
-      {
-        "label": "Só no Mestre",
-        "items": [
-          "Eye of Cthulhu Relic",
-          { "name": "Suspicious Grinning Eye", "note": "25% — mascote" },
-          "0x33's Aviators"
+          { "name": "Shield of Cthulhu", "note": "Expert e Mestre, dentro da bolsa: dá um dash que salva a vida" }
         ]
       }
     ],
     "text": [
-      "**Depois de derrotado**: a [[Dryad]] pode se mudar para a cidade, o [[Angler]] passa a pedir mais peixes e o [[Traveling Merchant]] começa a vender itens novos."
+      "Depois dele: a [[Dryad]] pode se mudar para a cidade e o [[Traveling Merchant]] começa a vender itens novos."
     ]
   },
-  "tips": [
-    "Com as barras de [[Demonite Ore|Demonita]] ou [[Crimtane Ore|Carminita]] dá para fazer espada, arco, machado, ioiô, chicote e vara de pesca. A armadura e a picareta também precisam de [[Shadow Scale]] ou [[Tissue Sample]], que vêm do próximo chefe ([[Eater of Worlds]] ou [[Brain of Cthulhu]]).",
-    "Farmar o Olho é um dos jeitos mais fáceis de ganhar dinheiro antes do Modo Difícil — e rende uns 30% a mais num mundo de Carmim.",
-    "Comece a desviar logo depois do 3º servo: assim você costuma escapar da primeira investida.",
-    "Ele olha para o jogador que vai perseguir (útil no multiplayer).",
-    "No Expert, pegue o [[Shield of Cthulhu]]: o dash ajuda muito nos próximos chefes."
-  ],
-  "source": { "revid": 1031653, "date": "2026-10-20" }
+  "dropsMore": {
+    "groups": [
+      {
+        "items": [
+          { "name": "Corrupt Seeds", "qty": "1–3" },
+          { "name": "Crimson Seeds", "qty": "1–3" },
+          { "name": "Unholy Arrow", "qty": "20–50" },
+          { "name": "Lesser Healing Potion", "qty": "5–15" },
+          "Eye of Cthulhu Mask",
+          "Eye of Cthulhu Trophy",
+          "Binoculars",
+          "Eye of Cthulhu Relic",
+          "Suspicious Grinning Eye"
+        ]
+      }
+    ]
+  },
+  "shortcuts": ["buffs", "arena", "drops"],
+  "source": { "revid": 1031653, "date": "2026-10-27" }
 }

@@ -25,9 +25,25 @@ const TYPES = {
 }
 const SECTION_KEYS = new Set(['text', 'groups', 'recipesOf'])
 
+// Molde novo (`format: 2`): curto e só com o que se usa durante o jogo. Veja "Molde novo das páginas" no CLAUDE.md.
+const BASE_V2 = { required: [...BASE.required, 'format', 'quick'], optional: [...BASE.optional, 'shortcuts'] }
+const BOSS_V2 = { required: ['duo', 'summon', 'arena', 'phases', 'drops'], optional: ['dropsMore'], quick: 3 }
+const TYPES_V2 = {
+  chefe: BOSS_V2,
+  evento: BOSS_V2,
+  item: { required: ['duo', 'obtain'], optional: ['modifier', 'usedIn'], quick: 2 },
+  crafting: { required: ['what', 'build', 'produces', 'substitutes'], optional: [], quick: 2 },
+}
+const SHORTCUTS = new Set(['buffs', 'arena', 'drops', 'modifier', 'tree'])
+const DUO_CLASSES = ['summoner', 'mage']
+
 // Nomes conhecidos: inglês do dicionário (e páginas) + nomes das receitas
 const dict = readJson(join(ROOT, 'src/data/dictionary.json'))
 const recipes = readJson(join(ROOT, 'src/data/recipes.json'))
+const tools = readJson(join(ROOT, 'src/data/tools-data.json'))
+const bossPrepSrc = readFileSync(join(ROOT, 'src/lib/bossPrep.ts'), 'utf8')
+const stageIds = new Set([...readFileSync(join(ROOT, 'src/lib/progression.ts'), 'utf8').matchAll(/\{ id: '([a-z-]+)', label/g)].map((m) => m[1]))
+const recipeResults = new Set(recipes.recipes.map((r) => recipes.names[r[0]]))
 const known = new Set([...dict.entries.flatMap(([, en, , page]) => [en, page ?? en]), ...recipes.names].map((n) => n.toLowerCase()))
 
 /** Nome PT oficial de uma página (o mesmo critério de ptNameForPage no app). */
@@ -43,6 +59,64 @@ const fileName = (page) => page.replace(/ /g, '_').replace(/[\\/:*?"<>|%]/g, (c)
 let problems = 0
 const index = []
 
+let conferir = 0
+
+function checkV2(guide, file, warn) {
+  const type = TYPES_V2[guide.type]
+  if (!type) return warn(`tipo "${guide.type}" desconhecido no molde novo (use ${Object.keys(TYPES_V2).join(', ')})`)
+  if (fileName(guide.page ?? '') !== file) warn(`o arquivo deveria se chamar ${fileName(guide.page ?? '')}`)
+  const required = [...BASE_V2.required, ...type.required]
+  const allowed = new Set([...required, ...BASE_V2.optional, ...type.optional])
+  for (const key of required) if (!(key in guide)) warn(`falta a seção "${key}"`)
+  for (const key of Object.keys(guide)) if (!allowed.has(key)) warn(`chave desconhecida "${key}"`)
+  if (!Array.isArray(guide.tags) || guide.tags.length < 5) warn('poucas etiquetas (use pelo menos 5)')
+  if (typeof guide.source?.revid !== 'number' || !guide.source?.date) warn('"source" precisa de revid e date')
+  if (!Array.isArray(guide.quick) || guide.quick.length !== type.quick) warn(`"quick" precisa de ${type.quick} linhas`)
+  for (const s of guide.shortcuts ?? []) {
+    if (!SHORTCUTS.has(s)) warn(`atalho desconhecido "${s}"`)
+    else if ((s === 'buffs' || s === 'arena') && !bossPrepSrc.includes(`key: '${guide.page}'`)) warn(`atalho "${s}": o chefe não existe em bossPrep.ts`)
+    else if (s === 'drops' && !(guide.type === 'item' ? tools.drops[guide.page] : Object.values(tools.drops).some((l) => l.some((e) => e[0] === guide.page))))
+      warn('atalho "drops": a página não aparece na tabela de drops')
+    else if (s === 'modifier' && !tools.items[guide.page]) warn('atalho "modifier": item não está em tools-data.json')
+    else if (s === 'tree' && !recipeResults.has(guide.page)) warn('atalho "tree": sem receita em recipes.json')
+  }
+  for (const f of guide.facts ?? []) if (f.modes && f.modes.length !== 3) warn(`ficha "${f.label}": "modes" precisa de 3 valores (Clássico, Expert, Mestre)`)
+  for (const key of type.required) {
+    const value = guide[key]
+    if (value === undefined || key === 'phases' || key === 'duo') continue
+    for (const k of Object.keys(value)) if (!SECTION_KEYS.has(k)) warn(`chave desconhecida "${key}.${k}"`)
+  }
+  if (guide.type === 'item') {
+    for (const c of DUO_CLASSES) if (!guide.duo?.[c]?.text) warn(`duo.${c}.text faltando`)
+  } else if (guide.duo) {
+    for (const c of DUO_CLASSES) {
+      const entries = guide.duo[c]
+      if (!Array.isArray(entries) || !entries.length) warn(`duo.${c} precisa de pelo menos uma etapa`)
+      for (const e of entries ?? []) if (!stageIds.has(e.stage)) warn(`duo.${c}: etapa desconhecida "${e.stage}"`)
+    }
+  }
+  const names = []
+  const texts = []
+  const walk = (value) => {
+    if (typeof value === 'string') texts.push(value)
+    else if (Array.isArray(value)) value.forEach(walk)
+    else if (value && typeof value === 'object') {
+      for (const [k, v] of Object.entries(value)) {
+        if (k === 'recipesOf') names.push(...v)
+        else if (['items', 'take', 'alt'].includes(k) && Array.isArray(v)) v.forEach((it) => (typeof it === 'string' ? names.push(it) : walk(it)))
+        else if (k === 'name' && typeof v === 'string' && !('text' in value)) names.push(v)
+        else walk(v)
+      }
+    }
+  }
+  walk({ ...guide, tags: [], source: null, page: null })
+  for (const t of texts) for (const [, name] of t.matchAll(/\[\[([^\]|]+)(?:\|[^\]]*)?\]\]/g)) names.push(name)
+  for (const name of new Set(names)) if (!known.has(name.toLowerCase())) warn(`nome desconhecido "${name}"`)
+  const count = texts.filter((t) => /conferir/i.test(t)).length
+  conferir += count
+  console.log(`  ${file}: ${count} marca(s) "conferir"`)
+}
+
 for (const file of readdirSync(GUIDES).filter((f) => f.endsWith('.json')).sort()) {
   const warn = (msg) => {
     problems++
@@ -53,6 +127,12 @@ for (const file of readdirSync(GUIDES).filter((f) => f.endsWith('.json')).sort()
     guide = readJson(join(GUIDES, file))
   } catch (err) {
     warn(`JSON inválido (${err.message})`)
+    continue
+  }
+
+  if (guide.format === 2) {
+    checkV2(guide, file, warn)
+    index.push([guide.page, guide.type, ptName(guide.page), guide.tags])
     continue
   }
 
@@ -98,5 +178,6 @@ for (const file of readdirSync(GUIDES).filter((f) => f.endsWith('.json')).sort()
 }
 
 writeFileSync(join(ROOT, 'src/data/guide-index.json'), JSON.stringify(index))
+console.log(`${conferir} marca(s) "conferir" no molde novo.`)
 console.log(`${index.length} páginas no índice. ${problems ? `${problems} aviso(s) acima.` : 'Nenhum problema.'}`)
 process.exitCode = problems ? 1 : 0

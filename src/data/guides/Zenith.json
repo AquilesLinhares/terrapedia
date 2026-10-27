@@ -1,0 +1,84 @@
+{
+  "page": "Zenith",
+  "type": "item",
+  "format": 2,
+  "tags": [
+    "melhor espada",
+    "espada final",
+    "arma final",
+    "espada que dispara espadas",
+    "espadas voando",
+    "espadas giratórias",
+    "arma mais forte",
+    "melhor arma corpo a corpo",
+    "dez espadas",
+    "arma suprema",
+    "zênite",
+    "arma do fim do jogo",
+    "chuva de espadas",
+    "arma endgame",
+    "espada de todas as espadas",
+    "espadas que atravessam paredes",
+    "espada com vários materiais"
+  ],
+  "summary": "Espada corpo a corpo de fim de jogo: cada golpe lança várias espadas que atravessam blocos e inimigos e perseguem alvos perto do cursor.",
+  "facts": [
+    { "label": "Dano", "value": "190" },
+    { "label": "Classe", "value": "Corpo a corpo (espada)" },
+    { "label": "Raridade", "value": "10 (conferir a cor)" },
+    { "label": "Selo Expert/Mestre", "value": "Nenhum: vale em qualquer modo" },
+    { "label": "Crítico", "value": "14%" },
+    { "label": "Recuo", "value": "6,5" },
+    { "label": "Fase do jogo", "value": "Pós-Senhor da Lua" }
+  ],
+  "quick": [
+    "A arma corpo a corpo mais forte do jogo. Acerta de longe, atravessa paredes e acha os inimigos sozinha.",
+    "Só no fim: depois do Senhor da Lua, quando já tiver as 10 espadas da receita. Antes disso, é a meta de longo prazo."
+  ],
+  "duo": {
+    "summoner": {
+      "text": "Não é arma de Invocador: dano corpo a corpo não recebe os bônus de invocação. Serve de arma de limpeza para quem quiser trocar de chicote por ela no fim. O dano principal continua nos lacaios.",
+      "alt": [
+        { "name": "Terraprisma", "note": "cai da Imperatriz da Luz" },
+        { "name": "Stardust Dragon Staff", "note": "mais barato: 18 fragmentos do Pilar Estelar" }
+      ]
+    },
+    "mage": {
+      "text": "Não é arma de Mago: dano corpo a corpo não recebe os bônus de magia. Para o Mago, vale mais pegar as armas mágicas do mesmo Senhor da Lua que a receita já obriga a derrotar.",
+      "alt": [
+        { "name": "Last Prism", "note": "cai do Senhor da Lua" },
+        { "name": "Lunar Flare", "note": "cai do Senhor da Lua" },
+        { "name": "Nebula Blaze", "note": "mais barato: 18 fragmentos do Pilar da Nebulosa" },
+        { "name": "Razorblade Typhoon", "note": "cai do Duque Peixe-dragão" }
+      ]
+    }
+  },
+  "obtain": {
+    "text": [
+      "Só por receita, na Bigorna de Mithril (a de Orichalcum também serve): não cai de inimigo nem é vendida.",
+      "Precisa de **10 espadas diferentes**, uma de cada. Onde achar:"
+    ],
+    "groups": [
+      {
+        "label": "As 10 espadas",
+        "items": [
+          { "name": "Terra Blade", "note": "feita na Bigorna de Mithril com True Night's Edge, True Excalibur e Broken Hero Sword" },
+          { "name": "Meowmere", "note": "Senhor da Lua" },
+          { "name": "Star Wrath", "note": "Senhor da Lua" },
+          { "name": "Influx Waver", "note": "Disco Voador Marciano (Invasão Marciana)" },
+          { "name": "The Horseman's Blade", "note": "Pumpking (Lua de Abóbora)" },
+          { "name": "Seedler", "note": "Plantera" },
+          { "name": "Starfury", "note": "baús e caixas da Ilha do Céu" },
+          { "name": "Bee Keeper", "note": "Abelha Rainha" },
+          { "name": "Enchanted Sword", "note": "caixas de Titânio e Dourada (outras fontes: conferir)" },
+          { "name": "Copper Shortsword", "note": "5 barras de cobre na Bigorna de Ferro" }
+        ]
+      }
+    ]
+  },
+  "modifier": {
+    "text": ["Como as outras espadas, o melhor é **Lendário**. A ferramenta mostra os números e as alternativas."]
+  },
+  "shortcuts": ["modifier", "tree"],
+  "source": { "revid": 1035405, "date": "2026-10-27" }
+}

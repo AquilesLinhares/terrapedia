@@ -31,6 +31,8 @@ export interface Section {
 export interface Fact {
   label: string
   value: Text
+  /** Valores por modo [Clássico, Expert, Mestre] (molde novo): o do mundo ativo fica destacado */
+  modes?: [string, string, string]
 }
 
 interface GuideBase {
@@ -72,7 +74,69 @@ export interface ItemGuide extends GuideBase {
   usedIn?: Section
 }
 
-export type Guide = EventGuide | BossGuide | ItemGuide
+/** Molde antigo (sem `format`): seções longas por tipo. */
+export type GuideV1 = EventGuide | BossGuide | ItemGuide
+
+// ---------- Molde novo (`format: 2`): curto, só o que se usa durante o jogo ----------
+// Veja "Molde novo das páginas" no CLAUDE.md. Ordem: ficha → "Em 10 segundos" (`quick`) → "Para a nossa dupla" (`duo`) → seções do tipo.
+
+/** Atalhos para ferramentas, sempre sobre a própria página: `buffs`/`arena` (chefe), `drops`, `modifier` (arma), `tree` (crafting). */
+export type Shortcut = 'buffs' | 'arena' | 'drops' | 'modifier' | 'tree'
+
+/** Bloco da caixa "Para a nossa dupla" de um chefe: o que levar a partir de uma etapa (id de STAGES). */
+export interface DuoStage {
+  stage: string
+  take: ItemRef[]
+  note?: Text
+}
+
+/** Caixa "Para a nossa dupla" de um item: serve para a classe? alternativas melhores ou mais baratas. */
+export interface DuoItem {
+  text: Text
+  alt?: ItemRef[]
+}
+
+interface GuideBaseV2 extends GuideBase {
+  format: 2
+  /** "Em 10 segundos": chefe/evento = 3 linhas (invocar, fazer, cuidado); item = 2 (para que serve, quando vale a pena) */
+  quick: Text[]
+  shortcuts?: Shortcut[]
+}
+
+/** Chefe ou evento. `phases` e `dropsMore` (o que não importa para progressão) ficam recolhidos. */
+export interface BossGuideV2 extends GuideBaseV2 {
+  type: 'chefe' | 'evento'
+  duo: { summoner: DuoStage[]; mage: DuoStage[] }
+  summon: Section
+  arena: Section
+  phases: { name: string; text: Text[] }[]
+  drops: Section
+  dropsMore?: Section
+}
+
+export interface ItemGuideV2 extends GuideBaseV2 {
+  type: 'item'
+  duo: { summoner: DuoItem; mage: DuoItem }
+  /** As receitas vêm sozinhas do recipes.json; aqui entram drop, vendedor e observações */
+  obtain: Section
+  modifier?: Section
+  usedIn?: Section
+}
+
+/** Estação de crafting (só o molde está definido; ainda sem páginas). */
+export interface CraftingGuideV2 extends GuideBaseV2 {
+  type: 'crafting'
+  what: Section
+  build: Section
+  /** O que ela produz de importante, por etapa (um grupo por etapa, com a etapa no título) */
+  produces: Section
+  /** Substitutos (ex.: Mithril ou Orichalcum) */
+  substitutes: Section
+}
+
+export type GuideV2 = BossGuideV2 | ItemGuideV2 | CraftingGuideV2
+export type Guide = GuideV1 | GuideV2
+export const isV2 = (g: Guide): g is GuideV2 => (g as { format?: number }).format === 2
 
 // Só os nomes dos arquivos entram no app; o conteúdo de cada página é baixado quando ela abre.
 const loaders = import.meta.glob<Guide>('../data/guides/*.json', { import: 'default' })

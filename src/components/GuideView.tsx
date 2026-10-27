@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import type { Guide, ItemGroup, ItemRef, Section, Text } from '../lib/guides'
+import type { GuideV1, ItemGroup, ItemRef, Section, Text } from '../lib/guides'
 import { pageFor, ptName, spriteUrl, type RecipeBook } from '../lib/recipes'
 import CraftingSection, { craftingFor } from './CraftingSection'
 import { Sprite } from './ItemChip'
@@ -18,7 +18,7 @@ const SECTION_TITLES = {
 const sectionId = (key: string) => `resumo-${key}`
 
 /** Página reorganizada: resumo, ficha rápida e seções fixas do tipo. */
-export default function GuideView({ guide, book }: { guide: Guide; book: RecipeBook }) {
+export default function GuideView({ guide, book }: { guide: GuideV1; book: RecipeBook }) {
   const crafting = guide.type === 'item' ? craftingFor(book, guide.page) : null
   const titles: Record<string, string> = SECTION_TITLES[guide.type]
 
@@ -102,7 +102,7 @@ export default function GuideView({ guide, book }: { guide: Guide; book: RecipeB
   )
 }
 
-function SectionBody({ section, book }: { section: Section; book: RecipeBook }) {
+export function SectionBody({ section, book }: { section: Section; book: RecipeBook }) {
   return (
     <>
       {section.text && <Bullets texts={section.text} book={book} />}
@@ -123,7 +123,7 @@ function SectionBody({ section, book }: { section: Section; book: RecipeBook }) 
 }
 
 /** Um texto vira parágrafo; vários viram lista. */
-function Bullets({ texts, book }: { texts: Text[]; book: RecipeBook }) {
+export function Bullets({ texts, book }: { texts: Text[]; book: RecipeBook }) {
   if (texts.length === 1) {
     return (
       <p>
@@ -142,7 +142,7 @@ function Bullets({ texts, book }: { texts: Text[]; book: RecipeBook }) {
   )
 }
 
-function Group({ group, book }: { group: ItemGroup; book: RecipeBook }) {
+export function Group({ group, book }: { group: ItemGroup; book: RecipeBook }) {
   return (
     <div className="my-3">
       {group.label && (
@@ -183,7 +183,7 @@ function GuideItem({ item, book }: { item: ItemRef; book: RecipeBook }) {
   )
 }
 
-function Phases({ phases, book }: { phases: { name: string; text: Text[] }[]; book: RecipeBook }) {
+export function Phases({ phases, book }: { phases: { name: string; text: Text[] }[]; book: RecipeBook }) {
   return (
     <ol className="m-0! list-none! space-y-3 p-0!">
       {phases.map((phase, i) => (
