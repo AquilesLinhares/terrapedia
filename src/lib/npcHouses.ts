@@ -74,7 +74,12 @@ export function useNpcHouses() {
     if (!activeId) return
     void load(activeId)
     const timer = setInterval(() => document.visibilityState === 'visible' && load(activeId), 20_000)
-    return () => clearInterval(timer)
+    const onVisible = () => document.visibilityState === 'visible' && load(activeId)
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      clearInterval(timer)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
   }, [activeId])
 
   return {

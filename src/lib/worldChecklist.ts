@@ -86,7 +86,12 @@ export function createWorldChecklist({ table, listColumn, valueColumn, localKey 
       if (!activeId) return
       void loadRemote(activeId, list)
       const timer = setInterval(() => document.visibilityState === 'visible' && loadRemote(activeId, list), 20_000)
-      return () => clearInterval(timer)
+      const onVisible = () => document.visibilityState === 'visible' && loadRemote(activeId, list)
+      document.addEventListener('visibilitychange', onVisible)
+      return () => {
+        clearInterval(timer)
+        document.removeEventListener('visibilitychange', onVisible)
+      }
     }, [activeId, list])
 
     const values = activeId ? remote.get(`${activeId}|${list}`) : local[list]

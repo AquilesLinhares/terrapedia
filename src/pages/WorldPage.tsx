@@ -40,7 +40,12 @@ function usePolling() {
   useEffect(() => {
     void world.reload()
     const timer = setInterval(() => document.visibilityState === 'visible' && void world.reload(), 20000)
-    return () => clearInterval(timer)
+    const onVisible = () => document.visibilityState === 'visible' && void world.reload()
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      clearInterval(timer)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
   }, [])
 }
 
