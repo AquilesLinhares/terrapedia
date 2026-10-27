@@ -73,6 +73,8 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 
 - **Lote C, parte 2 — Guia do Brilho (feito, 2026-10-27)**: `/ferramentas/shimmer` (`src/pages/tools/ShimmerPage.tsx`, dados escritos por nós em `src/lib/shimmer.ts`: melhorias permanentes, ciclos de minérios/gemas/caixas/emblemas, trocas úteis e como achar o Éter). Fonte: páginas Shimmer, Aether e Crate da wiki (1.4.5). Dado não confirmado leva `check` e aparece como "conferir".
 
+- **Lote C, parte 2 — Pescaria (feito, 2026-10-27)**: `/ferramentas/pescaria` (`src/pages/tools/FishingPage.tsx`, dados escritos por nós em `src/lib/fishing.ts`: peixes de poção e de missão por bioma/camada, caixas antes/depois do Modo Difícil e recompensas do Pescador). O conteúdo com chance de cada caixa vem da tabela `drops` de `tools-data.json` (parcial: Sagrado e Masmorra ficam "conferir"). Fonte: páginas Fishing, Fishing catches, Potion fish, Quest fish, Crate e Angler (1.4.5).
+
 ## Stack
 
 - Vite + React + TypeScript
@@ -80,7 +82,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `vite-plugin-pwa` (manifest + service worker)
 - React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`, `/historico`,
   `/classes`, `/classes/:slug`, `/ferramentas`, `/ferramentas/lacaios`, `/ferramentas/modificador`, `/ferramentas/buffs`,
-  `/ferramentas/arena`, `/ferramentas/comparar`, `/ferramentas/felicidade`, `/ferramentas/vendedores`, `/ferramentas/condicoes`, `/ferramentas/drops`, `/ferramentas/shimmer`).
+  `/ferramentas/arena`, `/ferramentas/comparar`, `/ferramentas/felicidade`, `/ferramentas/vendedores`, `/ferramentas/condicoes`, `/ferramentas/drops`, `/ferramentas/shimmer`, `/ferramentas/pescaria`).
   Só `HomePage` e `ArticlePage` vão no pacote principal; as outras telas são `lazy()` em `main.tsx`.
 
 ## Estrutura

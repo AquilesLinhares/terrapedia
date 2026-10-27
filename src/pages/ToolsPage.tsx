@@ -76,6 +76,13 @@ export const TOOLS = [
     icon: 'Bottomless Shimmer Bucket',
     ready: true,
   },
+  {
+    slug: 'pescaria',
+    title: 'Pescaria',
+    text: 'Peixes de poção e de missão por bioma e camada, caixas (antes e depois do Modo Difícil) e recompensas do Pescador.',
+    icon: 'Golden Fishing Rod',
+    ready: true,
+  },
 ]
 
 /** Página `/ferramentas`: cartões das ferramentas de jogo. */

@@ -29,6 +29,7 @@ const HappinessPage = lazy(() => import('./pages/tools/HappinessPage'))
 const VendorsPage = lazy(() => import('./pages/tools/VendorsPage'))
 const DropsPage = lazy(() => import('./pages/tools/DropsPage'))
 const ShimmerPage = lazy(() => import('./pages/tools/ShimmerPage'))
+const FishingPage = lazy(() => import('./pages/tools/FishingPage'))
 const ConditionsPage = lazy(() => import('./pages/tools/ConditionsPage'))
 
 installLinkPrefetch()
@@ -65,6 +66,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="ferramentas/condicoes" element={<ConditionsPage />} />
           <Route path="ferramentas/drops" element={<DropsPage />} />
           <Route path="ferramentas/shimmer" element={<ShimmerPage />} />
+          <Route path="ferramentas/pescaria" element={<FishingPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
