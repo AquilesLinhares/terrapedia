@@ -46,6 +46,13 @@ export function onUserChange(callback: (user: User | null) => void) {
 /** Traduz os erros do Supabase (por código, status ou texto) para mensagens em português. */
 function message(error: AuthError | null) {
   if (!error) return null
+  const friendly = translate(error)
+  // Segunda linha (letra pequena na tela): código/texto original, para diagnóstico.
+  const detail = [error.code, error.status, error.message].filter(Boolean).join(' · ')
+  return `${friendly}\nDetalhe: ${detail}`
+}
+
+function translate(error: AuthError) {
   const text = (error.message ?? '').toLowerCase()
   switch (error.code) {
     case 'invalid_credentials':
@@ -76,12 +83,15 @@ function message(error: AuthError | null) {
   if (text.includes('email') && (text.includes('invalid') || text.includes('valid'))) return 'E-mail inválido. Confira o que foi digitado.'
   if (text.includes('signups not allowed') || text.includes('signup is disabled')) return 'O cadastro por e-mail está desligado neste momento.'
   if (error.status && error.status >= 500) return 'O servidor de contas está com problema. Tente de novo daqui a pouco.'
-  return 'Não foi possível concluir. Tente de novo.' + (error.message ? ` (${error.message})` : '')
+  return 'Não foi possível concluir. Tente de novo.'
 }
+
+/** E-mail sem espaços e em minúsculas. */
+const clean = (email: string) => email.trim().toLowerCase()
 
 /** Confere e-mail e senha antes de falar com o servidor. */
 function check(email: string, password: string, signingUp: boolean) {
-  if (!/^[^s@]+@[^s@]+.[^s@]+$/.test(email.trim())) return 'E-mail inválido. Confira o que foi digitado.'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean(email))) return 'E-mail inválido. Confira o que foi digitado.'
   if (!password) return 'Digite a senha.'
   if (signingUp && password.length < 6) return 'Senha curta: use pelo menos 6 caracteres.'
   return null
@@ -95,7 +105,7 @@ export const auth = {
     if (!supabase) return notConfigured
     const invalid = check(email, password, false)
     if (invalid) return invalid
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+    const { error } = await supabase.auth.signInWithPassword({ email: clean(email), password })
     return message(error)
   },
 
@@ -103,7 +113,7 @@ export const auth = {
     if (!supabase) return notConfigured
     const invalid = check(email, password, true)
     if (invalid) return invalid
-    const { data, error } = await supabase.auth.signUp({ email: email.trim(), password })
+    const { data, error } = await supabase.auth.signUp({ email: clean(email), password })
     if (error) return message(error)
     // Com confirmação de e-mail ligada, e-mail já cadastrado não dá erro: volta um usuário sem identidades
     if (data.user && data.user.identities?.length === 0) return 'Já existe uma conta com esse e-mail. Tente entrar.'

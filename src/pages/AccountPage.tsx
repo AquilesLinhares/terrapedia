@@ -157,7 +157,8 @@ function SignInForm() {
         </label>
         {error && (
           <p role="alert" className="text-sm text-red-400">
-            {error}
+            {error.split('\n')[0]}
+            {error.includes('\n') && <small className="mt-0.5 block text-xs text-muted">{error.split('\n').slice(1).join(' ')}</small>}
           </p>
         )}
         <button
