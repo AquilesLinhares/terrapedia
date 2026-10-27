@@ -1,0 +1,145 @@
+{
+  "page": "The Twins",
+  "type": "chefe",
+  "format": 2,
+  "tags": [
+    "dois olhos",
+    "olhos mecânicos",
+    "olho vermelho e olho verde",
+    "olho verde",
+    "olho vermelho",
+    "olhos gêmeos",
+    "dois olhos gigantes",
+    "olhos robôs",
+    "chefe mecânico",
+    "olho de laser",
+    "olho de fogo",
+    "chamas amaldiçoadas",
+    "chefe da noite",
+    "alma da visão",
+    "lente",
+    "irmãos olho",
+    "gêmeos"
+  ],
+  "summary": "Dois olhos mecânicos que lutam juntos: um atira lasers, o outro cospe fogo amaldiçoado. Só atacam à noite.",
+  "facts": [
+    { "label": "Vida do Retinaser", "value": "", "modes": ["20.000", "30.000", "38.250"] },
+    { "label": "Vida do Spazmatismo", "value": "", "modes": ["23.000", "34.500", "43.988"] },
+    { "label": "Defesa", "value": "10 (sobe para 20 e 28 na 2ª fase)" },
+    { "label": "Quando", "value": "À noite (19:30 às 4:30)" }
+  ],
+  "quick": [
+    "Use o [[Mechanical Eye]] à noite. Sozinhos eles só vêm depois de destruir um altar no Modo Difícil, com 1 chance em 10 por noite de vir algum mecânico que ainda não caiu.",
+    "Mate **um olho de cada vez**. A wiki sugere começar pelo [[Spazmatism]], cujo fogo é o mais difícil de desviar. Com os dois na 2ª fase a luta fica muito pior.",
+    "O fogo do Spazmatismo aplica Inferno Amaldiçoado. Se amanhecer (4:30) eles fogem. Tenha botas rápidas e asas."
+  ],
+  "duo": {
+    "summoner": [
+      {
+        "stage": "hardmode",
+        "note": "Os lacaios escolhem um olho e acertam sozinhos: o seu trabalho é desviar do fogo e das investidas. Eles não são imunes ao Ichor.",
+        "take": [
+          "Spider Mask",
+          "Spider Breastplate",
+          "Spider Greaves",
+          "Blade Staff",
+          "Firecracker",
+          "Queen Spider Staff",
+          "Summoner Emblem",
+          "Pygmy Necklace",
+          "Flask of Ichor",
+          "Summoning Potion",
+          "Endurance Potion"
+        ]
+      },
+      {
+        "stage": "post-mech",
+        "take": ["Hallowed Hood", "Hallowed Plate Mail", "Durendal", "Ballista Cane"]
+      }
+    ],
+    "mage": [
+      {
+        "stage": "hardmode",
+        "note": "Mantenha distância e não pare de se mover. Leve poções de mana.",
+        "take": [
+          "Adamantite Headgear",
+          "Adamantite Breastplate",
+          "Golden Shower",
+          "Crystal Ball",
+          "Sorcerer Emblem",
+          "Mana Regeneration Potion",
+          "Magic Power Potion",
+          "Endurance Potion"
+        ]
+      },
+      {
+        "stage": "post-mech",
+        "take": ["Hallowed Headgear", "Hallowed Plate Mail", "Unholy Trident", "Rainbow Rod"]
+      }
+    ]
+  },
+  "summon": {
+    "text": [
+      "O [[Mechanical Eye]] só funciona à noite e é feito na [[Mythril Anvil]] (ou na de Oricalco).",
+      "**Sozinhos**: no começo da noite, com o mundo em Modo Difícil e pelo menos um altar destruído, existe 1 chance em 10 de vir um mecânico que ainda não caiu. Para impedir, fique abaixo da superfície quando a contagem terminar."
+    ],
+    "recipesOf": ["Mechanical Eye"]
+  },
+  "arena": {
+    "text": [
+      "O melhor é um chão longo, reto e plano. Com [[Lightning Boots]] (ou melhor) e uma arma à distância ou mágica dá para correr e atirar sem parar. Largura exata: conferir.",
+      "Se quiser plataformas, use várias fileiras para subir e descer. [[Campfire]] e [[Heart Lantern]] para curar.",
+      "Na 2ª fase o Retinaser só acerta com linha de visão livre."
+    ]
+  },
+  "phases": [
+    {
+      "name": "1ª fase: os olhos",
+      "text": [
+        "O **Retinaser** (íris vermelha) atira lasers roxos de longe e dá 4 investidas longas. O **Spazmatismo** (íris verde) cospe bolas de fogo amaldiçoado e dá 10 investidas curtas e rápidas.",
+        "O fogo tem 11 chances em 16 de aplicar Inferno Amaldiçoado."
+      ]
+    },
+    {
+      "name": "2ª fase: mecânicos",
+      "text": [
+        "Cada olho muda quando fica abaixo de 40% da vida, gira e ganha defesa (20 no Retinaser, 28 no Spazmatismo).",
+        "O **Retinaser** só atira lasers vermelhos, com mira perfeita e em rajadas, cada vez mais rápido. O **Spazmatismo** vira uma boca que dá 6 investidas e depois solta um jato de fogo por uns 7 segundos."
+      ]
+    },
+    {
+      "name": "Expert e Mestre",
+      "text": [
+        "Os dois atiram mais rápido e os tiros ganham velocidade. As rajadas do Retinaser pioram muito com a vida baixa e o Spazmatismo quase não espera entre as investidas."
+      ]
+    }
+  ],
+  "drops": {
+    "groups": [
+      {
+        "label": "Para o progresso",
+        "items": [
+          { "name": "Soul of Sight", "qty": "25–40" },
+          { "name": "Hallowed Bar", "qty": "15–30", "note": "20–35 na Bolsa do Tesouro (Expert e Mestre)" },
+          { "name": "Greater Healing Potion", "qty": "5–15" },
+          "Treasure Bag (The Twins)",
+          { "name": "Mechanical Wheel Piece", "note": "só Expert e Mestre, dentro da bolsa" }
+        ]
+      }
+    ],
+    "text": [
+      "O saque completo só cai se **os dois olhos** morrerem; matar um só não solta corações.",
+      "As [[Soul of Sight|Almas da Visão]] são usadas no Cajado Ótico, o lacaio do Invocador (receita abaixo)."
+    ],
+    "recipesOf": ["Optic Staff"]
+  },
+  "dropsMore": {
+    "groups": [
+      {
+        "items": ["Twins Mask", "Retinazer Trophy", "Spazmatism Trophy", "Twins Relic", { "name": "Pair of Eyeballs", "note": "Mestre, 25%" }]
+      }
+    ]
+  },
+  "shortcuts": ["buffs", "arena"],
+  "source": { "revid": 1032403, "date": "2026-10-27" }
+}

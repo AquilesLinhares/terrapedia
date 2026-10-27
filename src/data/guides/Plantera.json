@@ -1,0 +1,162 @@
+{
+  "page": "Plantera",
+  "type": "chefe",
+  "format": 2,
+  "tags": [
+    "flor gigante",
+    "planta gigante",
+    "flor rosa",
+    "bulbo rosa",
+    "flor da selva",
+    "chefe da selva",
+    "planta carnívora",
+    "planta com dentes",
+    "videira",
+    "tentáculos",
+    "ganchos de planta",
+    "espinhos",
+    "sementes venenosas",
+    "chave do templo",
+    "templo da selva",
+    "chefe depois dos mecânicos",
+    "chefe do modo difícil",
+    "bulbo da plantera",
+    "plantera"
+  ],
+  "summary": "Planta gigante que se prende nos blocos da Selva Subterrânea com três ganchos e lança sementes e espinhos. Ao cair, deixa a Chave do Templo.",
+  "facts": [
+    { "label": "Vida", "value": "", "modes": ["30.000", "42.000", "53.550"] },
+    { "label": "Defesa", "value": "36 (dobra se ela ficar furiosa; 2ª fase: conferir)" },
+    { "label": "Quando", "value": "Qualquer hora, na Selva Subterrânea" },
+    { "label": "Fase do jogo", "value": "Depois dos três mecânicos" }
+  ],
+  "quick": [
+    "Quebre um **Bulbo da Plantera** (flor rosa que brilha) na Selva Subterrânea. Os bulbos só nascem depois dos três mecânicos.",
+    "Lute dentro da Selva Subterrânea, num espaço limpo e **sem paredes de fundo**. Na 2ª fase mate logo os 8 tentáculos: eles não voltam.",
+    "Se você sair da Selva Subterrânea, ela fica furiosa (dobro de dano e de defesa). Cuidado com as bolas de espinho no chão."
+  ],
+  "duo": {
+    "summoner": [
+      {
+        "stage": "post-all-mechs",
+        "note": "Antes dela. Depois que ela cair, o Cajado Pigmeu e o chicote dela entram na sua lista (veja os drops).",
+        "take": [
+          "Chlorophyte Visor",
+          "Chlorophyte Plate Mail",
+          "Chlorophyte Greaves",
+          "Optic Staff",
+          "Durendal",
+          "Queen Spider Staff",
+          "Summoner Emblem",
+          "Pygmy Necklace",
+          "Flask of Ichor",
+          "Summoning Potion",
+          "Lifeforce Potion"
+        ]
+      }
+    ],
+    "mage": [
+      {
+        "stage": "post-all-mechs",
+        "note": "Prefira armas que atravessam para limpar os tentáculos. Depois que ela cair, o Soprador de Folhas e a Explosão de Urtiga entram na sua lista (veja os drops).",
+        "take": [
+          "Chlorophyte Headgear",
+          "Chlorophyte Plate Mail",
+          "Chlorophyte Greaves",
+          "Venom Staff",
+          "Golden Shower",
+          "Crystal Ball",
+          "Celestial Emblem",
+          "Mana Regeneration Potion",
+          "Magic Power Potion",
+          "Lifeforce Potion"
+        ]
+      }
+    ]
+  },
+  "summon": {
+    "text": [
+      "Depois dos três mecânicos (e da Parede de Carne), o jogo avisa que os **Bulbos da Plantera** começaram a nascer na Selva Subterrânea. Eles brilham fraco, em rosa.",
+      "Quebrar o bulbo chama a Plantera, normalmente fora da tela. Se ela já estiver viva, outro bulbo só some."
+    ]
+  },
+  "arena": {
+    "text": [
+      "Um espaço aberto dentro da Selva Subterrânea (tamanho exato: conferir). Alargar uma colmeia é um jeito rápido.",
+      "Tire as **paredes de fundo**: sem elas ela se prende menos na 2ª fase. Passagens estreitas também a deixam lenta.",
+      "[[Living Fire Block|Blocos de Fogo Vivo]] iluminam sem servir de apoio para ela. Um [[Teleporter|Teletransportador]] ou a [[Gravitation Potion]] ajudam contra as bolas de espinho no chão.",
+      "[[Campfire]] e [[Heart Lantern]] para curar."
+    ]
+  },
+  "phases": [
+    {
+      "name": "1ª forma: flor",
+      "text": [
+        "Rasteja devagar, mantém distância e atira sementes (e, abaixo de 80% da vida, sementes venenosas e bolas de espinho). Só atira com linha de visão livre.",
+        "No Expert e no Mestre as sementes atravessam blocos. Andar em círculos ajuda: as sementes vão em linha reta."
+      ]
+    },
+    {
+      "name": "2ª forma: boca (abaixo de 50%)",
+      "text": [
+        "Perde as pétalas, fica bem mais rápida e agressiva, e ganha **8 tentáculos** presos por videiras. Eles dão dano de contato e atrapalham, mas têm pouca vida e não nascem de novo.",
+        "Solta esporos rosa que passam por blocos e morrem com um golpe. Agora ela também se prende nas paredes de fundo."
+      ]
+    },
+    {
+      "name": "Furiosa",
+      "text": [
+        "Se o alvo sai da Selva Subterrânea (incluindo para a superfície ou o Submundo), ela dobra dano e defesa (na 2ª forma, defesa 4 vezes maior) e fica mais rápida. Partes de Corrupção, Carmim ou Consagrado dentro da Selva não contam, desde que existam blocos de Selva suficientes por perto (conferir quantos)."
+      ]
+    }
+  ],
+  "drops": {
+    "groups": [
+      {
+        "label": "Para o progresso",
+        "items": [
+          { "name": "Temple Key", "note": "sempre: abre o Templo da Selva (Golem)" },
+          { "name": "Greater Healing Potion", "qty": "5–15" },
+          "Treasure Bag (Plantera)"
+        ]
+      },
+      {
+        "label": "Invocador",
+        "items": [
+          { "name": "Pygmy Staff", "note": "lacaio; 25% (50% no Expert e no Mestre)" },
+          { "name": "Vulgar Display of Flower", "note": "chicote; 12,5%" },
+          { "name": "Spore Sac", "note": "só Expert e Mestre, dentro da bolsa" }
+        ]
+      },
+      {
+        "label": "Mago",
+        "items": [
+          { "name": "Nettle Burst", "note": "12,5%" },
+          { "name": "Leaf Blower", "note": "12,5%" },
+          { "name": "Wasp Gun", "note": "12,5%; muito melhor com o Pacote de Colmeias" }
+        ]
+      }
+    ],
+    "text": [
+      "Depois dela: o Calabouço ganha inimigos novos e mais fortes (que soltam [[Ectoplasm]]), as chaves de bioma abrem os baús do Calabouço, o [[Cyborg]] pode se mudar e o [[Witch Doctor]] passa a vender [[Leaf Wings]] e itens de invocação."
+    ]
+  },
+  "dropsMore": {
+    "groups": [
+      {
+        "items": [
+          "Venus Magnum",
+          "Flower Pow",
+          "Seedler",
+          "Thorn Hook",
+          "The Axe",
+          "Seedling",
+          "Plantera Mask",
+          "Plantera Trophy"
+        ]
+      }
+    ]
+  },
+  "shortcuts": ["buffs", "arena", "drops"],
+  "source": { "revid": 1034418, "date": "2026-10-27" }
+}

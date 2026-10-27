@@ -114,6 +114,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `scripts/` — geração do dicionário e das receitas (veja abaixo)
 - `src/data/recipes.json` — receitas geradas por `scripts/build-recipes.mjs`. Não editar à mão.
 - `src/lib/recipes.ts` — lê as receitas: `useRecipeBook()`, nomes PT (`ptName`), sprites, "Usado em" (`usesOf`)
+- `src/lib/setNames.ts` — nomes PT dos conjuntos de armadura (`SET_NAMES`, usados por `ptName`); conjunto não tem sprite nem nome no dicionário, então nas caixas "Para a nossa dupla" liste as **peças** (ex.: Hallowed Hood + Hallowed Plate Mail), não "Hallowed armor"
 - `src/lib/craftTree.ts` — árvore automática (`buildTree`), materiais totais (`computeTotals`) e escolhas salvas
 - `src/components/CraftingSection.tsx`, `RecipeList.tsx`, `ItemChip.tsx` — receitas e "Usado em" no artigo
 - `src/components/GroupLinkPicker.tsx` — ligar itens dentro de um grupo ("uso X para craftar Y")
@@ -240,7 +241,7 @@ de itens que não existem no dicionário/receitas e regenera o `guide-index.json
 Molde curto, só com o que se usa **durante o jogo** (leitor: dupla Invocador + Mago, Terraria 1.4.5). Fica no mesmo lugar
 (`src/data/guides/<Título>.json`) e convive com o molde antigo: sem `format` = antigo (`GuideView`); `format: 2` = novo
 (`GuideViewV2.tsx`; `ArticlePage` escolhe por `isV2`). Tipos em `src/lib/guides.ts` (`BossGuideV2`, `ItemGuideV2`, `CraftingGuideV2`).
-Piloto: **Eye of Cthulhu** (chefe, reescrito no molde novo) e **Zenith** (item). Blood Moon e Extractinator ainda no molde antigo.
+Páginas no molde novo: **Eye of Cthulhu**, **The Destroyer**, **The Twins**, **Skeletron Prime**, **Plantera** (chefes), **Zenith** (item) e **Mythril Anvil** (crafting; 2026-10-27). Blood Moon e Extractinator ainda no molde antigo.
 
 - **Comum**: `page`, `type`, `format: 2`, `tags`, `summary` (1 frase), `facts` (ficha; um fato pode ter `modes: [Clássico, Expert, Mestre]` e o
   do mundo ativo fica dourado), `quick` ("Em 10 segundos"), `duo`, `shortcuts?`, `source`. Fora do molde: curiosidades, dicas de dinheiro, trivia, histórico.
@@ -251,13 +252,14 @@ Piloto: **Eye of Cthulhu** (chefe, reescrito no molde novo) e **Zenith** (item).
 - **Item** (`type: "item"`): ficha → `quick` (**2 linhas**: para que serve / quando vale a pena) → `duo = { summoner, mage }` com
   `{ text, alt?: ItemRef[] }` (serve para a classe? alternativas melhores ou mais baratas) → `obtain` (drop, vendedor, observações; **a receita e o botão da
   árvore vêm sozinhos** do `recipes.json`) → `modifier?` (texto + link para `/ferramentas/modificador?item=`) → `usedIn?` (o "Usado em" vem sozinho).
-- **Crafting** (`type: "crafting"`, **só o molde está definido, sem páginas ainda**): `quick` (2 linhas) → `what` (o que faz) → `build` (como montar a
+- **Crafting** (`type: "crafting"`; primeira página: Mythril Anvil): `quick` (2 linhas) → `what` (o que faz) → `build` (como montar a
   estação) → `produces` (o que importante ela produz, **um grupo por etapa** com a etapa no título) → `substitutes` (ex.: Mithril ou Orichalcum) →
   `shortcuts: ["tree"]` (atalho para `/arvore/<Item>`). Não tem `duo`.
 - **`duo`**: caixa "Para a nossa dupla" com Invocador e Mago. Destacada (borda dourada) quando o mundo ativo tem membros dessas classes (mostra os
   nomes); sem mundo continua visível com as duas classes.
 - **`shortcuts`** (sempre sobre a própria página): `buffs` e `arena` (chefe tem que estar em `bossPrep.ts`), `drops` (aparece na tabela `drops`),
   `modifier` (item em `tools-data.json`), `tree` (tem receita). O script recusa atalho que não existe.
+- **Nomes**: todo item citado precisa existir no dicionário com nome PT diferente do inglês (confira com uma busca em `dictionary.json`; nomes iguais ao inglês no jogo, como Plantera e Excalibur, estão certos). Nada de inglês solto no texto; nome que falta = "conferir" e anotar na resposta.
 - **"conferir"**: onde não houver certeza de um número ou fonte, escreva "conferir" no texto; `build-guides.mjs` conta quantas marcas cada página tem.
 - **Criar uma página nova**: (1) leia o artigo pela API (`action=parse&prop=wikitext|revid`) e confira números em `tools-data.json`/`recipes.json`;
   (2) escreva `src/data/guides/<Título>.json` com `format: 2`, nomes de itens em inglês, textos com palavras próprias; (3) classes/etapas do `duo`

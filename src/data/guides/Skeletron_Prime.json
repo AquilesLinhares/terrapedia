@@ -1,0 +1,144 @@
+{
+  "page": "Skeletron Prime",
+  "type": "chefe",
+  "format": 2,
+  "tags": [
+    "caveira mecânica",
+    "caveira robô",
+    "esqueleto de metal",
+    "esqueleto robô",
+    "cabeça de metal",
+    "cabeça giratória",
+    "quatro braços",
+    "braços mecânicos",
+    "serra",
+    "canhão",
+    "garra",
+    "laser",
+    "chefe mecânico",
+    "chefe da noite",
+    "alma do medo",
+    "esqueletron alfa",
+    "esqueletron mecânico"
+  ],
+  "summary": "Cabeça de esqueleto mecânica com quatro braços (canhão, laser, serra e garra). Só ataca à noite e, se o dia nascer, vira morte instantânea.",
+  "facts": [
+    { "label": "Vida", "value": "", "modes": ["28.000", "42.000", "53.550"] },
+    { "label": "Defesa", "value": "24 (48 girando; 9999 de dia)" },
+    { "label": "Quando", "value": "À noite (19:30 às 4:30)" },
+    { "label": "Ichor", "value": "Não é imune" }
+  ],
+  "quick": [
+    "Use a [[Mechanical Skull]] à noite. Sozinho ele só vem depois de destruir um altar no Modo Difícil, com 1 chance em 10 por noite de vir algum mecânico que ainda não caiu.",
+    "Vale derrubar os **braços primeiro**, começando pelo laser (o mais difícil de desviar): sem eles a cabeça fica sem proteção e a luta fica bem mais fácil.",
+    "A cada 10 segundos ele gira por uns 6,7 s com o dobro de dano: corra de lado. Se amanhecer (4:30) ele enlouquece e mata ao encostar: mate antes disso."
+  ],
+  "duo": {
+    "summoner": [
+      {
+        "stage": "hardmode",
+        "note": "O Ichor baixa a defesa dele, que é alta: o Frasco de Ichor ajuda. Os lacaios acertam sozinhos, desvie do giro.",
+        "take": [
+          "Spider Mask",
+          "Spider Breastplate",
+          "Spider Greaves",
+          "Blade Staff",
+          "Firecracker",
+          "Queen Spider Staff",
+          "Summoner Emblem",
+          "Pygmy Necklace",
+          "Flask of Ichor",
+          "Summoning Potion",
+          "Endurance Potion"
+        ]
+      },
+      {
+        "stage": "post-mech",
+        "take": ["Hallowed Hood", "Hallowed Plate Mail", "Durendal", "Ballista Cane"]
+      }
+    ],
+    "mage": [
+      {
+        "stage": "hardmode",
+        "note": "O Chuveiro Dourado aplica Ichor e baixa a defesa dele. Use-o de vez em quando e troque para a arma de mais dano.",
+        "take": [
+          "Adamantite Headgear",
+          "Adamantite Breastplate",
+          "Golden Shower",
+          "Crystal Ball",
+          "Sorcerer Emblem",
+          "Mana Regeneration Potion",
+          "Magic Power Potion",
+          "Endurance Potion"
+        ]
+      },
+      {
+        "stage": "post-mech",
+        "take": ["Hallowed Headgear", "Hallowed Plate Mail", "Unholy Trident", "Rainbow Rod"]
+      }
+    ]
+  },
+  "summon": {
+    "text": [
+      "A [[Mechanical Skull]] só funciona à noite e é feita na [[Mythril Anvil]] (ou na de Oricalco).",
+      "**Sozinho**: no começo da noite, com o mundo em Modo Difícil e pelo menos um altar destruído, existe 1 chance em 10 de vir um mecânico que ainda não caiu. Para impedir, fique abaixo da superfície quando a contagem terminar."
+    ],
+    "recipesOf": ["Mechanical Skull"]
+  },
+  "arena": {
+    "text": [
+      "Um chão plano ou uma ponte no céu, para correr de lado quando ele girar. Tamanho exato: conferir.",
+      "Asas ajudam muito a desviar na vertical. [[Campfire]] e [[Heart Lantern]] para curar.",
+      "As bombas do canhão explodem em plataformas: cuidado ao lutar em cima delas."
+    ]
+  },
+  "phases": [
+    {
+      "name": "Os quatro braços",
+      "text": [
+        "**Canhão** (7.000 / 10.500 / 13.387 de vida, defesa 23): solta bombas que não quebram blocos, quase sempre para cima.",
+        "**Laser** (6.000 / 9.000 / 11.475, defesa 20): atira lasers vermelhos na sua direção.",
+        "**Serra** (9.000 / 13.500 / 17.212, defesa 38): fica embaixo de você. **Garra** (9.000 / 13.500 / 17.212, defesa 34): balança e dá botes."
+      ]
+    },
+    {
+      "name": "Giro da cabeça",
+      "text": [
+        "A cada 10 s ele gira por uns 6,7 s: cabeça com espinhos, dano e defesa dobrados (defesa 48). O canhão mira direto, a serra persegue e o laser atira bem mais rápido.",
+        "No Expert e no Mestre o giro é bem mais veloz."
+      ]
+    },
+    {
+      "name": "Amanhecer",
+      "text": [
+        "Às 4:30 ele fica furioso para sempre: defesa e dano 9999. Ainda dá para matá-lo assim e o saque é o mesmo, mas ao encostar você morre."
+      ]
+    }
+  ],
+  "drops": {
+    "groups": [
+      {
+        "label": "Para o progresso",
+        "items": [
+          { "name": "Soul of Fright", "qty": "25–40" },
+          { "name": "Hallowed Bar", "qty": "15–30", "note": "20–35 na Bolsa do Tesouro (Expert e Mestre)" },
+          { "name": "Greater Healing Potion", "qty": "5–15" },
+          "Treasure Bag (Skeletron Prime)",
+          { "name": "Mechanical Battery Piece", "note": "só Expert e Mestre, dentro da bolsa" }
+        ]
+      }
+    ],
+    "text": [
+      "Com os três mecânicos derrotados, os Bulbos da Plantera começam a nascer na Selva Subterrânea."
+    ]
+  },
+  "dropsMore": {
+    "groups": [
+      {
+        "items": ["Skeletron Prime Mask", "Skeletron Prime Trophy", "Skeletron Prime Relic", { "name": "Robotic Skull", "note": "Mestre, 25%" }]
+      }
+    ]
+  },
+  "shortcuts": ["buffs", "arena"],
+  "source": { "revid": 1032402, "date": "2026-10-27" }
+}

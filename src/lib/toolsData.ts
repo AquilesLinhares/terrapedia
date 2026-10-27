@@ -4,6 +4,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import { loadExclusive } from './classGuides'
+import { SET_NAMES } from './setNames'
 import { STAGES, type StageId } from './progression'
 import { useWorld, useWorldStage, type PlayerClass } from './world'
 
@@ -116,27 +117,7 @@ export function useToolsData() {
   return value
 }
 
-// Conjuntos de armadura não têm nome no jogo (o dicionário só tem as peças). Os mesmos de
-// scripts/manual-names.json, que só entram no dicionário quando ele for gerado de novo.
-export const SET_NAMES: Record<string, string> = {
-  'Obsidian armor': 'Armadura de Obsidiana',
-  'Bee armor': 'Armadura de Abelha',
-  'Spider armor': 'Armadura de Aranha',
-  'Forbidden armor': 'Armadura Proibida',
-  'Chlorophyte armor': 'Armadura de Clorofita',
-  'Hallowed armor': 'Armadura Consagrada',
-  'Tiki armor': 'Armadura Tiki',
-  'Spooky armor': 'Armadura Assustadora',
-  'Stardust armor': 'Armadura de Pó das Estrelas',
-  'Squire armor': 'Armadura do Escudeiro',
-  'Monk armor': 'Armadura do Monge',
-  'Apprentice armor': 'Armadura do Aprendiz',
-  'Huntress armor': 'Armadura da Caçadora',
-  'Valhalla Knight armor': 'Armadura do Cavaleiro de Valhalla',
-  'Shinobi Infiltrator armor': 'Armadura do Shinobi Invasor',
-  'Dark Artist armor': 'Armadura do Artista Sombrio',
-  'Red Riding armor': 'Armadura da Chapeuzinho Vermelho',
-}
+export { SET_NAMES }
 
 // ---------- Etapa e classe usadas pelas ferramentas ----------
 

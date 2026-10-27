@@ -1,0 +1,144 @@
+{
+  "page": "The Destroyer",
+  "type": "chefe",
+  "format": 2,
+  "tags": [
+    "minhoca gigante",
+    "minhocão",
+    "cobra de metal",
+    "verme mecânico",
+    "verme robô",
+    "serpente de metal",
+    "centopeia gigante",
+    "chefe mecânico",
+    "chefe verme",
+    "cobrão robô",
+    "chefe da noite",
+    "vermão de ferro",
+    "drones",
+    "sondas",
+    "lasers vermelhos",
+    "alma da força",
+    "primeiro mecânico",
+    "destruidor"
+  ],
+  "summary": "Verme mecânico gigante do Modo Difícil: todos os pedaços dividem a mesma vida e atiram lasers. Só ataca à noite.",
+  "facts": [
+    { "label": "Vida", "value": "", "modes": ["80.000", "120.000", "153.000"] },
+    { "label": "Defesa", "value": "30 no corpo (cabeça e cauda: conferir se mudou na 1.4.5)" },
+    { "label": "Quando", "value": "À noite (19:30 às 4:30)" },
+    { "label": "Debuffs", "value": "Imune, menos as marcações de chicote (conferir)" }
+  ],
+  "quick": [
+    "Use o [[Mechanical Worm]] à noite. Sozinho ele só vem depois de destruir um altar no Modo Difícil, com 1 chance em 10 por noite de vir algum mecânico que ainda não caiu.",
+    "Bata no corpo com armas que acertam vários pedaços e fique **acima** dele. Mate as [[Probe|Sondas]] que saem dele: elas soltam corações.",
+    "Ele atira de todos os pedaços e tenta cercar você. Se amanhecer (4:30) ele vai embora. Tenha asas e muita cura."
+  ],
+  "duo": {
+    "summoner": [
+      {
+        "stage": "hardmode",
+        "note": "Os lacaios acertam o corpo todo sozinhos: o seu trabalho é ficar acima dele e desviar. Ele é imune a debuffs, então o frasco não ajuda.",
+        "take": [
+          "Spider Mask",
+          "Spider Breastplate",
+          "Spider Greaves",
+          "Blade Staff",
+          "Firecracker",
+          "Queen Spider Staff",
+          "Summoner Emblem",
+          "Pygmy Necklace",
+          "Summoning Potion",
+          "Endurance Potion"
+        ]
+      },
+      {
+        "stage": "post-mech",
+        "note": "Se outro mecânico já caiu, as Barras Consagradas dele viram armadura nova.",
+        "take": ["Hallowed Hood", "Hallowed Plate Mail", "Durendal", "Ballista Cane"]
+      }
+    ],
+    "mage": [
+      {
+        "stage": "hardmode",
+        "note": "A mana acaba rápido: leve poções. Armas que atravessam acertam vários pedaços de uma vez. Ele é imune a debuffs, então o Chuveiro Dourado vale só pelo dano.",
+        "take": [
+          "Adamantite Headgear",
+          "Adamantite Breastplate",
+          "Golden Shower",
+          "Crystal Ball",
+          "Sorcerer Emblem",
+          "Mana Regeneration Potion",
+          "Magic Power Potion",
+          "Endurance Potion"
+        ]
+      },
+      {
+        "stage": "post-mech",
+        "take": ["Hallowed Headgear", "Hallowed Plate Mail", "Unholy Trident", "Rainbow Rod"]
+      }
+    ]
+  },
+  "summon": {
+    "text": [
+      "O [[Mechanical Worm]] só funciona à noite e é feito na [[Mythril Anvil]] (ou na de Oricalco).",
+      "**Sozinho**: no começo da noite, com o mundo em Modo Difícil e pelo menos um altar destruído, existe 1 chance em 10 de vir um mecânico que ainda não caiu. Para impedir, fique abaixo da superfície quando a contagem terminar."
+    ],
+    "recipesOf": ["Mechanical Worm"]
+  },
+  "arena": {
+    "text": [
+      "Uma fileira longa de [[Wood Platform|plataformas]] bem alta, no céu ou acima da superfície. Tamanho exato: conferir.",
+      "Fique em cima da fileira: o corpo passa por baixo e você acerta muitos pedaços. Olhe o mapa para ver por onde ele vai sair.",
+      "[[Campfire]], [[Heart Lantern]] e [[Star in a Bottle]] ajudam. Um [[Teleporter]] ou espelho tira você do aperto, mas ele anda livre fora da tela."
+    ]
+  },
+  "phases": [
+    {
+      "name": "O que ele faz",
+      "text": [
+        "Salta do chão para bater, tenta cercar você com o corpo e dispara lasers vermelhos de todos os pedaços (44 / 72 / 108 de dano).",
+        "Não desiste: segue você de qualquer distância até o dia nascer."
+      ]
+    },
+    {
+      "name": "Sondas",
+      "text": [
+        "Cada pedaço do corpo tem 1 chance em 25 de soltar uma [[Probe|Sonda]] quando leva dano (uma por pedaço; a luz vermelha dele apaga).",
+        "As sondas voam, atiram lasers rosa (50 / 88 / 132) e **continuam vivas** mesmo se o chefe morrer. Soltam corações."
+      ]
+    },
+    {
+      "name": "Expert e Mestre",
+      "text": [
+        "Mesmo comportamento, com os números de dano maiores citados acima."
+      ]
+    }
+  ],
+  "drops": {
+    "groups": [
+      {
+        "label": "Para o progresso",
+        "items": [
+          { "name": "Soul of Might", "qty": "25–40" },
+          { "name": "Hallowed Bar", "qty": "15–30", "note": "20–35 na Bolsa do Tesouro (Expert e Mestre)" },
+          { "name": "Greater Healing Potion", "qty": "5–15" },
+          "Treasure Bag (The Destroyer)",
+          { "name": "Mechanical Wagon Piece", "note": "só Expert e Mestre, dentro da bolsa" }
+        ]
+      }
+    ],
+    "text": [
+      "As Barras Consagradas viram a armadura e as armas Consagradas na [[Mythril Anvil]]."
+    ]
+  },
+  "dropsMore": {
+    "groups": [
+      {
+        "items": ["Destroyer Mask", "Destroyer Trophy", "Destroyer Relic", { "name": "Deactivated Probe", "note": "Mestre, 25%" }]
+      }
+    ]
+  },
+  "shortcuts": ["buffs", "arena"],
+  "source": { "revid": 1035268, "date": "2026-10-27" }
+}

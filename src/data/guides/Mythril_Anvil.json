@@ -1,0 +1,99 @@
+{
+  "page": "Mythril Anvil",
+  "type": "crafting",
+  "format": 2,
+  "tags": [
+    "bigorna do modo difícil",
+    "bigorna nova",
+    "bigorna melhor",
+    "bigorna de mithril",
+    "bigorna de oricalco",
+    "bigorna azul",
+    "bigorna verde",
+    "estação de craft",
+    "fazer armadura consagrada",
+    "fazer asas",
+    "fazer armas do modo difícil",
+    "onde fazer o olho mecânico",
+    "onde fazer o verme mecânico",
+    "invocar chefes mecânicos",
+    "bigorna depois da de ferro",
+    "craftar armadura de adamantina",
+    "craftar armadura de titânio"
+  ],
+  "summary": "Bigorna do Modo Difícil: faz quase tudo o que vem depois da bigorna de ferro, e faz também tudo o que a de ferro fazia.",
+  "facts": [
+    { "label": "Receita", "value": "10 Barras de Mithril (Oricalco: 12 barras)" },
+    { "label": "Onde fazer", "value": "Na Bigorna de Ferro ou de Chumbo" },
+    { "label": "Bigorna equivalente", "value": "Bigorna de Oricalco (faz as mesmas receitas)" },
+    { "label": "Fase do jogo", "value": "Modo Difícil" }
+  ],
+  "quick": [
+    "Faz as receitas da bigorna de ferro e quase tudo do Modo Difícil: armaduras, ferramentas, armas, asas e os itens que invocam os três mecânicos.",
+    "Monte logo ao entrar no Modo Difícil: sem ela você não invoca o Olho, o Verme nem a Caveira Mecânicos."
+  ],
+  "what": {
+    "text": [
+      "Substitui a [[Iron Anvil|Bigorna de Ferro]] e a [[Lead Anvil|Bigorna de Chumbo]]: tudo o que elas faziam, ela faz. Além disso transforma as barras do Modo Difícil em armas, armaduras, ferramentas, asas e outros itens.",
+      "A [[Orichalcum Anvil]] é a irmã dela e serve para as mesmas receitas: use a que o seu mundo tiver minério."
+    ]
+  },
+  "build": {
+    "text": [
+      "Receita na [[Iron Anvil|Bigorna de Ferro]] (ou de Chumbo): **10** [[Mythril Bar|Barras de Mithril]], ou **12** [[Orichalcum Bar|Barras de Oricalco]] para a de Oricalco.",
+      "As barras vêm do minério fundido na [[Furnace|Fornalha]]: 4 [[Mythril Ore|Minérios de Mithril]] ou de [[Orichalcum Ore|Oricalco]] por barra.",
+      "O mundo só gera Mithril **ou** Oricalco; o [[Chlorophyte Extractinator|Extrator de Clorofita]] troca uma barra pela da outra."
+    ],
+    "recipesOf": ["Mythril Anvil", "Orichalcum Anvil"]
+  },
+  "produces": {
+    "groups": [
+      {
+        "label": "Modo Difícil, começo",
+        "items": [
+          { "name": "Mechanical Eye", "note": "invoca os Gêmeos" },
+          { "name": "Mechanical Worm", "note": "invoca o Destruidor" },
+          { "name": "Mechanical Skull", "note": "invoca o Esqueletron Alfa" },
+          { "name": "Adamantite Forge", "note": "para as barras de Adamantina (ou a de Titânio)" },
+          { "name": "Mythril Chainmail", "note": "armaduras e ferramentas do minério deste mundo" },
+          { "name": "Adamantite Breastplate", "note": "armadura do minério seguinte" },
+          { "name": "Forbidden Robes", "note": "armadura Proibida (Mago e Invocador)" },
+          { "name": "Spider Staff", "note": "lacaio do Invocador (precisa de Presa de Aranha)" },
+          { "name": "Queen Spider Staff", "note": "sentinela do Invocador" }
+        ]
+      },
+      {
+        "label": "Depois dos mecânicos",
+        "items": [
+          { "name": "Hallowed Plate Mail", "note": "armadura Consagrada (24 Barras Consagradas no peitoral)" },
+          { "name": "Durendal", "note": "chicote do Invocador" },
+          { "name": "Optic Staff", "note": "lacaio do Invocador (20 Almas da Visão)" },
+          { "name": "Rainbow Rod", "note": "cajado do Mago" },
+          { "name": "Magical Harp", "note": "arma mágica (usa Almas da Visão)" },
+          { "name": "Chlorophyte Plate Mail", "note": "armadura de Clorofita (precisa de Barras de Clorofita, feitas na Forja de Adamantina)" },
+          { "name": "Venom Staff", "note": "cajado do Mago" },
+          { "name": "Angel Wings", "note": "asas (a bigorna faz várias; as primeiras gastam Almas do Voo)" }
+        ]
+      },
+      {
+        "label": "Depois da Plantera e mais adiante",
+        "items": [
+          { "name": "Spectre Mask", "note": "armadura do Espectro (conferir etapa exata)" },
+          { "name": "Terra Blade", "note": "espada" },
+          { "name": "Zenith", "note": "a espada final" }
+        ]
+      }
+    ],
+    "text": [
+      "A lista tem só o que importa para a nossa dupla. A bigorna faz bem mais: as ferramentas de cada minério, as repetidoras, os sabres de luz e outros itens (veja a seção \"Usado em\" do app)."
+    ]
+  },
+  "substitutes": {
+    "text": [
+      "**Mithril ou Oricalco**: dá no mesmo. A [[Orichalcum Anvil]] faz as mesmas receitas que a [[Mythril Anvil]], então os guias aceitam qualquer uma.",
+      "**Antes dela**: a [[Iron Anvil|Bigorna de Ferro]] ou a [[Lead Anvil|Bigorna de Chumbo]] ainda fazem o que fazem, mas nada do Modo Difícil."
+    ]
+  },
+  "shortcuts": ["tree"],
+  "source": { "revid": 1012455, "date": "2026-10-27" }
+}

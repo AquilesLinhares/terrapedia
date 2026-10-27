@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { WIKI_BASE } from './wikiApi'
 import { loadDictionary, normalize } from './ptSearch'
+import { SET_NAMES } from './setNames'
 
 export interface Ingredient {
   name: string
@@ -140,7 +141,7 @@ export function ptName(b: RecipeBook, en: string): string {
     const base = en.slice(4)
     return `Qualquer ${base.split(' or ').map((part) => ptName(b, part)).join(' ou ')}`
   }
-  return b.pt.get(en.toLowerCase()) ?? EXTRA_PT[en] ?? en
+  return SET_NAMES[en] ?? b.pt.get(en.toLowerCase()) ?? EXTRA_PT[en] ?? en
 }
 
 /** Endereço do sprite. Grupos usam o sprite do primeiro item. */
