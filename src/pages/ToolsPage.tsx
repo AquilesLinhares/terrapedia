@@ -83,6 +83,13 @@ export const TOOLS = [
     icon: 'Golden Fishing Rod',
     ready: true,
   },
+  {
+    slug: 'construtor',
+    title: 'Modo construtor',
+    text: 'Busque blocos e paredes, veja como conseguir cada um e some os materiais da sua obra, marcando o que já tem.',
+    icon: 'Gray Brick',
+    ready: true,
+  },
 ]
 
 /** Página `/ferramentas`: cartões das ferramentas de jogo. */

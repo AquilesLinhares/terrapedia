@@ -78,6 +78,12 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Lote D, parte 1 — Quadro de tarefas do mundo (feito, 2026-10-27)**: seção "Quadro de tarefas da dupla" em `/mundo` (tabela
   `world_tasks`; sem mundo, `terrapedia:tasks`). Veja "Mundo compartilhado" abaixo.
 
+- **Lote D, parte 2 — Modo construtor (feito, 2026-10-27)**: `/ferramentas/construtor` (`src/pages/tools/BuilderPage.tsx`, lógica em
+  `src/lib/builderPlan.ts`). Catálogo de blocos/paredes/plataformas tirado das receitas pelo sufixo do nome EN (+ `EXTRA_MATERIALS`
+  que existam); lista "o que vou construir" no aparelho (`terrapedia:builder-plan`); materiais somados com `computeTotals` item a
+  item; "já tenho" usa a tabela `world_craft_checks` com a lista `@construtor` (mundo ativo) ou `terrapedia:builder-checks`. Sem
+  receita e sem vendedor/drop nos dados = "conferir". Bancadas de etapa avançada em `STATION_MIN_STAGE`.
+
 ## Stack
 
 - Vite + React + TypeScript
@@ -85,7 +91,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `vite-plugin-pwa` (manifest + service worker)
 - React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`, `/historico`,
   `/classes`, `/classes/:slug`, `/ferramentas`, `/ferramentas/lacaios`, `/ferramentas/modificador`, `/ferramentas/buffs`,
-  `/ferramentas/arena`, `/ferramentas/comparar`, `/ferramentas/felicidade`, `/ferramentas/vendedores`, `/ferramentas/condicoes`, `/ferramentas/drops`, `/ferramentas/shimmer`, `/ferramentas/pescaria`).
+  `/ferramentas/arena`, `/ferramentas/comparar`, `/ferramentas/felicidade`, `/ferramentas/vendedores`, `/ferramentas/condicoes`, `/ferramentas/drops`, `/ferramentas/shimmer`, `/ferramentas/pescaria`, `/ferramentas/construtor`).
   Só `HomePage` e `ArticlePage` vão no pacote principal; as outras telas são `lazy()` em `main.tsx`.
 
 ## Estrutura
