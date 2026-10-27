@@ -127,7 +127,7 @@ function SignInForm() {
         mesma conta.
       </p>
 
-      <form onSubmit={submit} className="space-y-3 rounded-xl border border-line bg-panel p-4">
+      <form onSubmit={submit} noValidate className="space-y-3 rounded-xl border border-line bg-panel p-4">
         <div className="flex gap-1 rounded-xl bg-bg p-1">
           {tab('signIn', 'Entrar')}
           {tab('signUp', 'Criar conta')}
@@ -148,7 +148,6 @@ function SignInForm() {
           <input
             type="password"
             required
-            minLength={6}
             autoComplete={mode === 'signIn' ? 'current-password' : 'new-password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
