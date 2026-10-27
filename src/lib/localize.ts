@@ -90,6 +90,7 @@ const LABEL_SELECTOR = [
   '.usetime',
   '.small-bold',
   '.coin .t',
+  '.mode-legend span',
 ].join(',')
 
 // Onde um nome do jogo sozinho também conta como rótulo ("Moon Lord" como título de seção)

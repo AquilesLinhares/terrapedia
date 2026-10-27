@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { cleanArticle } from '../lib/cleanArticle'
+import { cleanArticle, tidyArticle } from '../lib/cleanArticle'
 import { fetchSearch, PageNotFoundError, WikiUnavailableError, wikiPageUrl } from '../lib/wikiApi'
 import { loadPage } from '../lib/pageCache'
 import { getArticle } from '../lib/articleLoader'
@@ -66,8 +66,13 @@ export default function ArticlePage() {
 
   // Português (nomes e rótulos do jogo) ou o original em inglês
   const [lang, setLang] = useArticleLang()
-  const localizedHtml = useLocalizedArticle(state.status === 'ok' ? state.html : null, lang === 'pt' && !showGuide)
-  const articleHtml = state.status === 'ok' ? (lang === 'pt' ? localizedHtml : state.html) : null
+  // Modo limpo (padrão): tira áudio, histórico, referências etc. e recolhe seções longas.
+  // "Página completa" (?completa=1) mostra tudo; nas páginas com resumo, um #Seção da wiki também.
+  const rawMode = searchParams.has('completa') || (!!guidePage && wantsFull)
+  const baseHtml = state.status === 'ok' ? state.html : null
+  const shownHtml = useMemo(() => (baseHtml && !rawMode ? tidyArticle(baseHtml) : baseHtml), [baseHtml, rawMode])
+  const localizedHtml = useLocalizedArticle(shownHtml, lang === 'pt' && !showGuide)
+  const articleHtml = state.status === 'ok' ? (lang === 'pt' ? localizedHtml : shownHtml) : null
 
   useLayoutEffect(() => {
     setCraftingSlot(contentRef.current?.querySelector<HTMLElement>('[data-crafting-slot]') ?? null)
@@ -171,8 +176,9 @@ export default function ArticlePage() {
   useEffect(() => {
     if (state.status !== 'ok' || !hash) return
     const target = document.getElementById(decodeURIComponent(hash.slice(1)))
+    openAncestors(target)
     target?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [state, hash])
+  }, [state, hash, articleHtml])
 
   // Links internos da wiki: em vez de recarregar a página, navega dentro do app.
   function onContentClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -182,7 +188,9 @@ export default function ArticlePage() {
     if (href.startsWith('#')) {
       e.preventDefault()
       navigate({ hash: href }, { replace: true })
-      document.getElementById(decodeURIComponent(href.slice(1)))?.scrollIntoView({ behavior: 'smooth' })
+      const target = document.getElementById(decodeURIComponent(href.slice(1)))
+      openAncestors(target)
+      target?.scrollIntoView({ behavior: 'smooth' })
     } else if (link.dataset.internal) {
       e.preventDefault()
       navigate(href)
@@ -316,6 +324,21 @@ export default function ArticlePage() {
         </div>
       )}
 
+      {!guidePage && state.status === 'ok' && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-panel/70 px-4 py-2.5">
+          <p className="text-sm text-muted">
+            {rawMode ? 'Você está vendo a página completa da wiki.' : 'Versão limpa: sem áudio, histórico e referências; seções longas recolhidas.'}
+          </p>
+          <button
+            type="button"
+            onClick={() => (rawMode ? setSearchParams({}) : setSearchParams({ completa: '1' }))}
+            className="h-8 shrink-0 rounded-full border border-gold/50 bg-gold/10 px-3.5 text-sm font-semibold text-gold transition hover:bg-gold/20"
+          >
+            {rawMode ? 'Ver versão limpa' : 'Ver página completa da wiki'}
+          </button>
+        </div>
+      )}
+
       {state.status === 'error' ? (
         <div className="py-6 text-center text-muted">
           <p>{state.message}</p>
@@ -362,6 +385,11 @@ export default function ArticlePage() {
       </p>
     </article>
   )
+}
+
+/** Abre as seções recolhidas (modo limpo) que contêm o alvo de uma âncora. */
+function openAncestors(el: HTMLElement | null) {
+  for (let d = el?.closest('details'); d; d = d.parentElement?.closest('details') ?? null) d.open = true
 }
 
 interface HeaderProps {

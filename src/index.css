@@ -88,6 +88,42 @@ input[type='search']::-webkit-search-cancel-button {
   @apply mt-8 mb-3 border-b border-line pb-1 font-display text-2xl font-bold text-gold;
   scroll-margin-top: 4.5rem;
 }
+/* Modo limpo: seções recolhidas */
+.wiki-content details.wiki-sec {
+  @apply mt-3 rounded-lg border border-line bg-panel/40;
+}
+.wiki-content details.wiki-sec > summary {
+  @apply flex cursor-pointer list-none items-center gap-2 px-3 py-2;
+}
+.wiki-content details.wiki-sec > summary::-webkit-details-marker {
+  display: none;
+}
+.wiki-content details.wiki-sec > summary::before {
+  content: '▸';
+  @apply text-gold;
+}
+.wiki-content details.wiki-sec[open] > summary::before {
+  content: '▾';
+}
+.wiki-content details.wiki-sec > summary > h2 {
+  @apply m-0 border-0 pb-0 text-xl;
+}
+.wiki-content details.wiki-sec > .wiki-sec-body {
+  @apply px-3 pb-3;
+}
+/* Valores por modo */
+.wiki-content .mv-expert {
+  color: #ffb066;
+}
+.wiki-content .mv-master {
+  color: #ff7a8a;
+}
+.wiki-content .mode-legend {
+  @apply px-3 py-1 text-center text-xs text-muted;
+}
+.wiki-content .mode-tag {
+  @apply text-muted;
+}
 .wiki-content h3 {
   @apply mt-6 mb-2 font-display text-xl font-bold text-ink;
   scroll-margin-top: 4.5rem;

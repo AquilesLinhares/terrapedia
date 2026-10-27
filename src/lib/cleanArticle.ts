@@ -74,6 +74,7 @@ export function cleanArticle(rawHtml: string): string {
   })
 
   markCraftingSection(doc)
+  fixModeValues(doc)
 
   root.querySelectorAll('a').forEach((a) => {
     const href = a.getAttribute('href')
@@ -97,6 +98,141 @@ export function cleanArticle(rawHtml: string): string {
   })
 
   return DOMPurify.sanitize(root.innerHTML, { ADD_ATTR: ['target', 'loading', 'decoding', 'fetchpriority'] })
+}
+
+/**
+ * Valores que mudam por modo (Clássico / Expert / Mestre). Na wiki cada um fica num `<span class="m-normal|m-expert|m-master">`
+ * e o CSS/JS dela mostra um por vez; aqui não há nada disso, então os três saíam colados ("60120180").
+ * Viram "60 · 120 · 180" (um só, se todos iguais). As abas de modo, que não funcionam sem o JS da wiki, viram uma legenda.
+ */
+function fixModeValues(doc: Document) {
+  const MODES = ['normal', 'expert', 'master'] as const
+  const NAMES = ['Classic', 'Expert', 'Master']
+  doc.querySelectorAll('.mode-content, .npcstat').forEach((box) => {
+    const vals: (string | null)[] = [null, null, null]
+    const src: (Element | null)[] = [null, null, null] // conteúdo original (mantém links, moedas e notas)
+    let all: Element | null = null
+    for (const child of Array.from(box.children)) {
+      const text = (child.textContent ?? '').replace(/\s+/g, ' ').trim()
+      if (!text || child.classList.contains('ssep')) continue
+      const cls = child.classList
+      if (cls.contains('m-all') || cls.contains('m-normal-expert-master')) all = child
+      else if (cls.contains('m-expert-master')) [1, 2].forEach((i) => ((vals[i] = text), (src[i] = child)))
+      else MODES.forEach((m, i) => cls.contains(`m-${m}`) && ((vals[i] = text), (src[i] = child)))
+    }
+    const filled = vals.map((v, i) => (v === null ? -1 : i)).filter((i) => i >= 0)
+    if (all === null && filled.length === 0) return // formato desconhecido: deixa como veio
+    const out = doc.createElement('span')
+    out.className = 'mode-vals'
+    const distinct = new Set(filled.map((i) => vals[i]))
+    if (all !== null || distinct.size === 1) {
+      out.append(...Array.from((all ?? src[filled[0]])!.cloneNode(true).childNodes))
+    } else {
+      filled.forEach((i, n) => {
+        if (n) out.append(' · ')
+        const s = doc.createElement('span')
+        s.className = `mv mv-${MODES[i]}`
+        s.append(...Array.from(src[i]!.cloneNode(true).childNodes))
+        out.append(s)
+      })
+      // Só alguns modos têm valor próprio: diz quais, para não confundir
+      if (filled.length < 3) {
+        const tag = doc.createElement('small')
+        tag.className = 'mode-tag'
+        tag.textContent = ` (${filled.map((i) => NAMES[i]).join(' · ')})`
+        out.append(tag)
+      }
+    }
+    box.replaceWith(out)
+  })
+  doc.querySelectorAll('.infobox .modetabs').forEach((tabs) => {
+    const legend = doc.createElement('div')
+    legend.className = 'mode-legend'
+    legend.innerHTML =
+      '<span>Values by mode</span>: <span class="mv mv-normal">Classic</span> · <span class="mv mv-expert">Expert</span> · <span class="mv mv-master">Master</span>'
+    tabs.replaceWith(legend)
+  })
+}
+
+// ---------- Modo limpo ----------
+
+// Seções (h2) que saem por completo
+const DROP_SECTIONS = /^(history|gallery|achievements|trivia|references|footnotes|sounds|version history|contents)$/i
+// Seções que ficam sempre abertas
+const OPEN_SECTIONS = /summon|spawn|drop|loot|tip|strateg|craft|recipe|obtain|how to get/i
+// Seção curta o bastante para ficar aberta mesmo sem estar na lista
+const SHORT_SECTION = 450
+
+/**
+ * "Modo limpo" para páginas sem resumo manual: tira áudio, IDs internos, notas de rodapé e as seções de histórico,
+ * galeria, conquistas e curiosidades; as seções longas que sobram ficam recolhidas (`<details>`), menos a introdução,
+ * as 2 primeiras e as de invocação, drops, dicas/estratégia e crafting. Recebe o HTML já passado por `cleanArticle`.
+ */
+export function tidyArticle(cleanHtml: string): string {
+  const doc = new DOMParser().parseFromString(cleanHtml, 'text/html')
+  const root = doc.body
+
+  root
+    .querySelectorAll(
+      [
+        'audio, .sound, .mw-tmh-player',
+        '.infobox .section.sounds, .section.ids, .section.projectile',
+        'sup.reference, .reflist, .mw-references-wrap, ol.references',
+      ].join(','),
+    )
+    .forEach((el) => el.remove())
+  // Blocos da ficha cujo título é "Sounds"; linhas "Internal ... ID" soltas
+  root.querySelectorAll('.infobox .section').forEach((s) => {
+    if (s.querySelector(':scope > .title')?.textContent?.trim().toLowerCase() === 'sounds') s.remove()
+  })
+  root.querySelectorAll('li').forEach((li) => {
+    if (/^Internal\b.*\bID\b/i.test((li.textContent ?? '').trim().slice(0, 60))) li.remove()
+  })
+  // Listas e linhas que ficaram vazias
+  root.querySelectorAll('ul, tr').forEach((el) => {
+    if (!el.closest('.infobox') && !(el.textContent ?? '').trim() && !el.querySelector('img')) el.remove()
+  })
+
+  const container = root.querySelector('.mw-parser-output') ?? root
+  const sections: { heading: Element; level: number; nodes: Element[] }[] = []
+  for (const child of Array.from(container.children)) {
+    if (headingLevel(child) === 2) {
+      sections.push({ heading: child, level: 2, nodes: [] })
+    } else if (sections.length) {
+      sections[sections.length - 1].nodes.push(child)
+    }
+  }
+
+  let kept = 0
+  for (const sec of sections) {
+    const title = (sec.heading.querySelector('.mw-headline') ?? sec.heading).textContent?.trim() ?? ''
+    if (DROP_SECTIONS.test(title) || el_isToc(sec.heading)) {
+      sec.heading.remove()
+      sec.nodes.forEach((n) => n.remove())
+      continue
+    }
+    kept++
+    const text = sec.nodes.map((n) => n.textContent ?? '').join('').length
+    const hasCrafting = sec.nodes.some((n) => n.matches('[data-crafting-slot]') || n.querySelector('[data-crafting-slot]'))
+    if (kept <= 2 || OPEN_SECTIONS.test(title) || hasCrafting || text <= SHORT_SECTION) continue
+
+    const details = doc.createElement('details')
+    details.className = 'wiki-sec'
+    const summary = doc.createElement('summary')
+    sec.heading.before(details)
+    summary.appendChild(sec.heading)
+    details.appendChild(summary)
+    const body = doc.createElement('div')
+    body.className = 'wiki-sec-body'
+    sec.nodes.forEach((n) => body.appendChild(n))
+    details.appendChild(body)
+  }
+
+  return root.innerHTML
+}
+
+function el_isToc(heading: Element) {
+  return heading.id === 'mw-toc-heading'
 }
 
 /** Nível de um título (h2 → 2), ou 0 se não é título. Entende o formato novo do MediaWiki (div.mw-heading). */

@@ -375,6 +375,11 @@ corrido fica em inglês (a tradução automática pela Translator API do Chrome 
 
 Páginas reorganizadas (Fase 5) não passam por isso: já são escritas em português; a "página completa" delas sim.
 
+**Modo limpo** (padrão nas páginas sem resumo; `tidyArticle` em `cleanArticle.ts`, usado por `ArticlePage`): tira áudio, "Sounds",
+IDs internos, "Projectiles created", notas `[1]`, referências e as seções History/Gallery/Achievements/Trivia; seções (h2) longas
+ficam em `<details class="wiki-sec">`, menos a introdução, as 2 primeiras e as de invocação/drops/dicas/estratégia/crafting.
+"Ver página completa da wiki" (`?completa=1`) mostra tudo. Valores por modo (`fixModeValues`, sempre ligado) saem como "60 · 120 · 180".
+
 ## Quando a wiki cai
 
 - **Erros diferentes** (`getJson` em `wikiApi.ts`): a wiki em manutenção responde 502/503 com uma página HTML
