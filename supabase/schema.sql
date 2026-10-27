@@ -519,7 +519,7 @@ grant update (houses, updated_by, updated_at) on public.world_npc_houses to auth
 -- ============================================================
 -- Ping anti-pausa (.github/workflows/supabase-keepalive.yml): o plano grátis pausa o projeto após 7 dias sem uso.
 -- Tabela pública SÓ de leitura com uma linha; o workflow lê 1 linha pela API REST com a chave pública.
--- NÃO aplicado ainda: rode no SQL Editor do Supabase (ou peça para aplicar pela migração "keepalive").
+-- Aplicado em 2026-10-27 (migração "keepalive").
 -- ============================================================
 create table public.keepalive (
   id int primary key check (id = 1),
