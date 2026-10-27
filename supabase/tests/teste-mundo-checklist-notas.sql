@@ -12,7 +12,7 @@ insert into auth.users (id, email, aud, role) values
   ('00000000-0000-4000-a000-00000000000c', 'teste-c@exemplo.invalid', 'authenticated', 'authenticated');
 create temp table r (n serial, k text, v text) on commit drop;
 create temp table ctx (k text primary key, v text) on commit drop;
-grant all on r, ctx, r_n_seq to authenticated;
+grant all on r, ctx, r_n_seq to authenticated, anon;
 set local role authenticated;
 
 -- ===== A cria o mundo, marca um material e escreve as notas =====
@@ -60,9 +60,11 @@ begin
     insert into r (k, v) values ('B cria segunda linha de casas (23505, o app faz update)', 'aceitou');
   exception when others then insert into r (k, v) values ('B cria segunda linha de casas (23505, o app faz update)', sqlstate);
   end;
-  delete from public.world_npc_houses where world_id = wid;
-  get diagnostics n = row_count;
-  insert into r (k, v) values ('B apaga as casas (0, ninguém apaga)', n::text);
+  begin
+    delete from public.world_npc_houses where world_id = wid;
+    insert into r (k, v) values ('B apaga as casas (bloqueado, ninguém apaga)', 'ACEITOU (ruim)');
+  exception when others then insert into r (k, v) values ('B apaga as casas (bloqueado, ninguém apaga)', 'bloqueado ' || sqlstate);
+  end;
   insert into r (k, v) values ('B vê a nota do mundo (nota do mundo de A)', (select body from public.world_notes where world_id = wid and page = 'Gel'));
   -- quadro de tarefas
   insert into r (k, v) values ('B vê a tarefa de A (Farmar gel)', (select title from public.world_tasks where world_id = wid));
