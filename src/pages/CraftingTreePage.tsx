@@ -19,6 +19,17 @@ import { activeWorld, useWorld } from '../lib/world'
 /** Até que profundidade a árvore começa aberta (raiz = 0). */
 const DEFAULT_DEPTH = 2
 
+/** Atalhos de itens que juntam vários acessórios/itens (nomes EN, como no recipes.json). */
+const BIG_COMBOS = [
+  'Terraspark Boots',
+  'Ankh Shield',
+  'Shellphone',
+  'Celestial Shell',
+  'Hand Of Creation',
+  'Bundle of Horseshoe Balloons',
+  'Zenith',
+]
+
 export default function CraftingTreePage() {
   const { '*': rawItem = '' } = useParams()
   const item = rawItem.replace(/_/g, ' ')
@@ -94,6 +105,26 @@ export default function CraftingTreePage() {
           />
         </label>
       </header>
+
+      <nav aria-label="Grandes combinações" className="mb-5">
+        <p className="mb-1.5 text-xs font-semibold tracking-wider text-muted uppercase">Grandes combinações</p>
+        <ul className="flex flex-wrap gap-1.5">
+          {BIG_COMBOS.filter((n) => treeRecipes(book, n).length > 0).map((n) => (
+            <li key={n}>
+              <Link
+                to={`/arvore/${encodeURIComponent(n.replace(/ /g, '_'))}`}
+                aria-current={n === item ? 'page' : undefined}
+                className={`flex items-center gap-1.5 rounded-full border py-1 pr-3 pl-1.5 text-sm transition hover:no-underline ${
+                  n === item ? 'border-gold bg-gold/15 text-gold' : 'border-line bg-panel text-ink/90 hover:border-accent'
+                }`}
+              >
+                <Sprite book={book} name={n} size="sm" />
+                {ptName(book, n)}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <section className="min-w-0 lg:order-1">
