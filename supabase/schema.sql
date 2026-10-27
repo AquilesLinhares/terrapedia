@@ -515,3 +515,18 @@ create policy "membros mudam" on public.world_npc_houses for update to authentic
 revoke all on public.world_npc_houses from anon, authenticated;
 grant select, insert on public.world_npc_houses to authenticated;
 grant update (houses, updated_by, updated_at) on public.world_npc_houses to authenticated;
+
+-- ============================================================
+-- Ping anti-pausa (.github/workflows/supabase-keepalive.yml): o plano grátis pausa o projeto após 7 dias sem uso.
+-- Tabela pública SÓ de leitura com uma linha; o workflow lê 1 linha pela API REST com a chave pública.
+-- NÃO aplicado ainda: rode no SQL Editor do Supabase (ou peça para aplicar pela migração "keepalive").
+-- ============================================================
+create table public.keepalive (
+  id int primary key check (id = 1),
+  note text not null default 'ping do GitHub Actions'
+);
+insert into public.keepalive (id) values (1);
+alter table public.keepalive enable row level security;
+create policy "todos leem" on public.keepalive for select to anon, authenticated using (true);
+revoke all on public.keepalive from anon, authenticated;
+grant select on public.keepalive to anon, authenticated;

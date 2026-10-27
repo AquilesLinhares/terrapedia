@@ -153,5 +153,17 @@ insert into r (k, v) select 'A vê a própria nota (nota pessoal de A (editada))
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000b","role":"authenticated"}', true);
 delete from public.world_members where user_id = auth.uid();
 insert into r (k, v) select 'B depois de sair vê checklist/notas (0/0)', (select count(*) from public.world_craft_checks) || '/' || (select count(*) from public.world_notes);
+-- keepalive: leitura pública de 1 linha, nenhuma escrita
+select set_config('request.jwt.claims', '{"role":"anon"}', true);
+set local role anon;
+insert into r (k, v) select 'anon lê keepalive (1)', count(*)::text from public.keepalive;
+do $ declare n int; begin
+  begin
+    update public.keepalive set note = 'x'; get diagnostics n = row_count;
+    insert into r (k, v) values ('anon muda keepalive (bloqueado)', 'ACEITOU (ruim)');
+  exception when others then insert into r (k, v) values ('anon muda keepalive (bloqueado)', 'bloqueado ' || sqlstate);
+  end;
+end $;
+reset role;
 select k as teste, v as resultado from r order by n;
 rollback;
