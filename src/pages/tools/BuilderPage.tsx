@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { usePalettes } from '../../lib/builder'
 import { articlePath } from '../../components/SearchBar'
 import { CheckIcon, TrashIcon } from '../../components/icons'
 import ItemChip from '../../components/ItemChip'
@@ -86,10 +87,21 @@ export default function BuilderPage() {
   const { checked, worldId, toggle, clear } = useBuilderChecks(BUILDER_CHECK_LIST)
   const [kind, setKind] = useState<BuildKind | 'all'>('all')
   const [open, setOpen] = useState<string | null>(null)
+  const palettes = usePalettes(book)
+  const [params, setParams] = useSearchParams()
 
   useEffect(() => {
     document.title = 'Modo construtor · Terrapedia'
   }, [])
+
+  // ?paleta=<id>: põe a paleta na lista uma vez e limpa o endereço
+  const wanted = params.get('paleta')
+  useEffect(() => {
+    if (!wanted || !palettes) return
+    const p = palettes.palettes.find((x) => x.id === wanted)
+    if (p) builderPlan.addMany(Object.fromEntries(p.items.map((it) => [it.name, it.qty])))
+    setParams({}, { replace: true })
+  }, [wanted, palettes, setParams])
 
   const catalog = useMemo(() => (book ? buildCatalog(book) : []), [book])
   const names = useMemo(() => catalog.filter((c) => kind === 'all' || c.kind === kind).map((c) => c.name), [catalog, kind])
@@ -152,6 +164,37 @@ export default function BuilderPage() {
           <ItemPicker book={book} names={names} onPick={(n) => builderPlan.add(n)} placeholder="Buscar bloco ou parede (português ou inglês)" />
           <p className="text-xs text-muted">Escolher um item o coloca na lista com 100. Mude a quantidade na lista.</p>
         </section>
+
+        {palettes && palettes.palettes.length > 0 && (
+          <section className="space-y-3">
+            <h2 className="font-display text-lg font-bold text-ink">Paletas por estilo</h2>
+            <p className="text-xs text-muted">Atalhos: “Usar paleta” põe todos os itens na lista abaixo, com quantidades sugeridas que você muda depois.</p>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {palettes.palettes.map((p) => (
+                <li key={p.id} className={`${cardClass} flex flex-col gap-2`}>
+                  <ItemChip book={book} name={p.icon} size="lg" showEn={false} />
+                  <h3 className="font-display font-bold text-gold">{p.title}</h3>
+                  <p className="text-sm text-muted">{p.text}</p>
+                  <ul className="flex flex-wrap gap-x-3 gap-y-1">
+                    {p.items.map((it) => (
+                      <li key={it.name} className="text-xs text-ink/80" title={it.name}>
+                        {ptName(book, it.name)} <span className="text-gold">×{it.qty}</span>
+                        {palettes.check.some((c) => c.palette === p.id && c.name === it.name) && <span className="ml-1 text-amber-300">conferir</span>}
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    type="button"
+                    onClick={() => builderPlan.addMany(Object.fromEntries(p.items.map((it) => [it.name, it.qty])))}
+                    className="mt-auto self-start rounded-lg border border-accent px-3 py-1.5 text-sm font-semibold text-accent hover:bg-accent/10"
+                  >
+                    Usar paleta
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <section className="space-y-3">
           <div className="flex flex-wrap items-center gap-3">

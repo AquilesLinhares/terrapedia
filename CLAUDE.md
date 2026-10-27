@@ -83,6 +83,8 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
   que existam); lista "o que vou construir" no aparelho (`terrapedia:builder-plan`); materiais somados com `computeTotals` item a
   item; "já tenho" usa a tabela `world_craft_checks` com a lista `@construtor` (mundo ativo) ou `terrapedia:builder-checks`. Sem
   receita e sem vendedor/drop nos dados = "conferir". Bancadas de etapa avançada em `STATION_MIN_STAGE`.
+  **Paletas por estilo**: `src/lib/builder.ts` (`CANDIDATES` → `usePalettes`): só ficam itens que existem no dicionário e nas receitas;
+  o resto vai para `discarded`. "Usar paleta" (ou `?paleta=<id>`) soma os itens na lista.
 
 ## Stack
 
