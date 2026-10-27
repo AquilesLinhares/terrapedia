@@ -454,3 +454,12 @@ O site está na Vercel (time "Terrapedia", projeto `terrapedia`): **https://terr
 (o endereço `terrapedia-eta.vercel.app` também funciona). Cada push na `main` publica sozinho, pela ligação da
 Vercel com o GitHub. `vercel.json` manda toda rota para o `index.html`, para que recarregar `/grupos`,
 `/wiki/...` etc. funcione. Variáveis `VITE_*` mudadas na Vercel só valem depois de uma nova publicação.
+
+## Regras de trabalho
+
+- Itens sempre pelo **nome em inglês** internamente; o nome PT e o sprite vêm do dicionário/receitas.
+- **Nunca editar à mão** arquivos gerados por script: `dictionary.json`, `recipes.json`, `guide-index.json`, `exclusive-items.json`, `tools-data.json`, `npc-data.json`. Mude o script ou a fonte e rode de novo.
+- Depois de editar resumos, guias ou dados, rode o script de validação correspondente (`build-guides.mjs`, `build-classes.mjs`, `build-tools.mjs`, `build-npcs.mjs`).
+- Toda tabela nova no Supabase exige RLS, registro em `supabase/schema.sql` e testes em `supabase/tests/teste-mundo-checklist-notas.sql`. Avisar o dono quando ele precisar rodar SQL no SQL Editor.
+- Testar apenas com `npm.cmd run build`.
+- Respostas finais sempre curtas.
