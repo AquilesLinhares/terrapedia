@@ -418,6 +418,20 @@ for (const [name, it] of Object.entries(items)) {
   compact[name] = row
 }
 
+// Itens exclusivos de Expert (raridade -12) e Mestre (-13): de TODA a tabela Items, não só dos tipos acima
+// (para o ExclusiveBadge funcionar em qualquer item). Um nome pode ter várias linhas: basta uma ser exclusiva.
+const exclusive = {}
+const rareRows = await cargoAll(
+  { tables: 'Items', fields: 'Items.name=name,Items.rare=rare', where: 'Items.rare IN (-12,-13)', order_by: 'Items._ID' },
+  'Itens exclusivos',
+)
+for (const r of rareRows) {
+  const mode = { '-12': 'expert', '-13': 'master' }[String(r.rare).trim()]
+  const name = decode(r.name)
+  if (mode && name) exclusive[name] = exclusive[name] === 'expert' ? 'expert' : mode
+}
+const exclusiveSorted = Object.fromEntries(Object.entries(exclusive).sort(([a], [b]) => a.localeCompare(b)))
+
 const out = {
   source: {
     date: new Date().toISOString().slice(0, 10),
@@ -434,6 +448,7 @@ const out = {
   modifierPt,
   drops,
   vendors,
+  exclusive: exclusiveSorted,
 }
 writeFileSync(OUT_PATH, JSON.stringify(out))
 console.log(`Gravado ${OUT_PATH} (${(JSON.stringify(out).length / 1024).toFixed(0)} KB)`)

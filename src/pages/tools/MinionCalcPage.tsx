@@ -15,11 +15,11 @@ import {
   suggest,
   type Loadout,
 } from '../../lib/minionCalc'
-import { loadExclusive, type ExclusiveMode } from '../../lib/classGuides'
+import type { ExclusiveMode } from '../../lib/classGuides'
 import { milestone, STAGES } from '../../lib/progression'
 import { activeWorld, useWorld } from '../../lib/world'
 import { ptName, useRecipeBook, type RecipeBook } from '../../lib/recipes'
-import { useDefeated, useToolsData, useToolStage, type ToolsData } from '../../lib/toolsData'
+import { loadAllExclusive, useDefeated, useToolsData, useToolStage, type ToolsData } from '../../lib/toolsData'
 
 const SAVE_KEY = 'terrapedia:minion-loadout'
 
@@ -88,7 +88,7 @@ function Calculator({
   const worldMode = activeWorld(useWorld())?.mode ?? null
   const [exclusive, setExclusive] = useState<Record<string, ExclusiveMode>>({})
   useEffect(() => {
-    loadExclusive().then(setExclusive)
+    loadAllExclusive().then(setExclusive)
   }, [])
   const ctx = useMemo(() => ({ book, exclusive, worldMode, names: {} }), [book, exclusive, worldMode])
 

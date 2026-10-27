@@ -3,6 +3,7 @@
 // ferramenta abre. Também guarda a etapa escolhida quando não há mundo ativo.
 
 import { useEffect, useState, useSyncExternalStore } from 'react'
+import { loadExclusive } from './classGuides'
 import { STAGES, type StageId } from './progression'
 import { useWorld, useWorldStage, type PlayerClass } from './world'
 
@@ -67,6 +68,8 @@ export interface ToolsData {
   drops: Record<string, [string, number | null, ('expert' | 'master')?][]>
   /** Item → NPCs que vendem */
   vendors: Record<string, string[]>
+  /** Itens exclusivos de Expert (raridade -12) ou Mestre (-13), de toda a tabela Items da wiki */
+  exclusive: Record<string, 'expert' | 'master'>
 }
 
 let data: Promise<ToolsData> | null = null
@@ -93,6 +96,12 @@ export function loadToolsData(): Promise<ToolsData> {
     return { ...raw, items }
   })
   return data
+}
+
+/** Selos Expert/Mestre de qualquer item: os dados das Ferramentas somados aos dos guias de classe. */
+export async function loadAllExclusive() {
+  const [tools, guides] = await Promise.all([loadToolsData(), loadExclusive()])
+  return { ...guides, ...(tools.exclusive ?? {}) }
 }
 
 export function useToolsData() {

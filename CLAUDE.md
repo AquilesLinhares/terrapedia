@@ -261,7 +261,7 @@ minha ficha (`useToolClass()`; sem ficha, `terrapedia:tools-class`). Itens sempr
 - **Calculadora de lacaios** (`/ferramentas/lacaios`): cabeça/corpo/pernas, acessórios e poções/mesas; bônus de conjunto = total
   do conjunto − peças. Os acessórios do Exército do Ancião (`dd2Accessory`) dão +1 sentinela e não somam entre si. A sugestão escolhe
   o conjunto com mais vagas disponível na etapa (`GEAR_AVAILABILITY`: etapa mínima + chefe/evento que precisa, ex.: Abelha Rainha;
-  sem mundo os chefes opcionais não são conferidos) e mostra o próximo passo. Montagem salva em `terrapedia:minion-loadout`. Itens exclusivos de Expert/Mestre ganham o selo (`ExclusiveBadge`, dados de `exclusive-items.json`, que só cobre itens citados nos guias de classe). Link na aba Resumo do guia do Invocador.
+  sem mundo os chefes opcionais não são conferidos) e mostra o próximo passo. Montagem salva em `terrapedia:minion-loadout`. Itens exclusivos de Expert/Mestre ganham o selo (`ExclusiveBadge`; `loadAllExclusive()` soma `exclusive-items.json` (itens dos guias) e o campo `exclusive` de `tools-data.json`, que cobre toda a tabela Items). Link na aba Resumo do guia do Invocador.
 - **Melhor modificador** (`/ferramentas/modificador?item=`): regras da seção "Best modifiers" da wiki em `bestModifier.ts`
   (espadas/chicotes → Lendário, lanças/ioiôs/manguais → Divino, à distância → Surreal, magia → Mítico, invocação → Fabuloso; sem
   repulsão → Demoníaco/Louvável; casos especiais: Terrariano, Metralhadora, Arpão, magias que ficam na tela, cajados de dano alto).
