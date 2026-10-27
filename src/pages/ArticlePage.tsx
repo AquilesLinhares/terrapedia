@@ -19,6 +19,8 @@ import { hasGuide, loadGuide, searchGuides, type Guide } from '../lib/guides'
 import { useLocalizedArticle } from '../lib/useLocalizedArticle'
 import { useArticleLang, type ArticleLang } from '../lib/articleLang'
 import { loadGameNames } from '../lib/localize'
+import { useLocalInfo } from '../lib/localInfo'
+import QuickSummary from '../components/QuickSummary'
 
 type State =
   | { status: 'loading' }
@@ -39,6 +41,7 @@ export default function ArticlePage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const title = useMemo(() => rawTitle.replace(/_/g, ' '), [rawTitle])
+  const local = useLocalInfo(title)
   const [state, setState] = useState<State>({ status: 'loading' })
   const [attempt, setAttempt] = useState(0) // "Tentar de novo"
   // Nome PT e sprite do artigo, usados ao salvar em favoritos/grupos/"buscar depois"
@@ -225,7 +228,11 @@ export default function ArticlePage() {
     )
   }
 
-  if (state.status === 'loading') {
+  // Abertura rápida: o app já conhece o item (dicionário, receitas, ferramentas, NPCs), então mostra o
+  // cabeçalho e o resumo na hora e deixa o artigo da wiki chegar embaixo.
+  const fast = !!local?.known && (state.status === 'loading' || state.status === 'error')
+
+  if (state.status === 'loading' && !fast) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-8">
         <div className="mb-6 h-9 w-2/3 animate-pulse rounded bg-panel" />
@@ -234,7 +241,7 @@ export default function ArticlePage() {
     )
   }
 
-  if (state.status === 'error') {
+  if (state.status === 'error' && !fast) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-12 text-center text-muted">
         <p>{state.message}</p>
@@ -276,15 +283,24 @@ export default function ArticlePage() {
     )
   }
 
+  const pageTitle = state.status === 'ok' ? state.title : title
+  const savedAt = state.status === 'ok' ? state.savedAt : undefined
+  // Nome PT e sprite locais cobrem o intervalo até a wiki responder
+  const headerRef: ArticleRef | null = articleRef
+    ? { ...articleRef, pt: articleRef.pt ?? local?.ref.pt, sprite: articleRef.sprite ?? local?.ref.sprite }
+    : (local?.ref ?? null)
+
   return (
     <article className="mx-auto max-w-6xl px-4 py-6">
-      <ArticleHeader title={state.title} articleRef={articleRef} lang={lang} onLang={setLang} />
-      <NoteBox page={state.title} />
-      {state.savedAt && (
+      <ArticleHeader title={pageTitle} articleRef={headerRef} lang={lang} onLang={setLang} />
+      <NoteBox page={pageTitle} />
+      {savedAt && (
         <p className="mb-4 text-xs text-muted" role="status">
-          A wiki não respondeu: versão salva em {new Date(state.savedAt).toLocaleDateString('pt-BR')}.
+          A wiki não respondeu: versão salva em {new Date(savedAt).toLocaleDateString('pt-BR')}.
         </p>
       )}
+
+      {local?.known && <QuickSummary info={local} />}
 
       {guidePage && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-panel/70 px-4 py-2.5">
@@ -299,7 +315,23 @@ export default function ArticlePage() {
         </div>
       )}
 
-      {articleHtml === null ? (
+      {state.status === 'error' ? (
+        <div className="py-6 text-center text-muted">
+          <p>{state.message}</p>
+          <button
+            type="button"
+            onClick={() => setAttempt((n) => n + 1)}
+            className="mt-4 h-9 rounded-full border border-line bg-panel px-4 text-sm font-semibold text-accent transition hover:border-accent"
+          >
+            Tentar de novo
+          </button>
+        </div>
+      ) : state.status === 'loading' ? (
+        <div className="min-h-[60vh]" role="status">
+          <p className="mb-4 text-xs text-muted">Carregando detalhes completos da wiki...</p>
+          <LoadingLines />
+        </div>
+      ) : articleHtml === null ? (
         <LoadingLines />
       ) : (
         <div
@@ -321,8 +353,8 @@ export default function ArticlePage() {
 
       <p className="mt-10 rounded-lg border border-line bg-panel/60 px-4 py-3 text-sm text-muted">
         Fonte: artigo “
-        <a href={wikiPageUrl(state.title)} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
-          {state.title}
+        <a href={wikiPageUrl(pageTitle)} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+          {pageTitle}
         </a>
         ” da Terraria Wiki, licenciado sob <LicenseLink />. O conteúdo foi adaptado (menus e navegação removidos)
         {lang === 'pt' && ', com os nomes do jogo em português pelo dicionário oficial'}.
@@ -346,9 +378,14 @@ function ArticleHeader({ title, articleRef, lang, onLang }: HeaderProps) {
   return (
     <header className="mb-4 border-b border-line pb-3">
       <div className="flex flex-wrap items-end justify-between gap-2">
-        <div className="min-w-0">
-          <h1 className="font-display text-3xl font-bold text-gold sm:text-4xl">{main}</h1>
-          {sub && <p className="mt-0.5 text-muted">{sub}</p>}
+        <div className="flex min-w-0 items-center gap-3">
+          {articleRef?.sprite && (
+            <img src={articleRef.sprite} alt="" className="pixelated h-12 w-12 shrink-0 object-contain" onError={(e) => (e.currentTarget.style.visibility = 'hidden')} />
+          )}
+          <div className="min-w-0">
+            <h1 className="font-display text-3xl font-bold text-gold sm:text-4xl">{main}</h1>
+            {sub && <p className="mt-0.5 text-muted">{sub}</p>}
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <a
