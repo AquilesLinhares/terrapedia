@@ -71,6 +71,8 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
   ativo (ou escolhido, `terrapedia:drops-mode`); calculadora 1 − (1 − p)^n e abates para 50/90/99%; contador por item+fonte em
   `terrapedia:drop-counters`.
 
+- **Lote C, parte 2 — Guia do Brilho (feito, 2026-10-27)**: `/ferramentas/shimmer` (`src/pages/tools/ShimmerPage.tsx`, dados escritos por nós em `src/lib/shimmer.ts`: melhorias permanentes, ciclos de minérios/gemas/caixas/emblemas, trocas úteis e como achar o Éter). Fonte: páginas Shimmer, Aether e Crate da wiki (1.4.5). Dado não confirmado leva `check` e aparece como "conferir".
+
 ## Stack
 
 - Vite + React + TypeScript
@@ -78,7 +80,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `vite-plugin-pwa` (manifest + service worker)
 - React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`, `/historico`,
   `/classes`, `/classes/:slug`, `/ferramentas`, `/ferramentas/lacaios`, `/ferramentas/modificador`, `/ferramentas/buffs`,
-  `/ferramentas/arena`, `/ferramentas/comparar`, `/ferramentas/felicidade`, `/ferramentas/vendedores`, `/ferramentas/condicoes`, `/ferramentas/drops`).
+  `/ferramentas/arena`, `/ferramentas/comparar`, `/ferramentas/felicidade`, `/ferramentas/vendedores`, `/ferramentas/condicoes`, `/ferramentas/drops`, `/ferramentas/shimmer`).
   Só `HomePage` e `ArticlePage` vão no pacote principal; as outras telas são `lazy()` em `main.tsx`.
 
 ## Estrutura

@@ -69,6 +69,13 @@ export const TOOLS = [
     icon: 'Lucky Coin',
     ready: true,
   },
+  {
+    slug: 'shimmer',
+    title: 'Guia do Brilho',
+    text: 'Melhorias permanentes, trocas de itens (minérios, caixas, emblemas) e como achar o Éter.',
+    icon: 'Bottomless Shimmer Bucket',
+    ready: true,
+  },
 ]
 
 /** Página `/ferramentas`: cartões das ferramentas de jogo. */
