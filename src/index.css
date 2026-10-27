@@ -309,12 +309,6 @@ input[type='search']::-webkit-search-cancel-button {
 .wiki-content .infobox .title .en-name {
   @apply mt-0.5 ml-0 block;
 }
-/* Nome do jogo no meio do texto: o nome em inglês aparece ao passar o mouse */
-.wiki-content .game-name {
-  text-decoration: underline dotted;
-  text-decoration-color: color-mix(in srgb, var(--color-muted) 50%, transparent);
-  text-underline-offset: 3px;
-}
 /* Dentro de tabelas: nome EN e "Internal Item ID" em linhas próprias, pequenos */
 .wiki-content .i .en-name {
   @apply ml-0 block;

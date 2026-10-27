@@ -5,6 +5,7 @@ import Layout from './components/Layout'
 import HomePage from './pages/HomePage'
 import ArticlePage from './pages/ArticlePage'
 import { installLinkPrefetch } from './lib/articleLoader'
+import { loadGameNames } from './lib/localize'
 import './index.css'
 
 // Telas menos usadas ficam em arquivos separados, baixados só quando abrem (a primeira tela carrega menos)
@@ -29,6 +30,10 @@ const VendorsPage = lazy(() => import('./pages/tools/VendorsPage'))
 const ConditionsPage = lazy(() => import('./pages/tools/ConditionsPage'))
 
 installLinkPrefetch()
+
+// Nomes do jogo (PT ↔ EN) carregam em segundo plano, quando o navegador está livre depois de abrir o app
+const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1500))
+idle(() => void loadGameNames())
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

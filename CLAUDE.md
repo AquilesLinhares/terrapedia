@@ -314,10 +314,9 @@ corrido fica em inglês (a tradução automática pela Translator API do Chrome 
    Ordem de preferência: `NAME_OVERRIDES` (em `localize.ts`, ex.: "Shimmer" fica em inglês) →
    `scripts/manual-names.json` → tipo do dicionário (item, npc, chefe, evento, bioma, guia, página, buff).
    Apelidos e nomes iguais ao inglês não contam. Nas tabelas e na ficha o nome EN aparece pequeno
-   (`.en-name`); no texto, ao passar o mouse (`title`). Nomes no meio do texto (com maiúscula, como a wiki
-   escreve) também viram PT (`.game-name`).
-   Para achar esses nomes, cada parágrafo/item/célula vira um "trecho" com marcadores `[0]`, `[1]`... no lugar
-   de links, imagens e nomes; depois os marcadores voltam a ser os elementos.
+   (`.en-name`); no texto, ao passar o mouse (`title`). Células curtas de tabela com só um nome ou rótulo também
+   são trocadas por busca direta no Map. Nomes soltos no texto corrido ficam em inglês: a varredura de parágrafos
+   (marcadores `[0]`...) foi removida por ser pesada. `loadGameNames` começa em segundo plano (`requestIdleCallback` em `main.tsx`).
 
 Páginas reorganizadas (Fase 5) não passam por isso: já são escritas em português; a "página completa" delas sim.
 
