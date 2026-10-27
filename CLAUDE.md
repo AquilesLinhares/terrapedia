@@ -389,6 +389,9 @@ Páginas reorganizadas (Fase 5) não passam por isso: já são escritas em portu
   internet falhar, fica a cópia com o aviso "versão salva em [data]". Os resumos da Fase 5 vêm junto com o app
   e funcionam sempre.
 - **Sem proxy**: a API é chamada direto do navegador (`origin=*`). Não há proxy de CORS no projeto.
+- **Aviso de atualização**: `registerType: 'prompt'` (sem `skipWaiting`). O service worker novo espera; `UpdateBanner` (no `Layout`)
+  mostra "Nova versão do Terrapedia disponível. Atualizar" e só recarrega quando a pessoa toca no botão. Confere versão nova ao
+  voltar para o app e a cada hora. Os guias e o `guide-index` entram no pré-cache (chunks `assets/*.js`), versionados junto com o `index.html`.
 - O service worker (`wiki-cache` em `vite.config.ts`) também guarda respostas da wiki por 7 dias; o IndexedDB
   é a garantia que não expira.
 

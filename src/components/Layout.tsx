@@ -5,6 +5,7 @@ import { BottomNav, TopNav } from './NavBar'
 import ImportPrompt from './ImportPrompt'
 import WorldBar from './WorldBar'
 import { QuickWindowHost } from './QuickWindow'
+import UpdateBanner from './UpdateBanner'
 
 export default function Layout() {
   const isHome = useLocation().pathname === '/'
@@ -49,6 +50,7 @@ export default function Layout() {
         </div>
       </header>
 
+      <UpdateBanner />
       <WorldBar />
 
       <main className="flex-1">

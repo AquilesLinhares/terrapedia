@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: ['icon.svg'],
       manifest: {
         name: 'Terrapedia — Wiki 2.0 do Terraria',
@@ -31,9 +31,8 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/index.html',
-        // O service worker novo assume na hora e os arquivos de versões antigas saem do cache
+        // O service worker novo fica esperando até a pessoa tocar em "Atualizar" (UpdateBanner); aí assume e os arquivos antigos saem do cache
         clientsClaim: true,
-        skipWaiting: true,
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
