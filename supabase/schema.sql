@@ -530,3 +530,37 @@ alter table public.keepalive enable row level security;
 create policy "todos leem" on public.keepalive for select to anon, authenticated using (true);
 revoke all on public.keepalive from anon, authenticated;
 grant select on public.keepalive to anon, authenticated;
+
+-- ============================================================
+-- Quadro de tarefas da dupla (página /mundo): quem farma ou constrói o quê.
+-- Aplicado em 2026-10-27 (migração "world_tasks"). Membros veem, criam, marcam como feita / trocam o
+-- responsável (só done/assigned_to) e apagam. O responsável, se houver, precisa ser membro do mundo.
+-- Sem mundo, fica no aparelho (terrapedia:tasks).
+-- ============================================================
+create table public.world_tasks (
+  id uuid primary key default gen_random_uuid(),
+  world_id uuid not null references public.worlds (id) on delete cascade,
+  title text not null check (char_length(title) between 1 and 200),
+  item_page text check (char_length(item_page) between 1 and 200),
+  assigned_to uuid references auth.users (id) on delete set null,
+  done boolean not null default false,
+  created_by uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+create index world_tasks_world_id_idx on public.world_tasks (world_id, created_at);
+create index world_tasks_assigned_to_idx on public.world_tasks (assigned_to);
+create index world_tasks_created_by_idx on public.world_tasks (created_by);
+
+alter table public.world_tasks enable row level security;
+create policy "membros veem" on public.world_tasks for select to authenticated using (private.is_world_member(world_id));
+create policy "membros criam" on public.world_tasks for insert to authenticated
+  with check (private.is_world_member(world_id) and (select auth.uid()) = created_by
+    and (assigned_to is null or exists (select 1 from public.world_members m where m.world_id = world_tasks.world_id and m.user_id = assigned_to)));
+create policy "membros mudam" on public.world_tasks for update to authenticated
+  using (private.is_world_member(world_id))
+  with check (private.is_world_member(world_id)
+    and (assigned_to is null or exists (select 1 from public.world_members m where m.world_id = world_tasks.world_id and m.user_id = assigned_to)));
+create policy "membros apagam" on public.world_tasks for delete to authenticated using (private.is_world_member(world_id));
+revoke all on public.world_tasks from anon, authenticated;
+grant select, insert, delete on public.world_tasks to authenticated;
+grant update (done, assigned_to) on public.world_tasks to authenticated;

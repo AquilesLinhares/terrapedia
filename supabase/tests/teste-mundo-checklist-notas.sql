@@ -1,4 +1,4 @@
--- Teste das regras (RLS) do checklist da árvore, dos buffs, das casas de NPCs e das notas, com 3 usuários temporários:
+-- Teste das regras (RLS) do checklist da árvore, dos buffs, das casas de NPCs, do quadro de tarefas e das notas, com 3 usuários temporários:
 -- A e B no mesmo mundo, C de fora. Tudo roda numa transação desfeita no fim (rollback):
 -- nenhum usuário, mundo ou nota fica gravado.
 --
@@ -26,6 +26,7 @@ begin
   insert into public.world_buff_checks (world_id, boss, item) values (wid, 'Skeletron', 'Ironskin Potion');
   insert into public.world_notes (world_id, page, body) values (wid, 'Gel', 'nota do mundo de A');
   insert into public.world_npc_houses (world_id, houses) values (wid, '[{"id":"a","biome":"forest","npcs":["Guide"]}]');
+  insert into public.world_tasks (world_id, title, item_page) values (wid, 'Farmar gel', 'Gel');
   insert into public.notes (page, body) values ('Gel', 'nota pessoal de A');
   update public.notes set body = 'nota pessoal de A (editada)', updated_at = now() where page = 'Gel';
   get diagnostics n = row_count;
@@ -63,6 +64,36 @@ begin
   get diagnostics n = row_count;
   insert into r (k, v) values ('B apaga as casas (0, ninguém apaga)', n::text);
   insert into r (k, v) values ('B vê a nota do mundo (nota do mundo de A)', (select body from public.world_notes where world_id = wid and page = 'Gel'));
+  -- quadro de tarefas
+  insert into r (k, v) values ('B vê a tarefa de A (Farmar gel)', (select title from public.world_tasks where world_id = wid));
+  insert into public.world_tasks (world_id, title, assigned_to) values (wid, 'Construir arena', '00000000-0000-4000-a000-00000000000a');
+  update public.world_tasks set done = true, assigned_to = auth.uid() where world_id = wid and title = 'Farmar gel';
+  get diagnostics n = row_count;
+  insert into r (k, v) values ('B marca a tarefa de A como feita e assume (1)', n::text);
+  begin
+    insert into public.world_tasks (world_id, title, created_by) values (wid, 'x', '00000000-0000-4000-a000-00000000000a');
+    insert into r (k, v) values ('B cria tarefa fingindo ser A (bloqueado)', 'ACEITOU (ruim)');
+  exception when others then insert into r (k, v) values ('B cria tarefa fingindo ser A (bloqueado)', 'bloqueado ' || sqlstate);
+  end;
+  begin
+    insert into public.world_tasks (world_id, title, assigned_to) values (wid, 'x', '00000000-0000-4000-a000-00000000000c');
+    insert into r (k, v) values ('B dá tarefa para C, que não é membro (bloqueado)', 'ACEITOU (ruim)');
+  exception when others then insert into r (k, v) values ('B dá tarefa para C, que não é membro (bloqueado)', 'bloqueado ' || sqlstate);
+  end;
+  begin
+    update public.world_tasks set assigned_to = '00000000-0000-4000-a000-00000000000c' where world_id = wid;
+    insert into r (k, v) values ('B passa tarefa para C (bloqueado)', 'ACEITOU (ruim)');
+  exception when others then insert into r (k, v) values ('B passa tarefa para C (bloqueado)', 'bloqueado ' || sqlstate);
+  end;
+  begin
+    update public.world_tasks set title = 'hack' where world_id = wid;
+    insert into r (k, v) values ('B troca o título (bloqueado, só done/assigned_to)', 'ACEITOU (ruim)');
+  exception when others then insert into r (k, v) values ('B troca o título (bloqueado, só done/assigned_to)', 'bloqueado ' || sqlstate);
+  end;
+  insert into public.world_tasks (world_id, title) values (wid, 'Apagar depois');
+  delete from public.world_tasks where world_id = wid and title = 'Apagar depois';
+  get diagnostics n = row_count;
+  insert into r (k, v) values ('B apaga uma tarefa (1)', n::text);
   insert into r (k, v) values ('B vê nota pessoal de A (0)', (select count(*) from public.notes)::text);
   update public.notes set body = 'hack' where page = 'Gel';
   get diagnostics n = row_count;
@@ -132,6 +163,18 @@ begin
   delete from public.world_notes where world_id = wid;
   get diagnostics n = row_count;
   insert into r (k, v) values ('C apaga nota do mundo (0)', n::text);
+  insert into r (k, v) values ('C vê tarefas do mundo alheio (0)', (select count(*) from public.world_tasks)::text);
+  begin
+    insert into public.world_tasks (world_id, title) values (wid, 'invasor');
+    insert into r (k, v) values ('C cria tarefa no mundo alheio (bloqueado)', 'ACEITOU (ruim)');
+  exception when others then insert into r (k, v) values ('C cria tarefa no mundo alheio (bloqueado)', 'bloqueado ' || sqlstate);
+  end;
+  update public.world_tasks set done = false where world_id = wid;
+  get diagnostics n = row_count;
+  insert into r (k, v) values ('C muda tarefas (0)', n::text);
+  delete from public.world_tasks where world_id = wid;
+  get diagnostics n = row_count;
+  insert into r (k, v) values ('C apaga tarefas (0)', n::text);
   insert into r (k, v) values ('C vê casas de NPCs do mundo alheio (0)', (select count(*) from public.world_npc_houses)::text);
   update public.world_npc_houses set houses = '[]', updated_by = auth.uid() where world_id = wid;
   get diagnostics n = row_count;
@@ -149,21 +192,26 @@ insert into r (k, v) select 'A vê checklist (Wood)', string_agg(material, ',') 
 insert into r (k, v) select 'A vê buffs (Campfire)', string_agg(item, ',') from public.world_buff_checks;
 insert into r (k, v) select 'A vê as casas que B mudou (Mechanic / true)', (houses->0->'npcs'->>0) || ' / ' || (updated_by = '00000000-0000-4000-a000-00000000000b') from public.world_npc_houses;
 insert into r (k, v) select 'A vê nota do mundo / editor é B (editada por B / true)', body || ' / ' || (updated_by = '00000000-0000-4000-a000-00000000000b') from public.world_notes;
+insert into r (k, v) select 'A vê as tarefas (Construir arena: não feita, de A / Farmar gel: feita, de B)',
+  string_agg(title || ': ' || case when done then 'feita' else 'não feita' end || ', de '
+    || case assigned_to when '00000000-0000-4000-a000-00000000000a' then 'A' when '00000000-0000-4000-a000-00000000000b' then 'B' else '?' end, ' / ' order by title)
+  from public.world_tasks;
 insert into r (k, v) select 'A vê a própria nota (nota pessoal de A (editada))', body from public.notes;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-4000-a000-00000000000b","role":"authenticated"}', true);
 delete from public.world_members where user_id = auth.uid();
-insert into r (k, v) select 'B depois de sair vê checklist/notas (0/0)', (select count(*) from public.world_craft_checks) || '/' || (select count(*) from public.world_notes);
+insert into r (k, v) select 'B depois de sair vê checklist/notas/tarefas (0/0/0)',
+  (select count(*) from public.world_craft_checks) || '/' || (select count(*) from public.world_notes) || '/' || (select count(*) from public.world_tasks);
 -- keepalive: leitura pública de 1 linha, nenhuma escrita
 select set_config('request.jwt.claims', '{"role":"anon"}', true);
 set local role anon;
 insert into r (k, v) select 'anon lê keepalive (1)', count(*)::text from public.keepalive;
-do $ declare n int; begin
+do $$ declare n int; begin
   begin
     update public.keepalive set note = 'x'; get diagnostics n = row_count;
     insert into r (k, v) values ('anon muda keepalive (bloqueado)', 'ACEITOU (ruim)');
   exception when others then insert into r (k, v) values ('anon muda keepalive (bloqueado)', 'bloqueado ' || sqlstate);
   end;
-end $;
+end $$;
 reset role;
 select k as teste, v as resultado from r order by n;
 rollback;

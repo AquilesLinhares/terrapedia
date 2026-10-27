@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 import { CLASS_LIST, hasClassGuide } from '../lib/classGuides'
 import { useLibrary } from '../lib/library'
 import { MILESTONES, milestone, type Milestone, type Phase } from '../lib/progression'
+import { isGroup, ptName, useRecipeBook } from '../lib/recipes'
 import { supabase } from '../lib/supabase'
 import {
   activeWorld,
@@ -19,8 +20,12 @@ import {
   type World,
   type WorldMode,
 } from '../lib/world'
+import { useTasks } from '../lib/worldTasks'
 import { PageHeading } from '../components/PageHeading'
-import { CheckIcon, ChevronRightIcon, FolderIcon, GlobeIcon, PlusIcon } from '../components/icons'
+import { Sprite } from '../components/ItemChip'
+import { articlePath } from '../components/SearchBar'
+import { ItemPicker } from '../components/ToolsUI'
+import { CheckIcon, ChevronRightIcon, FolderIcon, GlobeIcon, PlusIcon, TrashIcon, XIcon } from '../components/icons'
 
 const inputClass =
   'h-11 w-full rounded-xl border border-line bg-bg px-3 text-base text-ink placeholder:text-muted focus:border-accent focus:outline-none'
@@ -82,6 +87,12 @@ export default function WorldPage() {
     <div className="mx-auto max-w-5xl px-4 py-6">
       <PageHeading title="Meu mundo" subtitle="Progresso, membros e grupos do mundo que vocês jogam juntos." />
       {body}
+      {/* Sem mundo ativo o quadro de tarefas continua funcionando, salvo no aparelho */}
+      {(!user || !current) && (!user || state.ready) && (
+        <div className="mx-auto mt-5 max-w-md">
+          <TaskBoard />
+        </div>
+      )}
     </div>
   )
 }
@@ -237,6 +248,7 @@ function WorldView({ current, onAdd }: { current: World; onAdd: () => void }) {
           <ProgressList phase="hard" title="Modo Difícil" />
         </section>
         <div className="space-y-5">
+          <TaskBoard />
           <Members />
           <WorldGroups worldId={current.id} />
           <ActivityList />
@@ -421,6 +433,134 @@ function WorldGroups({ worldId }: { worldId: string }) {
                 <span className="min-w-0 flex-1 truncate">{g.name}</span>
                 <span className="text-xs text-muted">{g.items.length}</span>
               </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+}
+
+function TaskBoard() {
+  const { tasks, ready, worldId, add, toggle, remove } = useTasks()
+  const { members } = useWorld()
+  const book = useRecipeBook()
+  const itemNames = useMemo(() => (book ? [...book.sprites.keys()].filter((n) => !isGroup(n)) : []), [book])
+  const [title, setTitle] = useState('')
+  const [item, setItem] = useState<string | null>(null)
+  const [assignee, setAssignee] = useState('')
+  const pending = tasks.filter((t) => !t.done).length
+  const memberName = (id: string) => members.find((m) => m.userId === id)?.name ?? 'ex-membro'
+  // Não feitas primeiro; dentro de cada grupo, a ordem de criação
+  const sorted = [...tasks].sort((a, b) => Number(a.done) - Number(b.done) || a.createdAt.localeCompare(b.createdAt))
+
+  function submit() {
+    if (!title.trim()) return
+    add({ title, itemPage: item, assignedTo: assignee || null })
+    setTitle('')
+    setItem(null)
+  }
+
+  return (
+    <section className={cardClass}>
+      <h2 className="mb-1 flex items-baseline justify-between font-display text-lg font-bold text-gold">
+        Quadro de tarefas da dupla
+        {tasks.length > 0 && <span className="text-sm font-normal text-muted">{pending} a fazer</span>}
+      </h2>
+      <p className="mb-3 text-sm text-muted">
+        {worldId ? 'Combinem quem farma ou constrói o quê. Todos os membros veem e mudam.' : 'Sem mundo ativo: as tarefas ficam só neste aparelho.'}
+      </p>
+
+      <form
+        className="space-y-2"
+        onSubmit={(e) => {
+          e.preventDefault()
+          submit()
+        }}
+      >
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Ex.: Farmar 99 Gel para tochas"
+          aria-label="Nova tarefa"
+          maxLength={200}
+          className={inputClass}
+        />
+        {item && book ? (
+          <div className="flex items-center gap-2 rounded-xl border border-line bg-bg px-3 py-1.5">
+            <Sprite book={book} name={item} size="sm" />
+            <span className="min-w-0 flex-1 truncate text-sm">{ptName(book, item)}</span>
+            <button type="button" onClick={() => setItem(null)} aria-label="Tirar item" className="p-1 text-muted hover:text-ink">
+              <XIcon className="h-4 w-4" />
+            </button>
+          </div>
+        ) : (
+          book && <ItemPicker book={book} names={itemNames} onPick={setItem} placeholder="Item (opcional)" />
+        )}
+        <div className="flex gap-2">
+          {worldId && (
+            <select
+              value={assignee}
+              onChange={(e) => setAssignee(e.target.value)}
+              aria-label="Responsável"
+              className="h-11 min-w-0 flex-1 rounded-xl border border-line bg-bg px-2 text-sm text-ink focus:border-accent focus:outline-none"
+            >
+              <option value="">Sem responsável</option>
+              {members.map((m) => (
+                <option key={m.userId} value={m.userId}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+          )}
+          <button type="submit" disabled={!title.trim()} className={`${buttonClass} ${worldId ? '' : 'w-full'}`}>
+            <PlusIcon className="h-4 w-4" />
+            Adicionar
+          </button>
+        </div>
+      </form>
+
+      {!ready ? (
+        <p className="mt-3 text-sm text-muted">Carregando…</p>
+      ) : sorted.length === 0 ? (
+        <p className="mt-3 text-sm text-muted">Nenhuma tarefa ainda.</p>
+      ) : (
+        <ul className="-mx-2 mt-3">
+          {sorted.map((t) => (
+            <li key={t.id} className="flex items-center gap-1">
+              <button
+                type="button"
+                aria-pressed={t.done}
+                onClick={() => toggle(t.id)}
+                aria-label={t.done ? `Desmarcar ${t.title}` : `Marcar ${t.title} como feita`}
+                className="rounded-lg p-2 transition hover:bg-bg/50"
+              >
+                <span className={`flex h-5 w-5 items-center justify-center rounded border ${t.done ? 'border-gold bg-gold text-bg' : 'border-line'}`}>
+                  {t.done && <CheckIcon className="h-3.5 w-3.5" />}
+                </span>
+              </button>
+              <span className="min-w-0 flex-1 py-1.5">
+                <span className={`block break-words ${t.done ? 'text-muted line-through' : 'text-ink'}`}>{t.title}</span>
+                {(t.itemPage || t.assignedTo) && (
+                  <span className="flex flex-wrap items-center gap-x-3 text-xs text-muted">
+                    {t.itemPage && book && (
+                      <Link to={articlePath(t.itemPage)} className="flex items-center gap-1 hover:text-accent">
+                        <Sprite book={book} name={t.itemPage} size="sm" />
+                        {ptName(book, t.itemPage)}
+                      </Link>
+                    )}
+                    {t.assignedTo && <span>Com {memberName(t.assignedTo)}</span>}
+                  </span>
+                )}
+              </span>
+              <button
+                type="button"
+                onClick={() => window.confirm(`Apagar a tarefa “${t.title}”?`) && remove(t.id)}
+                aria-label={`Apagar ${t.title}`}
+                className="rounded-lg p-2 text-muted transition hover:text-red-300"
+              >
+                <TrashIcon className="h-4 w-4" />
+              </button>
             </li>
           ))}
         </ul>

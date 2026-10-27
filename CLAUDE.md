@@ -75,6 +75,9 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 
 - **Lote C, parte 2 — Pescaria (feito, 2026-10-27)**: `/ferramentas/pescaria` (`src/pages/tools/FishingPage.tsx`, dados escritos por nós em `src/lib/fishing.ts`: peixes de poção e de missão por bioma/camada, caixas antes/depois do Modo Difícil e recompensas do Pescador). O conteúdo com chance de cada caixa vem da tabela `drops` de `tools-data.json` (parcial: Sagrado e Masmorra ficam "conferir"). Fonte: páginas Fishing, Fishing catches, Potion fish, Quest fish, Crate e Angler (1.4.5).
 
+- **Lote D, parte 1 — Quadro de tarefas do mundo (feito, 2026-10-27)**: seção "Quadro de tarefas da dupla" em `/mundo` (tabela
+  `world_tasks`; sem mundo, `terrapedia:tasks`). Veja "Mundo compartilhado" abaixo.
+
 ## Stack
 
 - Vite + React + TypeScript
@@ -140,6 +143,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
   (`useToolStage()`, `useToolClass()`) e `useDefeated()`
 - `src/lib/minionCalc.ts`, `bestModifier.ts`, `bossPrep.ts` (buffs e arena por chefe), `buffChecks.ts`, `itemCompare.ts` — lógica de cada ferramenta
 - `src/lib/worldChecklist.ts` — checklist salvo no mundo ativo ou no aparelho (usado pela árvore e pelos buffs)
+- `src/lib/worldTasks.ts` — quadro de tarefas da dupla (`useTasks()`), no mundo ativo (`world_tasks`) ou no aparelho
 - `src/pages/ToolsPage.tsx` (cartões, lista `TOOLS`), `src/pages/tools/*Page.tsx` (uma por ferramenta),
   `src/components/ToolsUI.tsx` (cabeçalho, etapa, classe, busca de itens, `SetChip`), `BossPicker.tsx` (`useBoss()`, `?chefe=`)
 - `src/data/npc-data.json` — preferências e lojas dos NPCs, gerado por `scripts/build-npcs.mjs`. Não editar à mão.
@@ -435,6 +439,11 @@ Só com login. Tudo em `src/lib/world.ts`; as telas usam `useWorld()` (ler), `us
   ligações e renomeiam; só quem criou apaga). Vêm junto com a biblioteca (`fetchLibrary`), com `worldId` e `ownerId`.
   Itens e grupos que já existem só mudam os campos editáveis (o banco não deixa trocar dono nem mundo), por isso
   `pushChanges` insere o que é novo e faz `update` só de nome / en / pt / sprite.
+- **Quadro de tarefas da dupla** (`src/lib/worldTasks.ts`, `useTasks()`; seção `TaskBoard` em `/mundo`): título, item opcional
+  (`ItemPicker`, nome EN em `item_page`) e responsável opcional (membro do mundo). Marcar como feita e apagar. Com mundo ativo,
+  tabela `world_tasks` (membros veem, criam, apagam e mudam só `done`/`assigned_to`; o responsável precisa ser membro; relê a
+  cada 20 s com a aba visível). Sem mundo (ou sem login), fica no aparelho em `terrapedia:tasks`, sem responsável, abaixo dos
+  formulários de criar/entrar.
 
 ## Supabase
 
@@ -450,6 +459,9 @@ linhas dela no teste SQL ainda precisam ser rodadas no SQL Editor).
 Em 2026-10-23: `world_buff_checks` (checklist de buffs; mesmas regras de `world_craft_checks`). RLS conferido pelo MCP (ligado,
 3 regras, `anon` sem acesso, ninguém faz `update`); o teste `teste-mundo-checklist-notas.sql` ganhou as linhas dela e
 passou em tudo no SQL Editor em 2026-10-23.
+Em 2026-10-27: `world_tasks` (quadro de tarefas; migração "world_tasks" pelo MCP). RLS conferido pelo MCP (ligado, 4 regras,
+`anon` sem acesso, `update` só das colunas `done`/`assigned_to`); avisos de segurança sem nada novo. As linhas dela no teste SQL
+(e a correção do bloco do keepalive, que estava com `$` em vez de `$$`) ainda precisam ser rodadas no SQL Editor.
 Em 2026-10-22: `quick_access` (acesso rápido; RLS conferido: o dono vê, outra conta não vê nem muda). No mesmo dia,
 `rls_auto_enable()` (função do "automatic RLS" do Supabase, chamada pelo gatilho de eventos `ensure_rls`) perdeu o EXECUTE para
 `public`, `anon` e `authenticated`; o gatilho continua ligando o RLS em tabelas novas. Avisos de segurança que ficam de propósito:
