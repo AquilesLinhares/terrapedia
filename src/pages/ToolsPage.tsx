@@ -62,6 +62,13 @@ export const TOOLS = [
     icon: 'Suspicious Looking Eye',
     ready: true,
   },
+  {
+    slug: 'drops',
+    title: 'Farm de drops',
+    text: 'Quem dropa cada item, a chance, quantos abates para 50% / 90% / 99% e um contador de tentativas.',
+    icon: 'Lucky Coin',
+    ready: true,
+  },
 ]
 
 /** Página `/ferramentas`: cartões das ferramentas de jogo. */

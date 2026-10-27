@@ -64,6 +64,13 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - **Ferramentas de jogo, lote B — NPCs e mundo (feito, 2026-10-23)**: Felicidade dos NPCs (casas salvas no mundo), Vendedores
   (lojas, chegada, "quem vende?") e Condições de chefes e eventos. Veja "Ferramentas" abaixo.
 
+- **Lote C, parte 1 (feito, 2026-10-27)**: atalhos "Grandes combinações" na árvore de crafting (`BIG_COMBOS` em `CraftingTreePage.tsx`) e
+  ferramenta **Farm de drops** (`/ferramentas/drops?item=|inimigo=`, `src/pages/tools/DropsPage.tsx`). Usa a tabela `drops` de
+  `tools-data.json` (item → `[fonte, chance %, 'expert'?]`): a wiki não separa a chance por modo, só marca drops exclusivos de Expert+
+  (esmaecidos no Clássico) e a tela avisa que, em Expert/Mestre, a chance real pode ser maior; chance `null` = "conferir". Modo do mundo
+  ativo (ou escolhido, `terrapedia:drops-mode`); calculadora 1 − (1 − p)^n e abates para 50/90/99%; contador por item+fonte em
+  `terrapedia:drop-counters`.
+
 ## Stack
 
 - Vite + React + TypeScript
@@ -71,7 +78,7 @@ O usuário dono do projeto é iniciante: explique decisões e passos de forma si
 - `vite-plugin-pwa` (manifest + service worker)
 - React Router (rotas `/`, `/wiki/*`, `/favoritos`, `/depois`, `/grupos`, `/grupos/:id`, `/conta`, `/arvore/*`, `/mundo`, `/historico`,
   `/classes`, `/classes/:slug`, `/ferramentas`, `/ferramentas/lacaios`, `/ferramentas/modificador`, `/ferramentas/buffs`,
-  `/ferramentas/arena`, `/ferramentas/comparar`, `/ferramentas/felicidade`, `/ferramentas/vendedores`, `/ferramentas/condicoes`).
+  `/ferramentas/arena`, `/ferramentas/comparar`, `/ferramentas/felicidade`, `/ferramentas/vendedores`, `/ferramentas/condicoes`, `/ferramentas/drops`).
   Só `HomePage` e `ArticlePage` vão no pacote principal; as outras telas são `lazy()` em `main.tsx`.
 
 ## Estrutura
