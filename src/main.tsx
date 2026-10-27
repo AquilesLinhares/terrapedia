@@ -8,6 +8,17 @@ import { installLinkPrefetch } from './lib/articleLoader'
 import { loadGameNames } from './lib/localize'
 import './index.css'
 
+// Depois de um deploy, o app aberto pode pedir um arquivo que não existe mais: recarrega uma vez para pegar a versão nova
+window.addEventListener('vite:preloadError', () => {
+  try {
+    if (sessionStorage.getItem('terrapedia:preload-reload')) return
+    sessionStorage.setItem('terrapedia:preload-reload', '1')
+  } catch {
+    return
+  }
+  location.reload()
+})
+
 // Telas menos usadas ficam em arquivos separados, baixados só quando abrem (a primeira tela carrega menos)
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'))
 const ReadLaterPage = lazy(() => import('./pages/ReadLaterPage'))

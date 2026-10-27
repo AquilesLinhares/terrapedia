@@ -31,6 +31,10 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/index.html',
+        // O service worker novo assume na hora e os arquivos de versões antigas saem do cache
+        clientsClaim: true,
+        skipWaiting: true,
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
             // Guarda artigos e imagens já vistos para abrir mais rápido (e offline)
