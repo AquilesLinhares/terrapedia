@@ -1,0 +1,154 @@
+{
+  "page": "Queen Slime",
+  "type": "chefe",
+  "format": 2,
+  "tags": [
+    "rainha geleia",
+    "rainha slime",
+    "slime rosa",
+    "geleia rosa",
+    "slime com coroa",
+    "slime com asas",
+    "slime do sagrado",
+    "chefe do sagrado",
+    "chefe do modo difícil",
+    "cristal rosa",
+    "cristal azul",
+    "cristal que muda de cor",
+    "invocar slime",
+    "primeiro chefe do modo difícil",
+    "slime que teletransporta",
+    "slime que voa",
+    "esmagamento",
+    "cajado com lâminas",
+    "adagas voadoras",
+    "gancho que teletransporta"
+  ],
+  "summary": "Chefe de geleia do Sagrado. Na 1ª fase pula e se teletransporta até você; abaixo de 50% da vida ganha asas, voa e atravessa blocos. Solta o Cajado com Lâminas e o Gancho da Dissonância.",
+  "facts": [
+    { "label": "Vida", "value": "conferir (a wiki só mostra a 2ª forma: 9.000 / 14.400 / 18.360)" },
+    { "label": "Dano de contato", "value": "", "modes": ["60", "120", "180"] },
+    { "label": "Dano do esmagamento", "value": "", "modes": ["80", "160", "240"] },
+    { "label": "Defesa", "value": "conferir" },
+    { "label": "Quando", "value": "Qualquer hora, no Sagrado ou no Subterrâneo Consagrado" },
+    { "label": "Fase do jogo", "value": "Início do Modo Difícil (opcional)" }
+  ],
+  "quick": [
+    "Use o **Cristal Gelatinoso** no Sagrado ou no Subterrâneo Consagrado. Ele nasce no lugar de alguns Fragmentos de Cristal.",
+    "Lute numa arena aberta, com plataformas e **sem teto**. Abaixo de 50% da vida ela voa: lacaios e armas que miram sozinhas ajudam.",
+    "Cuidado com o **esmagamento**: quando ela para no ar, saia de baixo dela. Se ela sumir de vista ou você ficar muito acima ou abaixo, ela se teletransporta."
+  ],
+  "duo": {
+    "summoner": [
+      {
+        "stage": "hardmode",
+        "note": "Ela mesma dá o seu melhor lacaio da etapa: o Cajado com Lâminas. O Gancho da Dissonância serve para fugir do esmagamento (veja os drops).",
+        "take": [
+          "Spider Mask",
+          "Spider Breastplate",
+          "Spider Greaves",
+          "Spider Staff",
+          "Firecracker",
+          "Summoner Emblem",
+          "Pygmy Necklace",
+          "Flask of Ichor",
+          "Summoning Potion"
+        ]
+      }
+    ],
+    "mage": [
+      {
+        "stage": "hardmode",
+        "note": "Na 2ª fase ela voa por cima de você: prefira armas que miram sozinhas ou de longo alcance. O Gancho da Dissonância também ajuda você.",
+        "take": [
+          "Adamantite Headgear",
+          "Adamantite Breastplate",
+          "Forbidden Treads",
+          "Golden Shower",
+          "Crystal Storm",
+          "Sorcerer Emblem",
+          "Crystal Ball",
+          "Mana Regeneration Potion",
+          "Magic Power Potion"
+        ]
+      }
+    ]
+  },
+  "summon": {
+    "text": [
+      "Use o [[Gelatin Crystal]] no Sagrado ou no Subterrâneo Consagrado, a qualquer hora. Depois que ela aparece, a luta pode seguir para qualquer bioma e ela não fica furiosa.",
+      "O cristal rosa e azul que muda de cor se encontra no Subterrâneo Consagrado: ele nasce no lugar de alguns [[Crystal Shard]] (1 em cada 50). Quebre o cristal e ele cai como item. Um [[Metal Detector]] ajuda a achar."
+    ]
+  },
+  "arena": {
+    "text": [
+      "Uma ponte larga no Sagrado, com 3 camadas de plataformas (tamanho exato: conferir). Sem teto e sem paredes de bloco por perto: se ela perde você de vista atrás de blocos, tenta se teletransportar até você.",
+      "[[Campfire]] e [[Heart Lantern]] para curar. Uma [[Gravitation Potion]] ou um [[Teleporter]] ajudam a se reposicionar."
+    ]
+  },
+  "phases": [
+    {
+      "name": "1ª fase: pula e se teletransporta",
+      "text": [
+        "Escolhe ao acaso entre três ataques: **quatro pulos seguidos** (o último é bem alto), um **leque de bolas de gel** (6 bolas que quicam uma vez) e o **esmagamento**.",
+        "**Esmagamento**: ela fica parada, salta passando por blocos até ficar em cima de você, pausa no ar por meio segundo e despenca. O choque atinge uma área quadrada de uns 30 blocos em volta do ponto da batida. Quando ela parar no ar, ande para o lado, bem longe da queda.",
+        "**Teleporte**: se há blocos entre vocês, ou se você está a mais de 20 blocos acima ou abaixo dela, o tempo de espera enche e, depois de alguns segundos (valor exato: conferir), ela aparece perto de você. Fique na mesma altura, a céu aberto.",
+        "Ao ser ferida, solta de 1 a 2 geleias de cristal, saltitantes ou celestiais: mate as de cristal antes que encham a arena."
+      ]
+    },
+    {
+      "name": "2ª fase: voa (abaixo de 50%)",
+      "text": [
+        "Ganha asas, voa uns 15 blocos acima de você, atravessa blocos e **não se teletransporta mais**. Continua soltando geleias ao ser ferida.",
+        "O leque de bolas de gel agora tem 10 bolas. O esmagamento só acontece se ela estiver em cima de você, a menos de uns 15 blocos de lado; senão ela usa o leque. Saia do lado dela e o esmagamento some."
+      ]
+    }
+  ],
+  "drops": {
+    "groups": [
+      {
+        "label": "Para o progresso",
+        "items": [
+          { "name": "Greater Healing Potion", "qty": "5–15" },
+          "Treasure Bag (Queen Slime)"
+        ]
+      },
+      {
+        "label": "Invocador",
+        "items": [
+          { "name": "Blade Staff", "note": "lacaio de adagas; 25% (33% no Expert e no Mestre)" },
+          { "name": "Hook of Dissonance", "note": "gancho; 33% (50% no Expert e no Mestre)" }
+        ]
+      },
+      {
+        "label": "Mago",
+        "items": [
+          { "name": "Hook of Dissonance", "note": "teletransporta você até onde o gancho prender, passando por inimigos sem dano; serve para escapar do esmagamento" },
+          { "name": "Volatile Gelatin", "note": "só Expert e Mestre, dentro da bolsa" }
+        ]
+      }
+    ],
+    "text": [
+      "O **Gancho da Dissonância** alcança 30 blocos e só funciona se o caminho for largo o bastante para você passar. Você perde o impulso ao chegar."
+    ]
+  },
+  "dropsMore": {
+    "groups": [
+      {
+        "items": [
+          "Gelatinous Pillion",
+          "Crystal Assassin Hood",
+          "Crystal Assassin Shirt",
+          "Crystal Assassin Pants",
+          "Sparkle Slime Balloon",
+          { "name": "Regal Delicacy", "note": "só Mestre" },
+          "Queen Slime Mask",
+          "Queen Slime Trophy",
+          { "name": "Queen Slime Relic", "note": "só Mestre" }
+        ]
+      }
+    ]
+  },
+  "shortcuts": ["buffs", "arena", "drops"],
+  "source": { "revid": 1032834, "date": "2026-10-27" }
+}
