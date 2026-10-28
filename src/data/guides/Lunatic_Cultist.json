@@ -1,0 +1,138 @@
+{
+  "page": "Lunatic Cultist",
+  "type": "chefe",
+  "format": 2,
+  "tags": [
+    "cultista lunático",
+    "cultista",
+    "cultistas da masmorra",
+    "entrada da masmorra",
+    "placa misteriosa",
+    "devoto lunático",
+    "arqueiro cultista",
+    "chefe com cópias",
+    "chefe com clones",
+    "chefe que se teletransporta",
+    "bola de fogo",
+    "raio",
+    "névoa de gelo",
+    "manipulador antigo",
+    "libera torres celestiais",
+    "libera eventos lunares",
+    "chefe antes do senhor da lua",
+    "chefe depois do golem",
+    "ritual"
+  ],
+  "summary": "Chefe que se teletransporta e faz cópias falsas de si. Não solta arma nem acessório, só o Manipulador Antigo. Derrotá-lo começa os Eventos Lunares.",
+  "facts": [
+    { "label": "Vida", "value": "", "modes": ["32.000", "48.000", "61.200"] },
+    { "label": "Defesa", "value": "42 (abaixo de 50% da vida: 27)" },
+    { "label": "Dano de contato", "value": "", "modes": ["50", "75", "112"] },
+    { "label": "Quando", "value": "Qualquer hora, na entrada da Masmorra" },
+    { "label": "Fase do jogo", "value": "Depois do Golem" }
+  ],
+  "quick": [
+    "Mate os 4 Cultistas na entrada da Masmorra (2 Arqueiros e 2 Devotos) para o Cultista Lunático aparecer. Só funciona depois do Esqueletron **e** do Golem.",
+    "Ele se teletransporta entre golpes. Fique de olho no **ritual**: o verdadeiro é o mais afastado de você, com olhos zangados e uma linha no capuz.",
+    "**Só derrote quando o mundo estiver pronto**: os Eventos Lunares começam na hora e só param depois dos 4 pilares. A vida das cópias é sempre 10.000."
+  ],
+  "duo": {
+    "summoner": [
+      {
+        "stage": "post-golem",
+        "note": "Seus lacaios causam só 75% do dano nele (e nem o miram durante o ritual). Use o chicote, que acerta onde você bate.",
+        "take": [
+          "Tiki Mask",
+          "Tiki Shirt",
+          "Tiki Pants",
+          "Kaleidoscope",
+          "Vulgar Display of Flower",
+          "Terraprisma",
+          "Summoner Emblem",
+          "Papyrus Scarab",
+          "Necromantic Scroll",
+          "Flask of Ichor",
+          "Summoning Potion",
+          "Lifeforce Potion"
+        ]
+      }
+    ],
+    "mage": [
+      {
+        "stage": "post-golem",
+        "note": "Armas que perseguem sozinhas também têm só 75% do dano nele. Tiro direto e que atravessa blocos funciona melhor.",
+        "take": [
+          "Spectre Mask",
+          "Spectre Robe",
+          "Spectre Pants",
+          "Inferno Fork",
+          "Nettle Burst",
+          "Leaf Blower",
+          "Celestial Emblem",
+          "Celestial Cuffs",
+          "Magic Power Potion",
+          "Mana Regeneration Potion",
+          "Lifeforce Potion"
+        ]
+      }
+    ]
+  },
+  "summon": {
+    "text": [
+      "Depois do Esqueletron e do Golem, 4 Cultistas aparecem na entrada da [[Dungeon]], junto da [[Mysterious Tablet]]: 2 Arqueiros e 2 [[Lunatic Devotee]]. Mate os quatro e o Cultista Lunático surge e quebra a placa.",
+      "Se você morrer ou ele sumir, os 4 voltam após 12 horas do jogo. O Velho sobrepõe os Cultistas: antes do Esqueletron eles nem aparecem."
+    ]
+  },
+  "arena": {
+    "text": [
+      "Uma plataforma curta ao lado da entrada da Masmorra, com 2 camadas de plataformas (tamanho exato: conferir). Ele sempre aparece onde era a entrada original.",
+      "Muitos golpes dele (bolas de fogo, raios) são bloqueados por blocos sólidos; use blocos como escudo e armas que atravessam. [[Campfire]] e [[Heart Lantern]] para curar."
+    ]
+  },
+  "phases": [
+    {
+      "name": "Acima de 50% da vida",
+      "text": [
+        "Ele se teletransporta para cima de você entre golpes, nesta ordem: bolas de fogo (3 no Clássico, 4 no Expert), névoa de gelo, orbe de raios, bolas de fogo, névoa de gelo, **ritual**.",
+        "**Ritual**: ele some e surgem 2 cópias ao redor de uma runa; acertar uma cópia a mata. Acertar o verdadeiro faz as cópias sumirem. Se nada for atingido por 5 segundos, aparece um Dragão Fantasma (ou uma Visão Antiga, se já houver um).",
+        "As cópias que sobreviverem voam ao lado dele e atiram bolas sombrias teleguiadas."
+      ]
+    },
+    {
+      "name": "Abaixo de 50% da vida",
+      "text": [
+        "Defesa cai para 27 e ele troca o padrão: bolas de fogo, **Luzes Antigas** (duas rajadas de 5, quebráveis, atravessam blocos), orbe de raios, Luzes Antigas, névoa de gelo, orbe de raios, ritual.",
+        "No Expert e no Mestre, alguns golpes são trocados pela **Desgraça Antiga**: nos pontos livres ao redor de você aparecem bolas roxas que, se não forem quebradas em 7 segundos, viram 4 projéteis em cruz com dano alto. A chance sobe com a vida: 1 em 6 (abaixo de 50%), 1 em 4 (33%) e 1 em 3 (25%). Quebre-as logo."
+      ]
+    }
+  ],
+  "drops": {
+    "groups": [
+      {
+        "label": "Para o progresso",
+        "items": [
+          { "name": "Ancient Manipulator", "note": "bancada de itens do fim do jogo; basta uma" },
+          { "name": "Greater Healing Potion", "qty": "5–15" },
+          "Treasure Bag (Lunatic Cultist)"
+        ]
+      }
+    ],
+    "text": [
+      "Ele não solta arma nem acessório. Ao cair, os **Eventos Lunares** começam e o Alfaiate passa a vender as roupas de Cultista do Sol (de dia) e da Lua (à noite). Um pilar costuma aparecer perto de você: pegue os drops e saia."
+    ]
+  },
+  "dropsMore": {
+    "groups": [
+      {
+        "items": [
+          "Lunatic Cultist Mask",
+          "Lunatic Cultist Trophy",
+          { "name": "Tablet Fragment", "note": "só Mestre" },
+          { "name": "Lunatic Cultist Relic", "note": "só Mestre" }
+        ]
+      }
+    ]
+  },
+  "shortcuts": ["buffs", "arena"],
+  "source": { "revid": 1035084, "date": "2026-10-27" }
+}

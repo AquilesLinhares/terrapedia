@@ -1,0 +1,167 @@
+{
+  "page": "Empress of Light",
+  "type": "chefe",
+  "format": 2,
+  "tags": [
+    "imperatriz da luz",
+    "imperatriz",
+    "fada gigante",
+    "fada do arco-íris",
+    "chefe do sagrado",
+    "chefe da luz",
+    "crisopídeo prismático",
+    "borboleta prismática",
+    "inseto do sagrado",
+    "chefe que mata de dia",
+    "chefe opcional",
+    "chefe do modo difícil",
+    "terraprisma",
+    "lacaio do dia",
+    "asas da imperatriz",
+    "insígnia voadora",
+    "caleidoscópio",
+    "brilho noturno",
+    "tom estelar",
+    "lanças de luz",
+    "chefe de projéteis"
+  ],
+  "summary": "Chefe de projéteis e desvios no Sagrado. À noite é difícil, mas justa; de dia cada golpe dela mata na hora. Só de dia ela solta o Terraprisma.",
+  "facts": [
+    { "label": "Vida", "value": "", "modes": ["70.000", "98.000", "124.950"] },
+    { "label": "Defesa", "value": "50 (2ª fase: 60)" },
+    { "label": "Dano de contato (noite)", "value": "", "modes": ["80", "110", "248"] },
+    { "label": "Dano de dia", "value": "mata em um golpe, em qualquer modo" },
+    { "label": "Quando", "value": "Qualquer hora, no Sagrado da superfície" },
+    { "label": "Fase do jogo", "value": "Depois da Plantera (opcional; na prática depois do Golem)" }
+  ],
+  "quick": [
+    "Mate um **Crisopídeo Prismático** no Sagrado da superfície (ele só aparece à noite). Pegue-o com puçá se quiser soltar e matar na hora que escolher.",
+    "À noite, desvie dos projéteis e mantenha-se **um pouco abaixo ou no nível dela**. Não há como se proteger: o que conta é mobilidade, asas rápidas e chão largo.",
+    "De **dia** qualquer toque mata. Para o **Terraprisma** (Invocador), todo o dano dela tem que ser dado de dia: só tente com asas boas e sem defesa nenhuma, só dano."
+  ],
+  "duo": {
+    "summoner": [
+      {
+        "stage": "post-golem",
+        "note": "O Terraprisma só cai se **todo** o dano for de dia: se tomar um golpe, é morte instantânea, então dê prioridade a dano e mobilidade. À noite os lacaios seguram bem.",
+        "take": [
+          "Tiki Mask",
+          "Tiki Shirt",
+          "Tiki Pants",
+          "Xeno Staff",
+          "Tempest Staff",
+          "Desert Tiger Staff",
+          "Summoner Emblem",
+          "Papyrus Scarab",
+          "Necromantic Scroll",
+          "Pygmy Necklace",
+          "Flask of Ichor",
+          "Summoning Potion",
+          "Lifeforce Potion"
+        ]
+      }
+    ],
+    "mage": [
+      {
+        "stage": "post-golem",
+        "note": "Armas de longo alcance e de mira automática ajudam: ela fica se mexendo. O [[Rod of Discord]] ajuda a escapar de vários golpes.",
+        "take": [
+          "Spectre Mask",
+          "Spectre Robe",
+          "Spectre Pants",
+          "Inferno Fork",
+          "Leaf Blower",
+          "Celestial Emblem",
+          "Celestial Cuffs",
+          "Rod of Discord",
+          "Soaring Insignia",
+          "Magic Power Potion",
+          "Mana Regeneration Potion",
+          "Lifeforce Potion"
+        ]
+      }
+    ]
+  },
+  "summon": {
+    "text": [
+      "Mate um [[Prismatic Lacewing]] a qualquer hora. Eles só aparecem no Sagrado da superfície, depois do pôr do sol e antes da meia-noite, depois da Plantera.",
+      "Pegar o inseto com [[Bug Net]] e soltá-lo na hora e no lugar escolhidos serve. Solto fora do Sagrado ele some quase na hora: mate-o já no Sagrado, por exemplo com uma área de dano fixa."
+    ]
+  },
+  "arena": {
+    "text": [
+      "Uma ponte bem larga no Sagrado (uns 300 blocos, conferir), com 3–4 camadas de plataformas e chão de [[Asphalt Block]] para correr. Sem blocos no meio do caminho.",
+      "Fique sempre no nível dela ou abaixo: depois de cada golpe ela corta para cima de você. De dia (Terraprisma) qualquer dano é morte: cura e defesa não servem. À noite use [[Campfire]] e [[Heart Lantern]]."
+    ]
+  },
+  "phases": [
+    {
+      "name": "1ª fase",
+      "text": [
+        "Repete 10 golpes na mesma ordem: nuvem de projéteis coloridos (20 no Clássico, 30 no Expert), investida em linha reta, sóis giratórios, outra investida, arco-íris em anel, e de novo; mais para o fim, lanças de luz que avisam com raios coloridos antes de disparar.",
+        "Os projéteis se movem devagar no início e depois seguem você; uma curva fechada os faz errar. Nas investidas ela fica invencível por um instante; saia do caminho antes do aviso."
+      ]
+    },
+    {
+      "name": "2ª fase (abaixo de 50%)",
+      "text": [
+        "Some e reaparece acima de você, mais roxa, com tentáculos nas costas. Defesa 60 e golpes mais curtos entre si. No Expert entram também **16 lanças** que miram exatamente onde você está, sempre atrás de você.",
+        "O ritmo é mais rápido: dá para ler os avisos coloridos antes de cada lança."
+      ]
+    },
+    {
+      "name": "De dia (furiosa)",
+      "text": [
+        "De dia seus golpes viram amarelos e matam na hora; dodge e esquivas não valem. Ao anoitecer ela se acalma. Se não foi ferida de noite, ela some perto do fim do dia (horário exato: conferir)."
+      ]
+    }
+  ],
+  "drops": {
+    "groups": [
+      {
+        "label": "Para o progresso",
+        "items": [
+          { "name": "Greater Healing Potion", "qty": "5–15" },
+          "Treasure Bag (Empress of Light)"
+        ]
+      },
+      {
+        "label": "Invocador",
+        "items": [
+          { "name": "Terraprisma", "note": "100%, mas só se todo o dano for dado **de dia**" },
+          { "name": "Kaleidoscope", "note": "chicote; uma das 4 armas que sempre caem, 25% cada" }
+        ]
+      },
+      {
+        "label": "Mago",
+        "items": [
+          { "name": "Nightglow", "note": "arma mágica; 25%" },
+          { "name": "Stellar Tune", "note": "instrumento mágico; 2% (5% no Expert e no Mestre)" },
+          { "name": "Empress Wings", "note": "asas; 6,67% (10% no Expert e no Mestre)" },
+          { "name": "Soaring Insignia", "note": "voo sem fim; só Expert e Mestre, dentro da bolsa" }
+        ]
+      }
+    ],
+    "text": [
+      "As outras duas armas da lista são de outras classes. O Terraprisma só cai se **todo** o dano que ela sofreu foi dado de dia."
+    ]
+  },
+  "dropsMore": {
+    "groups": [
+      {
+        "items": [
+          "Starlight",
+          "Eventide",
+          "Prismatic Dye",
+          "Rainbow Cursor",
+          "Empress of Light Mask",
+          "Empress of Light Trophy",
+          { "name": "Jewel of Light", "note": "só Mestre" },
+          { "name": "Empress of Light Relic", "note": "só Mestre" }
+        ]
+      }
+    ]
+  },
+  "shortcuts": ["buffs", "arena", "drops"],
+  "source": { "revid": 1027282, "date": "2026-10-27" }
+}

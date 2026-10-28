@@ -1,0 +1,168 @@
+{
+  "page": "Duke Fishron",
+  "type": "chefe",
+  "format": 2,
+  "tags": [
+    "duque peixe-dragão",
+    "duque fishron",
+    "porco-dragão",
+    "tubarão",
+    "peixe gigante",
+    "chefe do oceano",
+    "chefe da pesca",
+    "pescar chefe",
+    "minhoca de trufa",
+    "tornado de tubarões",
+    "bolhas que explodem",
+    "chefe opcional",
+    "chefe do modo difícil",
+    "asas do peixe-dragão",
+    "tufão de navalhas",
+    "cajado da tempestade",
+    "kraken",
+    "tsunami",
+    "terceira fase"
+  ],
+  "summary": "Chefe rápido do Oceano, chamado pescando com o Verme da Trufa. Investe vários golpes seguidos, solta bolhas explosivas e tornados de tubarões. No Expert e no Mestre tem uma 3ª fase invisível.",
+  "facts": [
+    { "label": "Vida", "value": "", "modes": ["60.000", "78.000", "99.450"] },
+    { "label": "Dano de contato", "value": "", "modes": ["100", "140", "210"] },
+    { "label": "Defesa", "value": "50 (2ª fase: 40; 3ª fase no Expert: 0; furioso: dobro)" },
+    { "label": "Quando", "value": "Qualquer hora, no Oceano" },
+    { "label": "Fase do jogo", "value": "Depois do Golem (opcional)" }
+  ],
+  "quick": [
+    "Pesque no **Oceano** com o **Verme da Trufa** como isca. O verme nasce nos Cogumelos Brilhantes do Modo Difícil e se pega com puçá.",
+    "Lute no ar sobre a água, com plataformas largas. Vá sempre **em zigue-zague**: as investidas dele miram onde você está, não onde vai estar.",
+    "Fique dentro do Oceano: longe dele o Duque **fica furioso** (dobro de dano e de defesa). Cuidado com as bolhas e com a 3ª fase (Expert e Mestre) abaixo de 15% da vida."
+  ],
+  "duo": {
+    "summoner": [
+      {
+        "stage": "post-plantera",
+        "note": "Os lacaios fazem boa parte do dano enquanto você desvia. Do Duque saem o Cajado da Tempestade e a Enguia Elétrica para você.",
+        "take": [
+          "Tiki Mask",
+          "Tiki Shirt",
+          "Tiki Pants",
+          "Desert Tiger Staff",
+          "Vulgar Display of Flower",
+          "Summoner Emblem",
+          "Hercules Beetle",
+          "Pygmy Necklace",
+          "Summoning Potion",
+          "Inferno Potion",
+          "Water Walking Potion",
+          "Lifeforce Potion"
+        ]
+      }
+    ],
+    "mage": [
+      {
+        "stage": "post-plantera",
+        "note": "Prefira armas de longo alcance e que acertam sozinhas. Do Duque saem o Tufão de Navalhas e a Arma de Bolhas para você.",
+        "take": [
+          "Spectre Mask",
+          "Spectre Robe",
+          "Spectre Pants",
+          "Inferno Fork",
+          "Leaf Blower",
+          "Celestial Emblem",
+          "Celestial Cuffs",
+          "Shield of Cthulhu",
+          "Magic Power Potion",
+          "Inferno Potion",
+          "Water Walking Potion",
+          "Lifeforce Potion"
+        ]
+      }
+    ]
+  },
+  "summon": {
+    "text": [
+      "Pesque no Oceano com o [[Truffle Worm]] como isca, a qualquer hora. Quando a boia afundar, puxar a linha chama o Duque. Também dá para chamar pescando em lava ou em mel, desde que o poço seja grande (tamanho exato: conferir).",
+      "O [[Truffle Worm]] se pega com [[Bug Net]] nos Cogumelos Brilhantes subterrâneos do Modo Difícil; ele foge se você chegar perto. Só serve para chamar o Duque e é gasto."
+    ]
+  },
+  "arena": {
+    "text": [
+      "Uma ponte larga sobre o Oceano, no ar (uns 300 blocos de largura, conferir), com 3 camadas de plataformas. Plataformas no topo da água evitam afundar; a [[Water Walking Potion]] também serve.",
+      "Evite sair da área do Oceano: se precisar, feche as bordas com blocos. [[Campfire]] e [[Heart Lantern]] para curar. A [[Inferno Potion]] explode as bolhas ao redor sem você apanhar."
+    ]
+  },
+  "phases": [
+    {
+      "name": "1ª fase",
+      "text": [
+        "Faz 5 investidas seguidas (atravessa blocos) e depois usa um destes golpes, na ordem: **21 bolhas explosivas** que seguem você, ou **dois raios que viram tornados de tubarões**, que atiram tubarões-dragão em você.",
+        "As bolhas morrem com qualquer golpe e molham você ao explodir. Saia de debaixo dos tornados."
+      ]
+    },
+    {
+      "name": "2ª fase (abaixo de 50%)",
+      "text": [
+        "Fica mais verde, com os olhos amarelos, e voa em círculos largos deixando um rastro de **31 bolhas**. O raio agora é um só, que persegue você e faz um tornado gigante embaixo de você; o tornado é bem maior e solta o dobro de tubarões-dragão.",
+        "As investidas ficam mais rápidas. Mantenha o movimento."
+      ]
+    },
+    {
+      "name": "3ª fase (só Expert e Mestre, abaixo de 15%)",
+      "text": [
+        "A tela escurece, ele fica invisível (só os olhos brilham) e causa menos dano de contato. Investe 1 vez e vai para um lado, investe 2 vezes e vai para o outro, investe 3 vezes e repete. Ele sempre aparece **do lado oposto** ao da última investida."
+      ]
+    },
+    {
+      "name": "Furioso",
+      "text": [
+        "Longe do Oceano (ou no fundo ou no topo do mundo) ele investe sem parar, dá o dobro de dano, tem o dobro de defesa e faz tornados mais rápidos. No Expert e no Mestre, o contato pode causar Sangramento ou Mordida Feroz (1 chance em 3 para cada)."
+      ]
+    }
+  ],
+  "drops": {
+    "groups": [
+      {
+        "label": "Para o progresso",
+        "items": [
+          { "name": "Greater Healing Potion", "qty": "5–15" },
+          "Treasure Bag (Duke Fishron)"
+        ]
+      },
+      {
+        "label": "Invocador",
+        "items": [
+          { "name": "Tempest Staff", "note": "lacaio de tornado; uma das 7 armas que sempre caem, 14,29% cada" },
+          { "name": "Electric Eel", "note": "chicote; 14,29%" }
+        ]
+      },
+      {
+        "label": "Mago",
+        "items": [
+          { "name": "Razorblade Typhoon", "note": "livro de magia; 14,29%" },
+          { "name": "Bubble Gun", "note": "arma mágica; 14,29%" },
+          { "name": "Fishron Wings", "note": "asas; 6,67% (10% no Expert e no Mestre)" },
+          { "name": "Shrimpy Truffle", "note": "só Expert e Mestre, dentro da bolsa" }
+        ]
+      }
+    ],
+    "text": [
+      "Sempre cai uma das 7 armas da lista. As outras três (Mangual-dragão, Tsunami e Kraken) são de outras classes."
+    ]
+  },
+  "dropsMore": {
+    "groups": [
+      {
+        "items": [
+          "Flairoon",
+          "Tsunami",
+          "Kraken",
+          "Duke Fishron Mask",
+          "Duke Fishron Trophy",
+          { "name": "Pork of the Sea", "note": "só Mestre" },
+          { "name": "Duke Fishron Relic", "note": "só Mestre" }
+        ]
+      }
+    ]
+  },
+  "shortcuts": ["buffs", "arena", "drops"],
+  "source": { "revid": 1034508, "date": "2026-10-27" }
+}

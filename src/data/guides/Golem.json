@@ -1,0 +1,162 @@
+{
+  "page": "Golem",
+  "type": "chefe",
+  "format": 2,
+  "tags": [
+    "golem",
+    "chefe do templo",
+    "templo da selva",
+    "templo lagharto",
+    "altar lagharto",
+    "bateria lagharto",
+    "estátua de pedra",
+    "cabeça de pedra",
+    "punhos voadores",
+    "lasers dos olhos",
+    "chefe depois da plantera",
+    "chefe do modo difícil",
+    "libera os cultistas",
+    "libera eventos lunares",
+    "picareta serrada",
+    "casco de besouro",
+    "armadilhas do templo"
+  ],
+  "summary": "Chefe de pedra do Templo da Selva, com cabeça, corpo e dois punhos. Derrubar o Golem libera os Cultistas da Masmorra (e, depois, os Eventos Lunares).",
+  "facts": [
+    { "label": "Vida do corpo", "value": "", "modes": ["15.000", "22.500", "28.687"] },
+    { "label": "Vida da cabeça", "value": "", "modes": ["25.000", "37.500", "47.812"] },
+    { "label": "Vida de cada punho", "value": "", "modes": ["10.000", "15.000", "19.125"] },
+    { "label": "Defesa", "value": "corpo 26, cabeça 20, punho 28" },
+    { "label": "Quando", "value": "Qualquer hora, no Altar Lagharto" },
+    { "label": "Fase do jogo", "value": "Depois da Plantera" }
+  ],
+  "quick": [
+    "Leve uma **Bateria Lagharto** até o Altar Lagharto, na última sala do Templo da Selva, e aperte nele.",
+    "Mate a **cabeça** primeiro (o corpo só toma dano depois). Os punhos não precisam morrer, mas matá-los alivia a luta.",
+    "Não saia da Selva Subterrânea: fora dela o Golem fica furioso e pula mais rápido. Fique longe do pulo dele e dos lasers."
+  ],
+  "duo": {
+    "summoner": [
+      {
+        "stage": "post-plantera",
+        "note": "Os lacaios ficam na cabeça e no corpo sem você chegar perto. Derrubado o Golem, o Steampunker passa a vender as Asas Steampunk.",
+        "take": [
+          "Tiki Mask",
+          "Tiki Shirt",
+          "Tiki Pants",
+          "Desert Tiger Staff",
+          "Vulgar Display of Flower",
+          "Summoner Emblem",
+          "Hercules Beetle",
+          "Pygmy Necklace",
+          "Flask of Venom",
+          "Summoning Potion",
+          "Lifeforce Potion"
+        ]
+      }
+    ],
+    "mage": [
+      {
+        "stage": "post-plantera",
+        "note": "Prefira armas de alcance e que atravessam. Do Golem saem o Cajado da Terra e o Raio de Calor, ótimos para você.",
+        "take": [
+          "Spectre Mask",
+          "Spectre Robe",
+          "Spectre Pants",
+          "Inferno Fork",
+          "Nettle Burst",
+          "Leaf Blower",
+          "Celestial Emblem",
+          "Celestial Cuffs",
+          "Magic Power Potion",
+          "Mana Regeneration Potion",
+          "Lifeforce Potion"
+        ]
+      }
+    ]
+  },
+  "summon": {
+    "text": [
+      "Use a [[Lihzahrd Power Cell]] no [[Lihzahrd Altar]], na última sala do [[Jungle Temple]]. Só funciona depois da Plantera e em Modo Difícil.",
+      "Cada baú lagharto do Templo tem uma Bateria; os Laghartos e as Cobras Voadoras do Templo soltam uma com 1 chance em 50. A Bateria é gasta ao chamar, então guarde uma de reserva."
+    ]
+  },
+  "arena": {
+    "text": [
+      "A própria sala do Altar, no fundo do Templo. Tire as armadilhas ([[Spear Trap]], [[Flame Trap]], [[Spiky Ball Trap]]) e ponha 2–3 camadas de plataformas. Os três tijolos embaixo do altar não saem do lugar antes da primeira vitória.",
+      "[[Campfire]] e [[Heart Lantern]] para curar. Um [[Teleporter]] ajuda a se reposicionar quando o corpo pula em cima de você."
+    ]
+  },
+  "phases": [
+    {
+      "name": "1ª forma: cabeça presa ao corpo",
+      "text": [
+        "O corpo pula atrás de você e, se há blocos no meio, atravessa tudo para cair em cima. Os punhos acendem em laranja um instante antes de serem lançados (atravessam blocos, alcance curto). Matar um punho faz o corpo pular mais.",
+        "A cabeça cospe bolas de fogo que quicam e podem pegar fogo em você. Abaixo de 50% da vida da cabeça, os olhos também soltam lasers que atravessam blocos; quanto menos vida, mais ela atira.",
+        "Acabando a vida da cabeça, ela se solta e a luta passa para a 2ª forma."
+      ]
+    },
+    {
+      "name": "2ª forma: cabeça voando, corpo vivo",
+      "text": [
+        "A cabeça solta fica invencível, paira sobre você atravessando blocos e atira sempre dois lasers de uma vez. Agora você precisa matar o **corpo**; a luta acaba quando ele cai.",
+        "O corpo pula mais depressa e, quanto menos vida ele tem, mais a cabeça atira e mais fortes ficam os lasers. Ataque o corpo e dance entre os saltos."
+      ]
+    },
+    {
+      "name": "Furioso",
+      "text": [
+        "Fora da Selva Subterrânea o Golem pula mais rápido e, com a cabeça abaixo de 50%, atira os lasers mais depressa. Voltando à Selva, ele se acalma."
+      ]
+    }
+  ],
+  "drops": {
+    "groups": [
+      {
+        "label": "Para o progresso",
+        "items": [
+          { "name": "Picksaw", "note": "25% (33% no Expert e no Mestre); quebra os tijolos laghartos" },
+          { "name": "Beetle Husk", "note": "4–8 (18–23 no Expert e no Mestre)" },
+          { "name": "Greater Healing Potion", "qty": "5–15" },
+          "Treasure Bag (Golem)"
+        ]
+      },
+      {
+        "label": "Invocador",
+        "items": [
+          { "name": "Sun Stone", "note": "uma das 7 que sempre caem; 14,29% cada. Acessório geral, sem lacaio da classe" }
+        ]
+      },
+      {
+        "label": "Mago",
+        "items": [
+          { "name": "Staff of Earth", "note": "cajado; 14,29%" },
+          { "name": "Heat Ray", "note": "arma mágica; 14,29%" },
+          { "name": "Eye of the Golem", "note": "acessório de crítico; 14,29%" },
+          { "name": "Shiny Stone", "note": "só Expert e Mestre, dentro da bolsa" }
+        ]
+      }
+    ],
+    "text": [
+      "Sempre cai um item da lista de 7 (14,29% cada). Depois do Golem: os Cultistas aparecem na entrada da Masmorra, as Sondas Marcianas podem começar a vir, o Exército do Ancião passa a ter o nível 3 (com a Betsy) e o Steampunker vende as Asas Steampunk."
+    ]
+  },
+  "dropsMore": {
+    "groups": [
+      {
+        "items": [
+          "Stynger",
+          "Possessed Hatchet",
+          "Golem Fist",
+          "Mobius Strip",
+          "Golem Mask",
+          "Golem Trophy",
+          { "name": "Guardian Golem", "note": "só Mestre" },
+          { "name": "Golem Relic", "note": "só Mestre" }
+        ]
+      }
+    ]
+  },
+  "shortcuts": ["buffs", "arena", "drops"],
+  "source": { "revid": 1034335, "date": "2026-10-27" }
+}

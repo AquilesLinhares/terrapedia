@@ -241,7 +241,7 @@ de itens que não existem no dicionário/receitas e regenera o `guide-index.json
 Molde curto, só com o que se usa **durante o jogo** (leitor: dupla Invocador + Mago, Terraria 1.4.5). Fica no mesmo lugar
 (`src/data/guides/<Título>.json`) e convive com o molde antigo: sem `format` = antigo (`GuideView`); `format: 2` = novo
 (`GuideViewV2.tsx`; `ArticlePage` escolhe por `isV2`). Tipos em `src/lib/guides.ts` (`BossGuideV2`, `ItemGuideV2`, `CraftingGuideV2`).
-Páginas no molde novo: **Eye of Cthulhu**, **The Destroyer**, **The Twins**, **Skeletron Prime**, **Plantera**, **Queen Slime** (Geleia Rainha; 2026-10-27) (chefes), **Zenith** (item) e **Mythril Anvil** (crafting; 2026-10-27). Blood Moon e Extractinator ainda no molde antigo.
+Páginas no molde novo: **Eye of Cthulhu**, **The Destroyer**, **The Twins**, **Skeletron Prime**, **Plantera**, **Queen Slime** (Geleia Rainha; 2026-10-27) (chefes), **Golem**, **Duke Fishron**, **Empress of Light** e **Lunatic Cultist** (lote 2, 2026-10-27; o Cultista não tem atalho `drops`, pois a tabela não tem drops dele), **Zenith** (item) e **Mythril Anvil** (crafting; 2026-10-27). Blood Moon e Extractinator ainda no molde antigo.
 
 - **Comum**: `page`, `type`, `format: 2`, `tags`, `summary` (1 frase), `facts` (ficha; um fato pode ter `modes: [Clássico, Expert, Mestre]` e o
   do mundo ativo fica dourado), `quick` ("Em 10 segundos"), `duo`, `shortcuts?`, `source`. Fora do molde: curiosidades, dicas de dinheiro, trivia, histórico.
